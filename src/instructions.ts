@@ -65,8 +65,9 @@ async function listBenchmarks(command: string, cwd: string): Promise<string[]> {
     });
     const content = await readFile(file, 'utf8').catch(() => {
       throw new Error(
-        'The benchmark command did not write the list of its benchmarks to the file named by BENCHMARK_LIST, ' +
-          'so it does not support counting instructions. For Dart, run the benchmarks with runBenchmarks from package:benchmark_tracker.',
+        // Kept short: comments show the first 200 characters of errors.
+        'It does not support counting instructions (it did not write the BENCHMARK_LIST file). ' +
+          'For Dart, use runBenchmarks from package:benchmark_tracker.',
       );
     });
     const names = content
