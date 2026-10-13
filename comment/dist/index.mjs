@@ -105012,7 +105012,9 @@ function finishHead(state3, sha2, conclusion, runUrl) {
   state3.head.finished = true;
   if (runUrl) state3.head.runUrl = runUrl;
   for (const [suite, s] of Object.entries(state3.suites)) {
-    if (s.status === "running" && s.sha === sha2) {
+    if (s.sha !== sha2) {
+      delete state3.suites[suite];
+    } else if (s.status === "running") {
       failSuite(state3, suite, sha2, `The benchmark run ended (${conclusion}) without reporting results.`, runUrl ?? s.runUrl);
     }
   }

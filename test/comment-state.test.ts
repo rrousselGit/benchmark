@@ -84,13 +84,17 @@ describe('comment state', () => {
     expect(body).toContain('ended \\(failure\\) without reporting results');
   });
 
-  it('marks suites missing for a finished commit', () => {
+  it('drops suites that were not part of the finished run', () => {
     const state = emptyState();
-    finishSuite(state, report(true, A, 'dart'), run);
-    startHead(state, B, run);
-    expect(renderComment(state)).toContain('⏳ Running benchmarks for `bbbb222`');
+    finishSuite(state, report(true, A, 'node'), run);
+    startSuite(state, 'node-instructions', B, run);
+    expect(renderComment(state)).toContain('### **node**: ⏳ Running…');
+    finishSuite(state, report(true, B, 'node-instructions'), run);
     finishHead(state, B, 'success', run);
-    expect(renderComment(state)).toContain('### **dart**: ⚪ Not run for this commit');
+    const body = renderComment(state);
+    expect(body).not.toContain('**node**:');
+    expect(body).toContain('### **node-instructions**:');
+    expect(body).toContain('Results for `bbbb222`');
   });
 
   it('shows a generic loading message before any suite starts', () => {

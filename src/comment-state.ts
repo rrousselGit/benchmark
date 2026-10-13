@@ -70,14 +70,18 @@ export function failSuite(
 
 /**
  * Records that the benchmark run for `sha` completed. Suites still running
- * for that commit never reported, so they are marked as failed.
+ * for that commit never reported, so they are marked as failed. Suites left
+ * over from earlier commits were not part of this run (they were renamed or
+ * removed), so they are dropped.
  */
 export function finishHead(state: CommentState, sha: string, conclusion: string, runUrl?: string): void {
   if (state.head?.sha !== sha) return;
   state.head.finished = true;
   if (runUrl) state.head.runUrl = runUrl;
   for (const [suite, s] of Object.entries(state.suites)) {
-    if (s.status === 'running' && s.sha === sha) {
+    if (s.sha !== sha) {
+      delete state.suites[suite];
+    } else if (s.status === 'running') {
       failSuite(state, suite, sha, `The benchmark run ended (${conclusion}) without reporting results.`, runUrl ?? s.runUrl);
     }
   }
