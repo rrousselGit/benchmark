@@ -166,6 +166,7 @@ Each benchmark runs with `iterations` and twice as many iterations, and the diff
 Things to know:
 
 - Linux only, and only for native code: compile Dart with `dart compile exe`. A JIT spends its instructions compiling, not running your code.
+- A JIT runtime such as Node needs to be made deterministic: run it with `node --single-threaded --predictable` while counting, and enough `iterations` for the code to get optimized. See the Node example in [`.github/workflows/benchmark.yml`](.github/workflows/benchmark.yml).
 - Instructions are not time. They miss cache misses, memory bandwidth, I/O and syscalls, and a change that executes more but cheaper instructions can be faster. That is why the example pairs them with real timings on pull requests.
 - Counts only change when the code or toolchain does, so a tight `threshold`, such as `5%`, works. A new Dart SDK can shift every count at once.
 
@@ -259,6 +260,6 @@ The actions run from the bundled files in `dist/`, `comment/dist/` and `check/di
 This repository runs the action on itself, see [`.github/workflows/benchmark.yml`](.github/workflows/benchmark.yml):
 
 - [`examples/dart`](examples/dart): a small Dart package with `benchmark_harness` benchmarks (recursion, sorting, text processing, JSON, an LRU cache) and its tests. Run them locally with `dart run benchmark/main.dart`. Its instruction counts are stored and graphed as the `dart-instructions` suite, and pull requests also get timings against the base.
-- [`examples/node`](examples/node): a few Node micro-benchmarks printing the JSON format.
+- [`examples/node`](examples/node): a few Node micro-benchmarks printing the JSON format, which also follow the instruction counting protocol. Stored as the `node-instructions` suite.
 
 Because the runners are shared, the timing checks use loose thresholds (20% and 25%); instruction counts use 5%.

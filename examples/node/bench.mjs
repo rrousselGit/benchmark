@@ -1,5 +1,7 @@
 // Tiny benchmark used to exercise this action on its own repository.
 // Prints results in the action's JSON format.
+import { writeFileSync } from 'node:fs';
+
 const benchmarks = {
   'Array.prototype.map (1k)': () => Array.from({ length: 1000 }, (_, i) => i).map((x) => x * 2),
   'JSON round trip': () => JSON.parse(JSON.stringify({ a: [1, 2, 3], b: { c: 'd' } })),
@@ -35,6 +37,18 @@ function measure(fn) {
   return samples[Math.floor(samples.length / 2)]; // median, in microseconds
 }
 
-const results = Object.entries(benchmarks).map(([name, fn]) => ({ name, value: measure(fn), unit: 'us' }));
-if (sink === undefined) throw new Error('unreachable');
-console.log(JSON.stringify({ benchmarks: results }, null, 2));
+// The protocol of rrousselgit/benchmark's `mode: instructions`: list the
+// benchmarks into a file, or run one of them a given number of times.
+const { BENCHMARK_LIST, BENCHMARK_NAME, BENCHMARK_ITERATIONS } = process.env;
+if (BENCHMARK_LIST) {
+  writeFileSync(BENCHMARK_LIST, Object.keys(benchmarks).map((name) => `${name}\n`).join(''));
+} else if (BENCHMARK_NAME) {
+  const fn = benchmarks[BENCHMARK_NAME];
+  if (!fn) throw new Error(`No benchmark named "${BENCHMARK_NAME}".`);
+  const iterations = Number(BENCHMARK_ITERATIONS ?? '1');
+  for (let i = 0; i < iterations; i++) sink = fn();
+} else {
+  const results = Object.entries(benchmarks).map(([name, fn]) => ({ name, value: measure(fn), unit: 'us' }));
+  if (sink === undefined) throw new Error('unreachable');
+  console.log(JSON.stringify({ benchmarks: results }, null, 2));
+}

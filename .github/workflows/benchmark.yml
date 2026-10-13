@@ -59,10 +59,18 @@ jobs:
       - id: bench
         uses: ./
         with:
-          suite: node
-          run: node examples/node/bench.mjs > node-bench.json
-          file: node-bench.json
-          threshold: 25%
+          suite: node-instructions
+          mode: instructions
+          timings: true
+          # When counting instructions (BENCHMARK_ITERATIONS is set), V8 must
+          # be deterministic: no background compiler or garbage collector
+          # threads, fixed hash and random seeds. Otherwise counts vary by up
+          # to 10% between runs. Timings keep the default flags.
+          run: node ${BENCHMARK_ITERATIONS:+--single-threaded --predictable} examples/node/bench.mjs
+          # Enough iterations for V8 to optimize the code being measured.
+          iterations: 1000
+          threshold: 5%
+          time-threshold: 25%
       - uses: ./check
         with:
           report: ${{ steps.bench.outputs.report }}
