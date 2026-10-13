@@ -23,6 +23,12 @@ inputs:
   samples:
     description: 'mode: time. How many times to run the benchmarks; each one keeps its median. When the base commit is benchmarked in the same job, runs alternate between the two, so build outputs must stay inside the checkout.'
     default: '5'
+  timings:
+    description: 'mode: instructions, pull requests: also time the benchmarks, alternating with the base commit like mode: time, and show both measurements side by side. Timings are read with "format" from "file", or from the output of "run" when "file" is empty. They are never stored.'
+    default: 'false'
+  time-threshold:
+    description: 'mode: instructions with timings: how much slower a benchmark must get to be reported as a regression.'
+    default: 20%
   iterations:
     description: 'mode: instructions. Each benchmark runs this many times and twice as many; the difference gives the cost of one iteration.'
     default: '10'

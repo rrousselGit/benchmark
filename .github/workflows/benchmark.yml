@@ -17,8 +17,8 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  dart-instructions:
-    name: Dart benchmarks (instruction counts)
+  dart:
+    name: Dart benchmarks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -26,10 +26,16 @@ jobs:
       - id: bench
         uses: ./
         with:
-          # Instruction counts barely change between runners, so these are
-          # the results stored for the history graphs.
+          # Instruction counts barely change between runners: they are what
+          # gets stored and graphed. On pull requests, the benchmarks are
+          # also timed against the base commit on the same machine, and the
+          # comment shows both.
           suite: dart-instructions
           mode: instructions
+          timings: true
+          format: dart
+          # Outputs stay in the checkout: on pull requests, the base commit
+          # is built next to it and both run alternately.
           build: |
             cd examples/dart
             dart pub get
@@ -37,34 +43,7 @@ jobs:
             dart compile exe benchmark/main.dart -o build/dart-bench
           run: examples/dart/build/dart-bench
           threshold: 5%
-      - uses: ./check
-        with:
-          report: ${{ steps.bench.outputs.report }}
-
-  dart:
-    name: Dart benchmarks (timings against base)
-    # Real timings vary between runners, so they are only compared with the
-    # base commit benchmarked in the same job, and never stored.
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: dart-lang/setup-dart@v1
-      - id: bench
-        uses: ./
-        with:
-          suite: dart
-          rerun-base: always
-          # Compiling ahead of time gives steadier numbers than `dart run`.
-          build: |
-            cd examples/dart
-            dart pub get
-            mkdir -p build
-            dart compile exe benchmark/main.dart -o build/dart-bench
-          run: 'examples/dart/build/dart-bench | tee dart-bench.txt'
-          file: dart-bench.txt
-          format: dart
-          threshold: 20%
+          time-threshold: 20%
       - uses: ./check
         with:
           report: ${{ steps.bench.outputs.report }}

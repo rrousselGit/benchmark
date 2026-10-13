@@ -1,3 +1,4 @@
+import { rowStatus } from './compare.js';
 import { suitePath } from './history.js';
 import { escape, renderReport, shortSha, summarizeReport } from './markdown.js';
 import type { Report } from './types.js';
@@ -188,7 +189,7 @@ export function renderCommentWithinLimit(state: CommentState): string {
   body = renderComment(slim, { compact: true });
   if (body.length <= maxBodyLength) return body;
   for (const s of Object.values(slim.suites)) {
-    if (s.status === 'done') s.report.rows = s.report.rows.filter((r) => r.status !== 'unchanged');
+    if (s.status === 'done') s.report.rows = s.report.rows.filter((r) => rowStatus(r) !== 'unchanged');
   }
   return renderComment(slim, { compact: true });
 }
@@ -256,12 +257,23 @@ export function validateReport(report: Report): void {
     'baseline source',
   );
   check(report.baseline?.reference === undefined || sha.test(report.baseline.reference), 'reference');
+  if (report.time !== undefined) {
+    check(typeof report.time.threshold === 'number' && typeof report.time.compared === 'boolean', 'time');
+    check(report.time.error === undefined || typeof report.time.error === 'string', 'time error');
+  }
   const statuses = ['regression', 'improvement', 'unchanged', 'new', 'removed'];
+  const checkValues = (m: { base?: unknown; current?: unknown; changePercent?: unknown }) => {
+    for (const key of ['base', 'current', 'changePercent'] as const) {
+      check(m[key] === undefined || typeof m[key] === 'number', 'row value');
+    }
+  };
   for (const row of report.rows) {
     check(typeof row.name === 'string' && typeof row.unit === 'string', 'row');
     check(statuses.includes(row.status) && typeof row.lowerIsBetter === 'boolean', 'row status');
-    for (const key of ['base', 'current', 'changePercent'] as const) {
-      check(row[key] === undefined || typeof row[key] === 'number', 'row value');
+    checkValues(row);
+    if (row.time !== undefined) {
+      check(typeof row.time.unit === 'string' && statuses.includes(row.time.status), 'row time');
+      checkValues(row.time);
     }
   }
 }

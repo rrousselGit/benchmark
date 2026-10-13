@@ -55,6 +55,16 @@ export interface ReportRow {
   /** Signed relative change of the raw value, in percent. */
   changePercent?: number;
   status: RowStatus;
+  /** `mode: instructions` with `timings`: the same benchmark's time. */
+  time?: TimeComparison;
+}
+
+export interface TimeComparison {
+  unit: string;
+  base?: number;
+  current?: number;
+  changePercent?: number;
+  status: RowStatus;
 }
 
 export interface Report {
@@ -76,4 +86,14 @@ export interface Report {
   pullRequest?: number;
   siteUrl?: string;
   rows: ReportRow[];
+  /**
+   * `mode: instructions` with `timings`: timings of this commit and of the
+   * base commit, run alternately in this job, attached to each row.
+   */
+  time?: {
+    threshold: number;
+    /** False when the base could not be timed; `error` says why. */
+    compared: boolean;
+    error?: string;
+  };
 }

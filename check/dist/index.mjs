@@ -19585,9 +19585,19 @@ function classify(row, threshold) {
   if (worse < -threshold) return "improvement";
   return "unchanged";
 }
-function regressions(report, threshold = report.threshold) {
-  if (!report.baseline) return [];
-  return report.rows.filter((row) => classify(row, threshold) === "regression");
+function regressions(report, threshold = report.threshold, timeThreshold = report.time?.threshold) {
+  const out = [];
+  const add = (name, row, limit) => {
+    if (classify({ ...row, name }, limit) !== "regression") return;
+    out.push({ name, unit: row.unit, base: row.base, current: row.current, worsePercent: worsePercent(row) });
+  };
+  for (const row of report.rows) {
+    if (report.baseline) add(row.name, row, threshold);
+    if (row.time && report.time?.compared && timeThreshold !== void 0) {
+      add(row.name, { ...row.time, lowerIsBetter: true }, timeThreshold);
+    }
+  }
+  return out;
 }
 
 // src/check.ts
@@ -19599,23 +19609,24 @@ async function main() {
   const report = JSON.parse(await readFile(reportPath, "utf8"));
   const thresholdInput = getInput("threshold");
   const threshold = thresholdInput ? parseThreshold(thresholdInput) : report.threshold;
-  if (!report.baseline) {
+  const timeThresholdInput = getInput("time-threshold");
+  const timeThreshold = timeThresholdInput ? parseThreshold(timeThresholdInput) : report.time?.threshold;
+  if (!report.baseline && !report.time?.compared) {
     notice("No baseline results to compare against, so there is nothing to check.");
     setOutput("regressions", 0);
     return;
   }
-  const failing = regressions(report, threshold);
+  const failing = regressions(report, threshold, timeThreshold);
   setOutput("regressions", failing.length);
+  const limits = timeThreshold === void 0 ? `${threshold}%` : `${threshold}% (${timeThreshold}% for time)`;
   if (failing.length === 0) {
-    info(`No benchmark regressed by more than ${threshold}% against ${report.baseline.sha.slice(0, 7)}.`);
+    info(`No benchmark regressed by more than ${limits}.`);
     return;
   }
   const lines = failing.map(
-    (r) => `  ${r.name}: ${r.base} \u2192 ${r.current} ${r.unit} (${worsePercent(r).toFixed(1)}% worse)`
+    (r) => `  ${r.name}: ${r.base} \u2192 ${r.current} ${r.unit} (${r.worsePercent.toFixed(1)}% worse)`
   );
-  setFailed(
-    `${failing.length} benchmark(s) regressed by more than ${threshold}% against ${report.baseline.sha.slice(0, 7)}:
-${lines.join("\n")}`
-  );
+  setFailed(`${failing.length} measurement(s) regressed by more than ${limits}:
+${lines.join("\n")}`);
 }
 main().catch((e) => setFailed(e.message));

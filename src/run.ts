@@ -6,7 +6,7 @@ import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { compare, parseThreshold } from './compare.js';
+import { attachTimes, compare, parseThreshold } from './compare.js';
 import { failSuite, finishSuite, startSuite, type CommentState } from './comment-state.js';
 import {
   ancestors,
@@ -143,16 +143,19 @@ async function build(inputs: Inputs, cwd: string): Promise<void> {
 
 /** mode: time. Runs the benchmarks once and reads their results file. */
 async function runOnce(inputs: Inputs, cwd: string): Promise<Benchmark[]> {
+  let stdout = '';
   if (inputs.command) {
-    const exitCode = await exec.exec('bash', ['-eo', 'pipefail', '-c', inputs.command], {
+    const res = await exec.getExecOutput('bash', ['-eo', 'pipefail', '-c', inputs.command], {
       cwd,
       ignoreReturnCode: true,
     });
-    if (exitCode !== 0) throw new Error(`Benchmark command exited with code ${exitCode}.`);
+    if (res.exitCode !== 0) throw new Error(`Benchmark command exited with code ${res.exitCode}.`);
+    stdout = res.stdout;
   }
-  const file = path.resolve(cwd, inputs.file);
-  const benchmarks = parseResults(await readFile(file, 'utf8'), inputs.format);
-  core.info(`Parsed ${benchmarks.length} benchmark(s) from ${file}.`);
+  // mode: instructions with timings reads the program's output by default.
+  const file = inputs.file ? path.resolve(cwd, inputs.file) : undefined;
+  const benchmarks = parseResults(file ? await readFile(file, 'utf8') : stdout, inputs.format);
+  core.info(`Parsed ${benchmarks.length} benchmark(s) from ${file ?? 'the output'}.`);
   return benchmarks;
 }
 
@@ -161,6 +164,8 @@ interface Inputs {
   build: string;
   iterations: number;
   samples: number;
+  timings: boolean;
+  timeThreshold: number;
   token: string;
   file: string;
   format: Format;
@@ -208,6 +213,8 @@ function readInputs(): Inputs {
     build: core.getInput('build'),
     iterations,
     samples: command ? samples : 1,
+    timings: mode === 'instructions' && core.getBooleanInput('timings'),
+    timeThreshold: parseThreshold(core.getInput('time-threshold') || '20%'),
     token: core.getInput('github-token', { required: true }),
     file,
     format: format as Format,
@@ -261,6 +268,8 @@ async function pullRequestReport(
   const machine = machineId(inputs.mode);
   core.info(`Machine: ${machine}`);
 
+  if (inputs.timings) return timedPullRequestReport(octokit, inputs, pr, machine);
+
   if (inputs.rerunBase !== 'always' || !inputs.command) {
     const history = await readHistory(octokit, inputs.dataBranch, inputs.suite, baseRef);
     const baseline = history && findBaseline(history.entries, await ancestors(octokit, baseSha), machine);
@@ -292,6 +301,95 @@ async function pullRequestReport(
   return { ...toReport(inputs, result.head, current, baseline, 'rerun'), pullRequest: pr.number };
 }
 
+/**
+ * `mode: instructions` with `timings`: instruction counts compared as usual
+ * (stored results of the target branch, or the base counted in this job),
+ * plus timings of both commits, run alternately in this job. Timings are
+ * never stored: they only make sense against a run on the same machine.
+ */
+async function timedPullRequestReport(
+  octokit: Octokit,
+  inputs: Inputs,
+  pr: NonNullable<typeof github.context.payload.pull_request>,
+  machine: string,
+): Promise<Report> {
+  const cwd = process.cwd();
+  const baseRef: string = pr.base.ref;
+  const baseSha: string = pr.base.sha;
+  const current = { sha: pr.head.sha as string, ref: pr.head.ref as string };
+
+  let baseline: Entry | undefined;
+  let source: 'stored' | 'rerun' = 'stored';
+  if (inputs.rerunBase !== 'always') {
+    const history = await readHistory(octokit, inputs.dataBranch, inputs.suite, baseRef);
+    baseline = history && findBaseline(history.entries, await ancestors(octokit, baseSha), machine);
+    if (baseline) core.info(`Comparing instruction counts against stored results of ${baseline.commit.sha}.`);
+  }
+
+  const counts = await measure(inputs, cwd);
+  let countError: string | undefined;
+  let timeError: string | undefined;
+  let times: { head: Benchmark[]; base?: Benchmark[] } | undefined;
+  try {
+    await withCheckout(baseSha, async (dir) => {
+      try {
+        await build(inputs, dir);
+      } catch (e) {
+        countError = timeError = (e as Error).message;
+        return;
+      }
+      if (!baseline && inputs.rerunBase !== 'never') {
+        try {
+          const baseCounts = await countInstructions(inputs.command, dir, inputs.iterations);
+          baseline = await commitEntry(octokit, baseSha, baseRef, baseCounts, machine);
+          source = 'rerun';
+        } catch (e) {
+          countError = (e as Error).message;
+        }
+      }
+      times = await timeAlternately(inputs, cwd, dir).catch((e: Error) => {
+        if (e instanceof HeadError) throw e;
+        timeError = e.message;
+        return undefined;
+      });
+    });
+  } catch (e) {
+    if (e instanceof HeadError) throw e;
+    countError ??= (e as Error).message;
+    timeError ??= (e as Error).message;
+  }
+  // Without the base, this commit still gets its own timings.
+  if (!times) times = { head: medianBenchmarks([await runOnce(inputs, cwd)]) };
+
+  const report = toReport(inputs, counts, current, baseline, source);
+  if (countError && !baseline) {
+    core.warning(`Could not count instructions of the base commit ${baseSha}: ${countError}`);
+    report.baselineError = `Could not benchmark the base commit ${baseSha.slice(0, 7)}: ${countError}`;
+  }
+  if (timeError) core.warning(`Could not time the base commit ${baseSha}: ${timeError}`);
+  report.rows = attachTimes(report.rows, times.head, times.base, inputs.timeThreshold);
+  report.time = { threshold: inputs.timeThreshold, compared: Boolean(times.base), error: timeError };
+  return { ...report, pullRequest: pr.number };
+}
+
+/** Runs both checkouts alternately, `samples` times each, and keeps the medians. */
+async function timeAlternately(
+  inputs: Inputs,
+  cwd: string,
+  dir: string,
+): Promise<{ head: Benchmark[]; base: Benchmark[] }> {
+  const runs: Benchmark[][][] = [[], []];
+  for (const side of alternatingOrder(inputs.samples)) {
+    core.info(`Timing the benchmarks of ${side === 0 ? 'this commit' : 'the base commit'}.`);
+    runs[side].push(
+      await runOnce(inputs, side === 0 ? cwd : dir).catch((e: Error) => {
+        throw side === 0 ? new HeadError(e.message) : e;
+      }),
+    );
+  }
+  return { head: medianBenchmarks(runs[0]), base: medianBenchmarks(runs[1]) };
+}
+
 /** A failure of this commit's benchmarks, as opposed to the base commit's. */
 class HeadError extends Error {}
 
@@ -321,17 +419,7 @@ async function benchmarkWithBase(
   try {
     return await withCheckout(baseSha, async (dir) => {
       await build(inputs, dir);
-      const runs: Benchmark[][][] = [[], []];
-      for (const side of alternatingOrder(inputs.samples)) {
-        const sideCwd = side === 0 ? cwd : dir;
-        core.info(`Running the benchmarks of ${side === 0 ? 'this commit' : 'the base commit'}.`);
-        runs[side].push(
-          await runOnce(inputs, sideCwd).catch((e: Error) => {
-            throw side === 0 ? new HeadError(e.message) : e;
-          }),
-        );
-      }
-      return { head: medianBenchmarks(runs[0]), base: medianBenchmarks(runs[1]) };
+      return timeAlternately(inputs, cwd, dir);
     });
   } catch (e) {
     if (e instanceof HeadError) throw e;

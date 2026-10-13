@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { compare, parseThreshold, regressions } from '../src/compare.js';
+import { attachTimes, compare, parseThreshold, regressions, rowStatus } from '../src/compare.js';
 import type { Report } from '../src/types.js';
 
 describe('parseThreshold', () => {
@@ -61,5 +61,48 @@ describe('compare', () => {
     expect(regressions(report, 25)).toEqual([]);
     expect(regressions(report, 1).map((r) => r.name).sort()).toEqual(['same', 'slower', 'throughput']);
     expect(regressions({ ...report, baseline: undefined })).toEqual([]);
+  });
+});
+
+describe('attachTimes', () => {
+  const counts = [
+    { name: 'sort', value: 1000, unit: 'instructions' },
+    { name: 'parse', value: 500, unit: 'instructions' },
+  ];
+  const report = (): Report => ({
+    version: 1,
+    suite: 'default',
+    threshold: 5,
+    current: { sha: 'b', ref: 'x' },
+    baseline: { sha: 'a', branch: 'main' },
+    rows: attachTimes(
+      compare(counts, counts, 5),
+      [
+        { name: 'sort', value: 125, unit: 'us' },
+        { name: 'parse', value: 50, unit: 'us' },
+        { name: 'timed only', value: 1, unit: 'us' },
+      ],
+      [
+        { name: 'sort', value: 100, unit: 'us' },
+        { name: 'parse', value: 50, unit: 'us' },
+        { name: 'timed only', value: 1, unit: 'us' },
+      ],
+      20,
+    ),
+    time: { threshold: 20, compared: true },
+  });
+
+  it('attaches each timing to the benchmark of the same name', () => {
+    const rows = report().rows;
+    expect(rows.find((r) => r.name === 'sort')?.time).toMatchObject({ base: 100, current: 125, status: 'regression' });
+    expect(rowStatus(rows.find((r) => r.name === 'sort')!)).toBe('regression');
+    expect(rowStatus(rows.find((r) => r.name === 'parse')!)).toBe('unchanged');
+    expect(rows.find((r) => r.name === 'timed only')?.base).toBeUndefined();
+  });
+
+  it('checks timings against their own threshold', () => {
+    expect(regressions(report()).map((r) => [r.name, r.unit])).toEqual([['sort', 'us']]);
+    expect(regressions(report(), 5, 30)).toEqual([]);
+    expect(regressions({ ...report(), time: { threshold: 20, compared: false } })).toEqual([]);
   });
 });
