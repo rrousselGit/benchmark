@@ -30,6 +30,47 @@ describe('renderReport', () => {
   });
 });
 
+describe('timings alongside instruction counts', () => {
+  it('shows both measurements side by side', async () => {
+    const { attachTimes, compare } = await import('../src/compare.js');
+    const counts = [{ name: 'sort', value: 1_205_000, unit: 'instructions' }];
+    const r = {
+      ...report(),
+      rows: attachTimes(
+        compare(counts, counts, 5),
+        [{ name: 'sort', value: 1018, unit: 'us' }],
+        [{ name: 'sort', value: 831, unit: 'us' }],
+        20,
+      ),
+      time: { threshold: 20, compared: true },
+    };
+    expect(summarizeReport(r)).toBe('🔴 1 regression');
+    expect(renderReport(r)).toMatchInlineSnapshot(`
+      "Instruction counts compared \`bbbbbbb\` against \`aaaaaaa\` on \`main\`, with a 10% threshold.
+
+      Timings run alternately with the base commit on the same machine, with a 20% threshold.
+
+      | | Benchmark | Instructions | Change | Time | Change |
+      | --- | --- | ---: | ---: | ---: | ---: |
+      | 🔴 | sort | 1.205M → 1.205M | 0.0% | 831 us → 1018 us | **+22.5%** |"
+    `);
+  });
+
+  it('still shows timings when the base could not be counted', async () => {
+    const { attachTimes, compare } = await import('../src/compare.js');
+    const counts = [{ name: 'sort', value: 1_205_000, unit: 'instructions' }];
+    const r = {
+      ...report(false),
+      rows: attachTimes(compare(counts, undefined, 5), [{ name: 'sort', value: 100, unit: 'us' }], [
+        { name: 'sort', value: 99, unit: 'us' },
+      ], 20),
+      time: { threshold: 20, compared: true },
+    };
+    expect(summarizeReport(r)).toBe('✅ No significant changes');
+    expect(renderReport(r)).toContain('| ⚪ | sort | 1.205M | – | 99 us → 100 us | +1.0% |');
+  });
+});
+
 describe('baseline wording', () => {
   it('says when the base was benchmarked in the same job', () => {
     const r = report();

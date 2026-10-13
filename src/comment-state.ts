@@ -1,3 +1,4 @@
+import { rowStatus } from './compare.js';
 import { suitePath } from './history.js';
 import { escape, renderReport, shortSha, summarizeReport } from './markdown.js';
 import type { Report } from './types.js';
@@ -69,14 +70,18 @@ export function failSuite(
 
 /**
  * Records that the benchmark run for `sha` completed. Suites still running
- * for that commit never reported, so they are marked as failed.
+ * for that commit never reported, so they are marked as failed. Suites left
+ * over from earlier commits were not part of this run (they were renamed or
+ * removed), so they are dropped.
  */
 export function finishHead(state: CommentState, sha: string, conclusion: string, runUrl?: string): void {
   if (state.head?.sha !== sha) return;
   state.head.finished = true;
   if (runUrl) state.head.runUrl = runUrl;
   for (const [suite, s] of Object.entries(state.suites)) {
-    if (s.status === 'running' && s.sha === sha) {
+    if (s.sha !== sha) {
+      delete state.suites[suite];
+    } else if (s.status === 'running') {
       failSuite(state, suite, sha, `The benchmark run ended (${conclusion}) without reporting results.`, runUrl ?? s.runUrl);
     }
   }
@@ -188,7 +193,7 @@ export function renderCommentWithinLimit(state: CommentState): string {
   body = renderComment(slim, { compact: true });
   if (body.length <= maxBodyLength) return body;
   for (const s of Object.values(slim.suites)) {
-    if (s.status === 'done') s.report.rows = s.report.rows.filter((r) => r.status !== 'unchanged');
+    if (s.status === 'done') s.report.rows = s.report.rows.filter((r) => rowStatus(r) !== 'unchanged');
   }
   return renderComment(slim, { compact: true });
 }
@@ -256,12 +261,23 @@ export function validateReport(report: Report): void {
     'baseline source',
   );
   check(report.baseline?.reference === undefined || sha.test(report.baseline.reference), 'reference');
+  if (report.time !== undefined) {
+    check(typeof report.time.threshold === 'number' && typeof report.time.compared === 'boolean', 'time');
+    check(report.time.error === undefined || typeof report.time.error === 'string', 'time error');
+  }
   const statuses = ['regression', 'improvement', 'unchanged', 'new', 'removed'];
+  const checkValues = (m: { base?: unknown; current?: unknown; changePercent?: unknown }) => {
+    for (const key of ['base', 'current', 'changePercent'] as const) {
+      check(m[key] === undefined || typeof m[key] === 'number', 'row value');
+    }
+  };
   for (const row of report.rows) {
     check(typeof row.name === 'string' && typeof row.unit === 'string', 'row');
     check(statuses.includes(row.status) && typeof row.lowerIsBetter === 'boolean', 'row status');
-    for (const key of ['base', 'current', 'changePercent'] as const) {
-      check(row[key] === undefined || typeof row[key] === 'number', 'row value');
+    checkValues(row);
+    if (row.time !== undefined) {
+      check(typeof row.time.unit === 'string' && statuses.includes(row.time.status), 'row time');
+      checkValues(row.time);
     }
   }
 }

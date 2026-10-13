@@ -72,11 +72,11 @@ Put everything needed to build and run the benchmarks in `build` and `run`, not 
 
 ### Dart
 
-The recommended setup runs two suites: instruction counts for the history graphs, and real timings against the base commit on pull requests.
+Count instructions for the history graphs, and on pull requests also time the benchmarks against the base commit. The pull request comment shows both, side by side:
 
 ```yaml
 jobs:
-  instructions:
+  benchmark:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -84,42 +84,26 @@ jobs:
       - id: bench
         uses: rrousselgit/benchmark@v1
         with:
-          suite: dart-instructions
           mode: instructions
+          timings: true
+          format: dart
           build: |
             dart pub get
             mkdir -p build
             dart compile exe benchmark/main.dart -o build/bench
           run: build/bench
           threshold: 5%
-      - uses: rrousselgit/benchmark/check@v1
-        with:
-          report: ${{ steps.bench.outputs.report }}
-
-  timings:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: dart-lang/setup-dart@v1
-      - id: bench
-        uses: rrousselgit/benchmark@v1
-        with:
-          suite: dart
-          build: |
-            dart pub get
-            mkdir -p build
-            dart compile exe benchmark/main.dart -o build/bench
-          run: 'build/bench | tee bench.txt'
-          file: bench.txt
-          format: dart
-          threshold: 20%
+          time-threshold: 20%
       - uses: rrousselgit/benchmark/check@v1
         with:
           report: ${{ steps.bench.outputs.report }}
 ```
 
-The timings job only runs on pull requests, where it benchmarks the base commit in the same job, so nothing machine-dependent reaches the graphs. The `dart` format reads lines printed by `benchmark_harness`, such as `Template(RunTime): 12.5 us.`, and ignores everything else.
+| | Benchmark | Instructions | Change | Time | Change |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 🔴 | Insertion sort (500) | 1.205M → 1.205M | 0.0% | 831 us → 1018 us | **+22.5%** |
+
+Only instruction counts are stored: timings are compared with the base commit run alternately in the same job, so nothing machine-dependent reaches the graphs. Run without the protocol's variables, the program prints `benchmark_harness` results, which `format: dart` reads (lines such as `Template(RunTime): 12.5 us.`).
 
 The benchmark entry point hands its benchmarks to `runBenchmarks` from the [`benchmark_tracker`](dart) package in this repository, which implements the instruction counting protocol and otherwise prints `benchmark_harness` results as usual:
 
@@ -182,6 +166,7 @@ Each benchmark runs with `iterations` and twice as many iterations, and the diff
 Things to know:
 
 - Linux only, and only for native code: compile Dart with `dart compile exe`. A JIT spends its instructions compiling, not running your code.
+- A JIT runtime such as Node needs to be made deterministic: run it with `node --single-threaded --predictable` while counting, and enough `iterations` for the code to get optimized. See the Node example in [`.github/workflows/benchmark.yml`](.github/workflows/benchmark.yml).
 - Instructions are not time. They miss cache misses, memory bandwidth, I/O and syscalls, and a change that executes more but cheaper instructions can be faster. That is why the example pairs them with real timings on pull requests.
 - Counts only change when the code or toolchain does, so a tight `threshold`, such as `5%`, works. A new Dart SDK can shift every count at once.
 
@@ -221,6 +206,8 @@ The comment stores its state in a hidden HTML comment, so every job merges its o
 | `file` | | `mode: time`, required: results file. |
 | `format` | `json` | `json` or `dart`. |
 | `samples` | `5` | `mode: time`: how many times the benchmarks run on each side. Each benchmark keeps its median. |
+| `timings` | `false` | `mode: instructions`, pull requests: also time the benchmarks against the base commit and show both side by side. Timings are read with `format` from `file`, or from the output of `run`. |
+| `time-threshold` | `20%` | With `timings`: slowdown beyond which a benchmark is flagged. |
 | `iterations` | `10` | `mode: instructions`: iterations per measurement. |
 | `suite` | `default` | Name of this set of benchmarks. Use several to track independent suites (packages, platforms) in one repository; each gets its own section in the pull request comment. |
 | `threshold` | `10%` | Change beyond which a benchmark is flagged in the comment. |
@@ -241,8 +228,9 @@ Outputs: `report` (path to the JSON report), `markdown`, `regressions` (count).
 | --- | --- | --- |
 | `report` | last report in the job | The `report` output of the main action. Pass it explicitly when the job runs several suites. |
 | `threshold` | the main action's | Allowed regression, such as `10%`. |
+| `time-threshold` | the main action's | Allowed slowdown for timings measured with `timings: true`. |
 
-Fails the step when any benchmark got worse than the threshold against the baseline. Passes when there is no baseline yet.
+Fails the step when any benchmark got worse than the threshold against the baseline, counting instructions and timings separately when both were measured. Passes when there is no baseline yet.
 
 ### `rrousselgit/benchmark/comment`
 
@@ -271,7 +259,7 @@ The actions run from the bundled files in `dist/`, `comment/dist/` and `check/di
 
 This repository runs the action on itself, see [`.github/workflows/benchmark.yml`](.github/workflows/benchmark.yml):
 
-- [`examples/dart`](examples/dart): a small Dart package with `benchmark_harness` benchmarks (recursion, sorting, text processing, JSON, an LRU cache) and its tests. Run them locally with `dart run benchmark/main.dart`. It is tracked as two suites: `dart-instructions` (instruction counts, stored and graphed) and `dart` (timings against the base, pull requests only).
-- [`examples/node`](examples/node): a few Node micro-benchmarks printing the JSON format.
+- [`examples/dart`](examples/dart): a small Dart package with `benchmark_harness` benchmarks (recursion, sorting, text processing, JSON, an LRU cache) and its tests. Run them locally with `dart run benchmark/main.dart`. Its instruction counts are stored and graphed as the `dart-instructions` suite, and pull requests also get timings against the base.
+- [`examples/node`](examples/node): a few Node micro-benchmarks printing the JSON format, which also follow the instruction counting protocol. Stored as the `node-instructions` suite.
 
 Because the runners are shared, the timing checks use loose thresholds (20% and 25%); instruction counts use 5%.

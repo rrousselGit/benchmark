@@ -12416,21 +12416,21 @@ var require_response = __commonJS({
         return responseObject;
       }
       // Creates a redirect Response that redirects to url with status status.
-      static redirect(url3, status = 302) {
+      static redirect(url3, status2 = 302) {
         webidl.argumentLengthCheck(arguments, 1, "Response.redirect");
         url3 = webidl.converters.USVString(url3);
-        status = webidl.converters["unsigned short"](status);
+        status2 = webidl.converters["unsigned short"](status2);
         let parsedURL;
         try {
           parsedURL = new URL(url3, relevantRealm.settingsObject.baseUrl);
         } catch (err) {
           throw new TypeError(`Failed to parse URL from ${url3}`, { cause: err });
         }
-        if (!redirectStatusSet.has(status)) {
-          throw new RangeError(`Invalid status code ${status}`);
+        if (!redirectStatusSet.has(status2)) {
+          throw new RangeError(`Invalid status code ${status2}`);
         }
         const responseObject = fromInnerResponse(makeResponse({}), "immutable");
-        responseObject[kState].status = status;
+        responseObject[kState].status = status2;
         const value = isomorphicEncode(URLSerializer(parsedURL));
         responseObject[kState].headersList.append("location", value, true);
         return responseObject;
@@ -14322,13 +14322,13 @@ var require_fetch = __commonJS({
         })();
       }
       try {
-        const { body: body2, status, statusText, headersList, socket } = await dispatch({ body: requestBody });
+        const { body: body2, status: status2, statusText, headersList, socket } = await dispatch({ body: requestBody });
         if (socket) {
-          response = makeResponse({ status, statusText, headersList, socket });
+          response = makeResponse({ status: status2, statusText, headersList, socket });
         } else {
           const iterator2 = body2[Symbol.asyncIterator]();
           fetchParams.controller.next = () => iterator2.next();
-          response = makeResponse({ status, statusText, headersList });
+          response = makeResponse({ status: status2, statusText, headersList });
         }
       } catch (err) {
         if (err.name === "AbortError") {
@@ -14451,8 +14451,8 @@ var require_fetch = __commonJS({
             onResponseStarted() {
               timingInfo.finalNetworkResponseStartTime = coarsenedSharedCurrentTime(fetchParams.crossOriginIsolatedCapability);
             },
-            onHeaders(status, rawHeaders, resume, statusText) {
-              if (status < 200) {
+            onHeaders(status2, rawHeaders, resume, statusText) {
+              if (status2 < 200) {
                 return;
               }
               let location = "";
@@ -14463,8 +14463,8 @@ var require_fetch = __commonJS({
               location = headersList.get("location", true);
               this.body = new Readable7({ read: resume });
               const decoders = [];
-              const willFollow = location && request2.redirect === "follow" && redirectStatusSet.has(status);
-              if (request2.method !== "HEAD" && request2.method !== "CONNECT" && !nullBodyStatus.includes(status) && !willFollow) {
+              const willFollow = location && request2.redirect === "follow" && redirectStatusSet.has(status2);
+              if (request2.method !== "HEAD" && request2.method !== "CONNECT" && !nullBodyStatus.includes(status2) && !willFollow) {
                 const contentEncoding = headersList.get("content-encoding", true);
                 const codings = contentEncoding ? contentEncoding.toLowerCase().split(",") : [];
                 const maxContentEncodings = 5;
@@ -14501,7 +14501,7 @@ var require_fetch = __commonJS({
               }
               const onError = this.onError.bind(this);
               resolve2({
-                status,
+                status: status2,
                 statusText,
                 headersList,
                 body: decoders.length ? pipeline(this.body, ...decoders, (err) => {
@@ -14538,8 +14538,8 @@ var require_fetch = __commonJS({
               fetchParams.controller.terminate(error2);
               reject(error2);
             },
-            onUpgrade(status, rawHeaders, socket) {
-              if (status !== 101) {
+            onUpgrade(status2, rawHeaders, socket) {
+              if (status2 !== 101) {
                 return;
               }
               const headersList = new HeadersList();
@@ -14547,8 +14547,8 @@ var require_fetch = __commonJS({
                 headersList.append(bufferToLowerCasedHeaderName(rawHeaders[i]), rawHeaders[i + 1].toString("latin1"), true);
               }
               resolve2({
-                status,
-                statusText: STATUS_CODES[status],
+                status: status2,
+                statusText: STATUS_CODES[status2],
                 headersList,
                 socket
               });
@@ -22570,13 +22570,13 @@ var require_unary_call = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.UnaryCall = void 0;
     var UnaryCall = class {
-      constructor(method, requestHeaders, request2, headers, response, status, trailers) {
+      constructor(method, requestHeaders, request2, headers, response, status2, trailers) {
         this.method = method;
         this.requestHeaders = requestHeaders;
         this.request = request2;
         this.headers = headers;
         this.response = response;
-        this.status = status;
+        this.status = status2;
         this.trailers = trailers;
       }
       /**
@@ -22588,14 +22588,14 @@ var require_unary_call = __commonJS({
       }
       promiseFinished() {
         return __awaiter15(this, void 0, void 0, function* () {
-          let [headers, response, status, trailers] = yield Promise.all([this.headers, this.response, this.status, this.trailers]);
+          let [headers, response, status2, trailers] = yield Promise.all([this.headers, this.response, this.status, this.trailers]);
           return {
             method: this.method,
             requestHeaders: this.requestHeaders,
             request: this.request,
             headers,
             response,
-            status,
+            status: status2,
             trailers
           };
         });
@@ -22639,13 +22639,13 @@ var require_server_streaming_call = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ServerStreamingCall = void 0;
     var ServerStreamingCall = class {
-      constructor(method, requestHeaders, request2, headers, response, status, trailers) {
+      constructor(method, requestHeaders, request2, headers, response, status2, trailers) {
         this.method = method;
         this.requestHeaders = requestHeaders;
         this.request = request2;
         this.headers = headers;
         this.responses = response;
-        this.status = status;
+        this.status = status2;
         this.trailers = trailers;
       }
       /**
@@ -22659,13 +22659,13 @@ var require_server_streaming_call = __commonJS({
       }
       promiseFinished() {
         return __awaiter15(this, void 0, void 0, function* () {
-          let [headers, status, trailers] = yield Promise.all([this.headers, this.status, this.trailers]);
+          let [headers, status2, trailers] = yield Promise.all([this.headers, this.status, this.trailers]);
           return {
             method: this.method,
             requestHeaders: this.requestHeaders,
             request: this.request,
             headers,
-            status,
+            status: status2,
             trailers
           };
         });
@@ -22709,13 +22709,13 @@ var require_client_streaming_call = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ClientStreamingCall = void 0;
     var ClientStreamingCall = class {
-      constructor(method, requestHeaders, request2, headers, response, status, trailers) {
+      constructor(method, requestHeaders, request2, headers, response, status2, trailers) {
         this.method = method;
         this.requestHeaders = requestHeaders;
         this.requests = request2;
         this.headers = headers;
         this.response = response;
-        this.status = status;
+        this.status = status2;
         this.trailers = trailers;
       }
       /**
@@ -22728,13 +22728,13 @@ var require_client_streaming_call = __commonJS({
       }
       promiseFinished() {
         return __awaiter15(this, void 0, void 0, function* () {
-          let [headers, response, status, trailers] = yield Promise.all([this.headers, this.response, this.status, this.trailers]);
+          let [headers, response, status2, trailers] = yield Promise.all([this.headers, this.response, this.status, this.trailers]);
           return {
             method: this.method,
             requestHeaders: this.requestHeaders,
             headers,
             response,
-            status,
+            status: status2,
             trailers
           };
         });
@@ -22778,13 +22778,13 @@ var require_duplex_streaming_call = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.DuplexStreamingCall = void 0;
     var DuplexStreamingCall = class {
-      constructor(method, requestHeaders, request2, headers, response, status, trailers) {
+      constructor(method, requestHeaders, request2, headers, response, status2, trailers) {
         this.method = method;
         this.requestHeaders = requestHeaders;
         this.requests = request2;
         this.headers = headers;
         this.responses = response;
-        this.status = status;
+        this.status = status2;
         this.trailers = trailers;
       }
       /**
@@ -22797,12 +22797,12 @@ var require_duplex_streaming_call = __commonJS({
       }
       promiseFinished() {
         return __awaiter15(this, void 0, void 0, function* () {
-          let [headers, status, trailers] = yield Promise.all([this.headers, this.status, this.trailers]);
+          let [headers, status2, trailers] = yield Promise.all([this.headers, this.status, this.trailers]);
           return {
             method: this.method,
             requestHeaders: this.requestHeaders,
             headers,
-            status,
+            status: status2,
             trailers
           };
         });
@@ -22966,8 +22966,8 @@ var require_test_transport = __commonJS({
       // Creates a promise for response status from the mock data.
       promiseStatus() {
         var _a;
-        const status = (_a = this.data.status) !== null && _a !== void 0 ? _a : _TestTransport.defaultStatus;
-        return status instanceof rpc_error_1.RpcError ? Promise.reject(status) : Promise.resolve(status);
+        const status2 = (_a = this.data.status) !== null && _a !== void 0 ? _a : _TestTransport.defaultStatus;
+        return status2 instanceof rpc_error_1.RpcError ? Promise.reject(status2) : Promise.resolve(status2);
       }
       // Creates a promise for response trailers from the mock data.
       promiseTrailers() {
@@ -40519,17 +40519,17 @@ var require_commonjs4 = __commonJS({
         this.#updateItemAge = (index) => {
           starts[index] = ttls[index] !== 0 ? perf.now() : 0;
         };
-        this.#statusTTL = (status, index) => {
+        this.#statusTTL = (status2, index) => {
           if (ttls[index]) {
             const ttl = ttls[index];
             const start = starts[index];
             if (!ttl || !start)
               return;
-            status.ttl = ttl;
-            status.start = start;
-            status.now = cachedNow || getNow();
-            const age = status.now - start;
-            status.remainingTTL = ttl - age;
+            status2.ttl = ttl;
+            status2.start = start;
+            status2.now = cachedNow || getNow();
+            const age = status2.now - start;
+            status2.remainingTTL = ttl - age;
           }
         };
         let cachedNow = 0;
@@ -40599,7 +40599,7 @@ var require_commonjs4 = __commonJS({
           }
           return size;
         };
-        this.#addItemSize = (index, size, status) => {
+        this.#addItemSize = (index, size, status2) => {
           sizes[index] = size;
           if (this.#maxSize) {
             const maxSize2 = this.#maxSize - sizes[index];
@@ -40608,9 +40608,9 @@ var require_commonjs4 = __commonJS({
             }
           }
           this.#calculatedSize += sizes[index];
-          if (status) {
-            status.entrySize = size;
-            status.totalCalculatedSize = this.#calculatedSize;
+          if (status2) {
+            status2.entrySize = size;
+            status2.totalCalculatedSize = this.#calculatedSize;
           }
         };
       }
@@ -40935,13 +40935,13 @@ var require_commonjs4 = __commonJS({
           this.delete(k);
           return this;
         }
-        const { ttl = this.ttl, start, noDisposeOnSet = this.noDisposeOnSet, sizeCalculation = this.sizeCalculation, status } = setOptions;
+        const { ttl = this.ttl, start, noDisposeOnSet = this.noDisposeOnSet, sizeCalculation = this.sizeCalculation, status: status2 } = setOptions;
         let { noUpdateTTL = this.noUpdateTTL } = setOptions;
         const size = this.#requireSize(k, v, setOptions.size || 0, sizeCalculation);
         if (this.maxEntrySize && size > this.maxEntrySize) {
-          if (status) {
-            status.set = "miss";
-            status.maxEntrySizeExceeded = true;
+          if (status2) {
+            status2.set = "miss";
+            status2.maxEntrySizeExceeded = true;
           }
           this.#delete(k, "set");
           return this;
@@ -40956,9 +40956,9 @@ var require_commonjs4 = __commonJS({
           this.#prev[index] = this.#tail;
           this.#tail = index;
           this.#size++;
-          this.#addItemSize(index, size, status);
-          if (status)
-            status.set = "add";
+          this.#addItemSize(index, size, status2);
+          if (status2)
+            status2.set = "add";
           noUpdateTTL = false;
         } else {
           this.#moveToTail(index);
@@ -40984,16 +40984,16 @@ var require_commonjs4 = __commonJS({
               }
             }
             this.#removeItemSize(index);
-            this.#addItemSize(index, size, status);
+            this.#addItemSize(index, size, status2);
             this.#valList[index] = v;
-            if (status) {
-              status.set = "replace";
+            if (status2) {
+              status2.set = "replace";
               const oldValue = oldVal && this.#isBackgroundFetch(oldVal) ? oldVal.__staleWhileFetching : oldVal;
               if (oldValue !== void 0)
-                status.oldValue = oldValue;
+                status2.oldValue = oldValue;
             }
-          } else if (status) {
-            status.set = "update";
+          } else if (status2) {
+            status2.set = "update";
           }
         }
         if (ttl !== 0 && !this.#ttls) {
@@ -41003,8 +41003,8 @@ var require_commonjs4 = __commonJS({
           if (!noUpdateTTL) {
             this.#setItemTTL(index, ttl, start);
           }
-          if (status)
-            this.#statusTTL(status, index);
+          if (status2)
+            this.#statusTTL(status2, index);
         }
         if (!noDisposeOnSet && this.#hasDisposeAfter && this.#disposed) {
           const dt = this.#disposed;
@@ -41089,7 +41089,7 @@ var require_commonjs4 = __commonJS({
        * {@link LRUCache.OptionsBase.updateAgeOnHas} is set.
        */
       has(k, hasOptions = {}) {
-        const { updateAgeOnHas = this.updateAgeOnHas, status } = hasOptions;
+        const { updateAgeOnHas = this.updateAgeOnHas, status: status2 } = hasOptions;
         const index = this.#keyMap.get(k);
         if (index !== void 0) {
           const v = this.#valList[index];
@@ -41100,17 +41100,17 @@ var require_commonjs4 = __commonJS({
             if (updateAgeOnHas) {
               this.#updateItemAge(index);
             }
-            if (status) {
-              status.has = "hit";
-              this.#statusTTL(status, index);
+            if (status2) {
+              status2.has = "hit";
+              this.#statusTTL(status2, index);
             }
             return true;
-          } else if (status) {
-            status.has = "stale";
-            this.#statusTTL(status, index);
+          } else if (status2) {
+            status2.has = "stale";
+            this.#statusTTL(status2, index);
           }
-        } else if (status) {
-          status.has = "miss";
+        } else if (status2) {
+          status2.has = "miss";
         }
         return false;
       }
@@ -41262,17 +41262,17 @@ var require_commonjs4 = __commonJS({
           allowStaleOnFetchAbort = this.allowStaleOnFetchAbort,
           context: context5,
           forceRefresh = false,
-          status,
+          status: status2,
           signal
         } = fetchOptions;
         if (!this.#hasFetchMethod) {
-          if (status)
-            status.fetch = "get";
+          if (status2)
+            status2.fetch = "get";
           return this.get(k, {
             allowStale,
             updateAgeOnGet,
             noDeleteOnStaleGet,
-            status
+            status: status2
           });
         }
         const options = {
@@ -41288,45 +41288,45 @@ var require_commonjs4 = __commonJS({
           allowStaleOnFetchRejection,
           allowStaleOnFetchAbort,
           ignoreFetchAbort,
-          status,
+          status: status2,
           signal
         };
         let index = this.#keyMap.get(k);
         if (index === void 0) {
-          if (status)
-            status.fetch = "miss";
+          if (status2)
+            status2.fetch = "miss";
           const p = this.#backgroundFetch(k, index, options, context5);
           return p.__returned = p;
         } else {
           const v = this.#valList[index];
           if (this.#isBackgroundFetch(v)) {
             const stale = allowStale && v.__staleWhileFetching !== void 0;
-            if (status) {
-              status.fetch = "inflight";
+            if (status2) {
+              status2.fetch = "inflight";
               if (stale)
-                status.returnedStale = true;
+                status2.returnedStale = true;
             }
             return stale ? v.__staleWhileFetching : v.__returned = v;
           }
           const isStale = this.#isStale(index);
           if (!forceRefresh && !isStale) {
-            if (status)
-              status.fetch = "hit";
+            if (status2)
+              status2.fetch = "hit";
             this.#moveToTail(index);
             if (updateAgeOnGet) {
               this.#updateItemAge(index);
             }
-            if (status)
-              this.#statusTTL(status, index);
+            if (status2)
+              this.#statusTTL(status2, index);
             return v;
           }
           const p = this.#backgroundFetch(k, index, options, context5);
           const hasStale = p.__staleWhileFetching !== void 0;
           const staleVal = hasStale && allowStale;
-          if (status) {
-            status.fetch = isStale ? "stale" : "refresh";
+          if (status2) {
+            status2.fetch = isStale ? "stale" : "refresh";
             if (staleVal && isStale)
-              status.returnedStale = true;
+              status2.returnedStale = true;
           }
           return staleVal ? p.__staleWhileFetching : p.__returned = p;
         }
@@ -41360,32 +41360,32 @@ var require_commonjs4 = __commonJS({
        * If the key is not found, get() will return `undefined`.
        */
       get(k, getOptions = {}) {
-        const { allowStale = this.allowStale, updateAgeOnGet = this.updateAgeOnGet, noDeleteOnStaleGet = this.noDeleteOnStaleGet, status } = getOptions;
+        const { allowStale = this.allowStale, updateAgeOnGet = this.updateAgeOnGet, noDeleteOnStaleGet = this.noDeleteOnStaleGet, status: status2 } = getOptions;
         const index = this.#keyMap.get(k);
         if (index !== void 0) {
           const value = this.#valList[index];
           const fetching = this.#isBackgroundFetch(value);
-          if (status)
-            this.#statusTTL(status, index);
+          if (status2)
+            this.#statusTTL(status2, index);
           if (this.#isStale(index)) {
-            if (status)
-              status.get = "stale";
+            if (status2)
+              status2.get = "stale";
             if (!fetching) {
               if (!noDeleteOnStaleGet) {
                 this.#delete(k, "expire");
               }
-              if (status && allowStale)
-                status.returnedStale = true;
+              if (status2 && allowStale)
+                status2.returnedStale = true;
               return allowStale ? value : void 0;
             } else {
-              if (status && allowStale && value.__staleWhileFetching !== void 0) {
-                status.returnedStale = true;
+              if (status2 && allowStale && value.__staleWhileFetching !== void 0) {
+                status2.returnedStale = true;
               }
               return allowStale ? value.__staleWhileFetching : void 0;
             }
           } else {
-            if (status)
-              status.get = "hit";
+            if (status2)
+              status2.get = "hit";
             if (fetching) {
               return value.__staleWhileFetching;
             }
@@ -41395,8 +41395,8 @@ var require_commonjs4 = __commonJS({
             }
             return value;
           }
-        } else if (status) {
-          status.get = "miss";
+        } else if (status2) {
+          status2.get = "miss";
         }
       }
       #connect(p, n) {
@@ -59243,12 +59243,12 @@ var require_light = __commonJS({
             }
           };
         }
-        _addListener(name, status, cb) {
+        _addListener(name, status2, cb) {
           var base;
           if ((base = this._events)[name] == null) {
             base[name] = [];
           }
-          this._events[name].push({ cb, status });
+          this._events[name].push({ cb, status: status2 });
           return this.instance;
         }
         listenerCount(name) {
@@ -59421,10 +59421,10 @@ var require_light = __commonJS({
           }
         }
         _assertStatus(expected) {
-          var status;
-          status = this._states.jobStatus(this.options.id);
-          if (!(status === expected || expected === "DONE" && status === null)) {
-            throw new BottleneckError$1(`Invalid job status ${status}, expected ${expected}. Please open an issue at https://github.com/SGrondin/bottleneck/issues`);
+          var status2;
+          status2 = this._states.jobStatus(this.options.id);
+          if (!(status2 === expected || expected === "DONE" && status2 === null)) {
+            throw new BottleneckError$1(`Invalid job status ${status2}, expected ${expected}. Please open an issue at https://github.com/SGrondin/bottleneck/issues`);
           }
         }
         doReceive() {
@@ -59728,10 +59728,10 @@ var require_light = __commonJS({
           var ref;
           return (ref = this.status[this._jobs[id]]) != null ? ref : null;
         }
-        statusJobs(status) {
+        statusJobs(status2) {
           var k, pos, ref, results, v;
-          if (status != null) {
-            pos = this.status.indexOf(status);
+          if (status2 != null) {
+            pos = this.status.indexOf(status2);
             if (pos < 0) {
               throw new BottleneckError$3(`status must be one of ${this.status.join(", ")}`);
             }
@@ -60089,8 +60089,8 @@ var require_light = __commonJS({
           jobStatus(id) {
             return this._states.jobStatus(id);
           }
-          jobs(status) {
-            return this._states.statusJobs(status);
+          jobs(status2) {
+            return this._states.statusJobs(status2);
           }
           counts() {
             return this._states.statusCounts();
@@ -64704,9 +64704,9 @@ var NodeHttpClient = class {
       }
       const res = await this.makeRequest(request2, abortController, body2);
       const headers = getResponseHeaders(res);
-      const status = res.statusCode ?? 0;
+      const status2 = res.statusCode ?? 0;
       const response = {
-        status,
+        status: status2,
         headers,
         request: request2
       };
@@ -65457,9 +65457,9 @@ function redirectPolicy(options = {}) {
   };
 }
 async function handleRedirect(next, response, maxRetries, allowCrossOriginRedirects, currentRetries = 0) {
-  const { request: request2, status, headers } = response;
+  const { request: request2, status: status2, headers } = response;
   const locationHeader = headers.get("location");
-  if (locationHeader && (status === 300 || status === 301 && allowedRedirect.includes(request2.method) || status === 302 && allowedRedirect.includes(request2.method) || status === 303 && request2.method === "POST" || status === 307) && currentRetries < maxRetries) {
+  if (locationHeader && (status2 === 300 || status2 === 301 && allowedRedirect.includes(request2.method) || status2 === 302 && allowedRedirect.includes(request2.method) || status2 === 303 && request2.method === "POST" || status2 === 307) && currentRetries < maxRetries) {
     const url3 = new URL(locationHeader, request2.url);
     if (!allowCrossOriginRedirects) {
       const originalUrl = new URL(request2.url);
@@ -65469,7 +65469,7 @@ async function handleRedirect(next, response, maxRetries, allowCrossOriginRedire
       }
     }
     request2.url = url3.toString();
-    if (status === 303) {
+    if (status2 === 303) {
       request2.method = "GET";
       request2.headers.delete("Content-Length");
       delete request2.body;
@@ -74005,7 +74005,7 @@ var NativeCRC64 = (() => {
     var moduleOverrides = Object.assign({}, Module);
     var arguments_ = [];
     var thisProgram = "./this.program";
-    var quit_ = (status, toThrow) => {
+    var quit_ = (status2, toThrow) => {
       throw toThrow;
     };
     var ENVIRONMENT_IS_WEB = typeof window == "object";
@@ -74045,13 +74045,13 @@ var NativeCRC64 = (() => {
       process["on"]("unhandledRejection", function(reason) {
         throw reason;
       });
-      quit_ = (status, toThrow) => {
+      quit_ = (status2, toThrow) => {
         if (keepRuntimeAlive()) {
-          process["exitCode"] = status;
+          process["exitCode"] = status2;
           throw toThrow;
         }
         logExceptionOnExit(toThrow);
-        process["exit"](status);
+        process["exit"](status2);
       };
       Module["inspect"] = function() {
         return "[Emscripten Module object]";
@@ -74064,9 +74064,9 @@ var NativeCRC64 = (() => {
         arguments_ = arguments;
       }
       if (typeof quit == "function") {
-        quit_ = (status, toThrow) => {
+        quit_ = (status2, toThrow) => {
           logExceptionOnExit(toThrow);
-          quit(status);
+          quit(status2);
         };
       }
       if (typeof print != "undefined") {
@@ -75250,10 +75250,10 @@ var NativeCRC64 = (() => {
     function array_bounds_check_error(idx, size) {
       throw "Array index " + idx + " out of bounds: [0," + size + ")";
     }
-    function ExitStatus(status) {
+    function ExitStatus(status2) {
       this.name = "ExitStatus";
-      this.message = "Program terminated with exit(" + status + ")";
-      this.status = status;
+      this.message = "Program terminated with exit(" + status2 + ")";
+      this.status = status2;
     }
     function callRuntimeCallbacks(callbacks) {
       while (callbacks.length > 0) {
@@ -101035,7 +101035,7 @@ async function fetchWrapper(requestOptions) {
     requestError.cause = error2;
     throw requestError;
   }
-  const status = fetchResponse.status;
+  const status2 = fetchResponse.status;
   const url3 = fetchResponse.url;
   const responseHeaders = {};
   for (const [key, value] of fetchResponse.headers) {
@@ -101043,7 +101043,7 @@ async function fetchWrapper(requestOptions) {
   }
   const octokitResponse = {
     url: url3,
-    status,
+    status: status2,
     headers: responseHeaders,
     data: ""
   };
@@ -101054,28 +101054,28 @@ async function fetchWrapper(requestOptions) {
       `[@octokit/request] "${requestOptions.method} ${requestOptions.url}" is deprecated. It is scheduled to be removed on ${responseHeaders.sunset}${deprecationLink ? `. See ${deprecationLink}` : ""}`
     );
   }
-  if (status === 204 || status === 205) {
+  if (status2 === 204 || status2 === 205) {
     return octokitResponse;
   }
   if (requestOptions.method === "HEAD") {
-    if (status < 400) {
+    if (status2 < 400) {
       return octokitResponse;
     }
-    throw new RequestError(fetchResponse.statusText, status, {
+    throw new RequestError(fetchResponse.statusText, status2, {
       response: octokitResponse,
       request: requestOptions
     });
   }
-  if (status === 304) {
+  if (status2 === 304) {
     octokitResponse.data = await getResponseData(fetchResponse);
-    throw new RequestError("Not modified", status, {
+    throw new RequestError("Not modified", status2, {
       response: octokitResponse,
       request: requestOptions
     });
   }
-  if (status >= 400) {
+  if (status2 >= 400) {
     octokitResponse.data = await getResponseData(fetchResponse);
-    throw new RequestError(toErrorMessage(octokitResponse.data), status, {
+    throw new RequestError(toErrorMessage(octokitResponse.data), status2, {
       response: octokitResponse,
       request: requestOptions
     });
@@ -104156,7 +104156,7 @@ function downloadArtifactPublic(artifactId, repositoryOwner, repositoryName, tok
     const api = getOctokit(token);
     let digestMismatch = false;
     info(`Downloading artifact '${artifactId}' from '${repositoryOwner}/${repositoryName}'`);
-    const { headers, status } = yield api.rest.actions.downloadArtifact({
+    const { headers, status: status2 } = yield api.rest.actions.downloadArtifact({
       owner: repositoryOwner,
       repo: repositoryName,
       artifact_id: artifactId,
@@ -104165,8 +104165,8 @@ function downloadArtifactPublic(artifactId, repositoryOwner, repositoryName, tok
         redirect: "manual"
       }
     });
-    if (status !== 302) {
-      throw new Error(`Unable to download artifact. Unexpected status: ${status}`);
+    if (status2 !== 302) {
+      throw new Error(`Unable to download artifact. Unexpected status: ${status2}`);
     }
     const { location } = headers;
     if (!location) {
@@ -104841,6 +104841,14 @@ import { mkdtemp, readdir as readdir2, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path4 from "node:path";
 
+// src/compare.ts
+var severity = { regression: 0, improvement: 1, new: 2, removed: 3, unchanged: 4 };
+function rowStatus(row) {
+  if (!row.time) return row.status;
+  const own = row.base === void 0 && row.current === void 0 ? "unchanged" : row.status;
+  return severity[row.time.status] < severity[own] ? row.time.status : own;
+}
+
 // src/history.ts
 function suitePath(suite) {
   if (!/^[A-Za-z0-9._-]+$/.test(suite) || suite.startsWith(".")) {
@@ -104868,9 +104876,9 @@ function shortSha(sha2) {
   return `\`${sha2.slice(0, 7)}\``;
 }
 function summarizeReport(report) {
-  if (!report.baseline) return "No baseline yet";
+  if (!report.baseline && !report.time?.compared) return "No baseline yet";
   const counts = { regression: 0, improvement: 0, unchanged: 0, new: 0, removed: 0 };
-  for (const row of report.rows) counts[row.status]++;
+  for (const row of report.rows) counts[status(report, row)]++;
   const parts = [];
   const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
   if (counts.regression) parts.push(`\u{1F534} ${plural(counts.regression, "regression")}`);
@@ -104879,40 +104887,46 @@ function summarizeReport(report) {
   if (counts.removed) parts.push(`\u2796 ${counts.removed} removed`);
   return parts.length === 0 ? "\u2705 No significant changes" : parts.join(" \xB7 ");
 }
+function status(report, row) {
+  if (!report.time) return row.status;
+  const counted = { ...row, status: report.baseline ? row.status : "unchanged" };
+  if (!report.time.compared) delete counted.time;
+  return rowStatus(counted);
+}
 function renderReport(report) {
   const lines = [];
   if (report.baseline) {
     const where2 = report.baseline.source === "rerun" ? ", benchmarked on the same machine" : report.baseline.source === "reference" && report.baseline.reference ? ` (base values scaled to this machine through reference ${shortSha(report.baseline.reference)})` : "";
+    const measured = report.time ? "Instruction counts compared" : "Compared";
     lines.push(
-      `Compared ${shortSha(report.current.sha)} against ${shortSha(report.baseline.sha)} on \`${escapeCode(report.baseline.branch)}\`${where2}, with a ${report.threshold}% threshold.`
+      `${measured} ${shortSha(report.current.sha)} against ${shortSha(report.baseline.sha)} on \`${escapeCode(report.baseline.branch)}\`${where2}, with a ${report.threshold}% threshold.`
     );
   } else if (report.baselineError) {
     lines.push(`\u26A0\uFE0F ${escape2(report.baselineError)}`);
   } else {
+    lines.push(`No results from the same machine to compare ${shortSha(report.current.sha)} against yet.`);
+  }
+  if (report.time) {
     lines.push(
-      `No results from the same machine to compare ${shortSha(report.current.sha)} against yet.`
+      "",
+      report.time.compared ? `Timings run alternately with the base commit on the same machine, with a ${report.time.threshold}% threshold.` : `\u26A0\uFE0F Could not time the base commit: ${escape2(report.time.error ?? "unknown error")}`
     );
   }
   lines.push("");
-  const rows = [...report.rows].sort(
-    (a, b) => statusOrder[a.status] - statusOrder[b.status] || a.name.localeCompare(b.name)
-  );
-  if (!report.baseline) {
-    lines.push(...table(rows, false));
+  const withStatus = report.rows.map((row) => ({ row, status: status(report, row) }));
+  withStatus.sort((a, b) => statusOrder[a.status] - statusOrder[b.status] || a.row.name.localeCompare(b.row.name));
+  const compared = { instructions: Boolean(report.baseline), time: Boolean(report.time?.compared) };
+  const render = (rows) => report.time ? timedTable(rows, compared) : table(rows.map((r) => r.row), compared.instructions);
+  if (!compared.instructions && !compared.time) {
+    lines.push(...render(withStatus));
     return lines.join("\n");
   }
-  const changed = rows.filter((r) => r.status !== "unchanged");
-  const unchanged = rows.filter((r) => r.status === "unchanged");
-  if (changed.length > 0) lines.push(...table(changed, true));
+  const changed = withStatus.filter((r) => r.status !== "unchanged");
+  const unchanged = withStatus.filter((r) => r.status === "unchanged");
+  if (changed.length > 0) lines.push(...render(changed));
   if (unchanged.length > 0) {
     if (changed.length > 0) lines.push("");
-    lines.push(
-      `<details><summary>${unchanged.length} unchanged</summary>`,
-      "",
-      ...table(unchanged, true),
-      "",
-      "</details>"
-    );
+    lines.push(`<details><summary>${unchanged.length} unchanged</summary>`, "", ...render(unchanged), "", "</details>");
   }
   return lines.join("\n");
 }
@@ -104930,6 +104944,22 @@ function table(rows, withBaseline) {
     ...rows.map(
       (r) => `| ${statusIcon[r.status]} | ${escape2(r.name)} | ${formatValue(r.base, r.unit)} | ${formatValue(r.current, r.unit)} | ${formatChange(r)} |`
     )
+  ];
+}
+function timedTable(rows, compared) {
+  const cell = (m, withBase) => {
+    if (!m || m.base === void 0 && m.current === void 0) return "\u2013";
+    const current = formatValue(m.current, m.unit);
+    return withBase ? `${formatValue(m.base, m.unit)} \u2192 ${current}` : current;
+  };
+  const change = (m, withBase) => m && withBase ? formatChange(m) : "\u2013";
+  return [
+    "| | Benchmark | Instructions | Change | Time | Change |",
+    "| --- | --- | ---: | ---: | ---: | ---: |",
+    ...rows.map(({ row, status: status2 }) => {
+      const instructions = row.base === void 0 && row.current === void 0 ? void 0 : { ...row, unit: "" };
+      return `| ${statusIcon[status2]} | ${escape2(row.name)} | ${cell(instructions, compared.instructions)} | ${change(instructions, compared.instructions)} | ${cell(row.time, compared.time)} | ${change(row.time, compared.time)} |`;
+    })
   ];
 }
 var compact = new Intl.NumberFormat("en-US", { notation: "compact", maximumSignificantDigits: 4 });
@@ -104982,7 +105012,9 @@ function finishHead(state3, sha2, conclusion, runUrl) {
   state3.head.finished = true;
   if (runUrl) state3.head.runUrl = runUrl;
   for (const [suite, s] of Object.entries(state3.suites)) {
-    if (s.status === "running" && s.sha === sha2) {
+    if (s.sha !== sha2) {
+      delete state3.suites[suite];
+    } else if (s.status === "running") {
       failSuite(state3, suite, sha2, `The benchmark run ended (${conclusion}) without reporting results.`, runUrl ?? s.runUrl);
     }
   }
@@ -105071,7 +105103,7 @@ function renderCommentWithinLimit(state3) {
   body2 = renderComment(slim, { compact: true });
   if (body2.length <= maxBodyLength) return body2;
   for (const s of Object.values(slim.suites)) {
-    if (s.status === "done") s.report.rows = s.report.rows.filter((r) => r.status !== "unchanged");
+    if (s.status === "done") s.report.rows = s.report.rows.filter((r) => rowStatus(r) !== "unchanged");
   }
   return renderComment(slim, { compact: true });
 }
@@ -105130,12 +105162,23 @@ function validateReport(report) {
     "baseline source"
   );
   check(report.baseline?.reference === void 0 || sha.test(report.baseline.reference), "reference");
+  if (report.time !== void 0) {
+    check(typeof report.time.threshold === "number" && typeof report.time.compared === "boolean", "time");
+    check(report.time.error === void 0 || typeof report.time.error === "string", "time error");
+  }
   const statuses = ["regression", "improvement", "unchanged", "new", "removed"];
+  const checkValues = (m) => {
+    for (const key of ["base", "current", "changePercent"]) {
+      check(m[key] === void 0 || typeof m[key] === "number", "row value");
+    }
+  };
   for (const row of report.rows) {
     check(typeof row.name === "string" && typeof row.unit === "string", "row");
     check(statuses.includes(row.status) && typeof row.lowerIsBetter === "boolean", "row status");
-    for (const key of ["base", "current", "changePercent"]) {
-      check(row[key] === void 0 || typeof row[key] === "number", "row value");
+    checkValues(row);
+    if (row.time !== void 0) {
+      check(typeof row.time.unit === "string" && statuses.includes(row.time.status), "row time");
+      checkValues(row.time);
     }
   }
 }
