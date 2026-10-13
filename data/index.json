@@ -16,6 +16,11 @@
    "branches": {
     "main": "main.json"
    }
+  },
+  "node-instructions": {
+   "branches": {
+    "main": "main.json"
+   }
   }
  }
 }

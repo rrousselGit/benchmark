@@ -1,0 +1,35 @@
+{
+ "suite": "node-instructions",
+ "branch": "main",
+ "entries": [
+  {
+   "commit": {
+    "sha": "b9cd7fa7004dbc4dd0036a7427321e3d45ba8200",
+    "message": "Merge pull request #2 from rrousselGit/claude/project-thread-qk9ep3\n\nShow instruction counts and timings side by side in pull requests",
+    "author": "rrousselGit",
+    "timestamp": "2026-10-13T14:21:01+02:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/b9cd7fa7004dbc4dd0036a7427321e3d45ba8200"
+   },
+   "branch": "main",
+   "runAt": "2026-10-13T12:21:45.095Z",
+   "machine": "instruction counts · linux-x64",
+   "benchmarks": [
+    {
+     "name": "Array.prototype.map (1k)",
+     "value": 753251,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 8852,
+     "unit": "instructions"
+    },
+    {
+     "name": "String concat (100)",
+     "value": 10475,
+     "unit": "instructions"
+    }
+   ]
+  }
+ ]
+}
