@@ -1,0 +1,128 @@
+:root {
+  color-scheme: light;
+  --surface-0: #f4f4f2;
+  --surface-1: #fcfcfb;
+  --border: #dddcd7;
+  --grid: #ebeae6;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #6f6e69;
+  --series-1: #2a78d6;
+  --good: #008300;
+  --critical: #c73433;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --surface-0: #121211;
+    --surface-1: #1a1a19;
+    --border: #34332f;
+    --grid: #2a2a27;
+    --text-primary: #f0efec;
+    --text-secondary: #c3c2b7;
+    --text-muted: #9a998f;
+    --series-1: #3987e5;
+    --good: #3fae3f;
+    --critical: #e66767;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface-0: #121211;
+  --surface-1: #1a1a19;
+  --border: #34332f;
+  --grid: #2a2a27;
+  --text-primary: #f0efec;
+  --text-secondary: #c3c2b7;
+  --text-muted: #9a998f;
+  --series-1: #3987e5;
+  --good: #3fae3f;
+  --critical: #e66767;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 24px 16px 48px;
+  background: var(--surface-0);
+  color: var(--text-primary);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+h1 { font-size: 22px; margin: 0 0 4px; }
+.muted { color: var(--text-secondary); margin: 0; }
+
+#controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: end;
+  margin: 20px 0;
+}
+#controls label { display: flex; flex-direction: column; gap: 4px; color: var(--text-secondary); font-size: 12px; }
+#controls label.grow { flex: 1 1 180px; }
+#controls label.toggle { flex-direction: row; align-items: center; font-size: 14px; padding-bottom: 6px; }
+select, input[type="search"] {
+  font: inherit;
+  color: var(--text-primary);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  min-width: 0;
+}
+
+#charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
+  gap: 16px;
+}
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 14px 8px;
+  min-width: 0;
+}
+.card h2 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.card .latest { display: flex; flex-wrap: wrap; column-gap: 8px; align-items: baseline; margin: 4px 0 8px; }
+.card .value { white-space: nowrap; font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.change { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+.change.worse { color: var(--critical); }
+.change.better { color: var(--good); }
+
+svg.chart { display: block; width: 100%; height: auto; overflow: visible; }
+svg.chart .grid { stroke: var(--grid); stroke-width: 1; }
+svg.chart .axis { fill: var(--text-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+svg.chart .line { fill: none; stroke: var(--series-1); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+svg.chart .dot { fill: var(--series-1); stroke: var(--surface-1); stroke-width: 2; }
+svg.chart .crosshair { stroke: var(--text-muted); stroke-width: 1; stroke-dasharray: 3 3; }
+svg.chart .hit { fill: transparent; cursor: pointer; }
+
+#tooltip {
+  position: fixed;
+  z-index: 10;
+  pointer-events: none;
+  max-width: 300px;
+  background: var(--surface-1);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.15);
+  font-size: 12px;
+}
+#tooltip .tt-value { font-size: 14px; font-weight: 600; }
+#tooltip .tt-message { color: var(--text-secondary); overflow-wrap: anywhere; }
+
+table { width: 100%; border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 4px 6px; border-bottom: 1px solid var(--grid); }
+td.num, th.num { text-align: right; }
+.table-wrap { max-height: 180px; overflow: auto; }
+a { color: var(--series-1); }
+.empty { grid-column: 1 / -1; color: var(--text-secondary); }

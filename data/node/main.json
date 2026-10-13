@@ -1,0 +1,34 @@
+{
+ "suite": "node",
+ "branch": "main",
+ "entries": [
+  {
+   "commit": {
+    "sha": "42dbbef84c6cee8a0f465727785dca37cb06ee92",
+    "message": "Add a Dart benchmark example and run it in CI\n\nThe example package defines benchmark_harness benchmarks and tests;\nCI now formats, analyzes and tests it, and the benchmark workflow\ntracks it as its own suite next to the Node example. The run command\nnow uses pipefail so a failing benchmark piped through tee fails.\n\nCo-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_01XevFbruFj3utvS2mwxxcaG",
+    "author": "claude",
+    "timestamp": "2026-10-13T09:56:16Z",
+    "url": "https://github.com/rrousselGit/benchmark/commit/42dbbef84c6cee8a0f465727785dca37cb06ee92"
+   },
+   "branch": "main",
+   "runAt": "2026-10-13T09:56:30.966Z",
+   "benchmarks": [
+    {
+     "name": "Array.prototype.map (1k)",
+     "value": 56.2746955,
+     "unit": "us"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 0.8776335000000001,
+     "unit": "us"
+    },
+    {
+     "name": "String concat (100)",
+     "value": 0.8787955,
+     "unit": "us"
+    }
+   ]
+  }
+ ]
+}
