@@ -21,7 +21,7 @@ async function main(): Promise<void> {
   const { context } = github;
 
   if (inputs.command) {
-    const exitCode = await exec.exec('bash', ['-c', inputs.command], { ignoreReturnCode: true });
+    const exitCode = await exec.exec('bash', ['-eo', 'pipefail', '-c', inputs.command], { ignoreReturnCode: true });
     if (exitCode !== 0) throw new Error(`Benchmark command exited with code ${exitCode}.`);
   }
   const benchmarks = parseResults(await readFile(inputs.file, 'utf8'), inputs.format);

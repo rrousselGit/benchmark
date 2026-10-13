@@ -106073,7 +106073,7 @@ async function main() {
   const octokit = getOctokit(inputs.token);
   const { context: context5 } = github_exports;
   if (inputs.command) {
-    const exitCode = await exec("bash", ["-c", inputs.command], { ignoreReturnCode: true });
+    const exitCode = await exec("bash", ["-eo", "pipefail", "-c", inputs.command], { ignoreReturnCode: true });
     if (exitCode !== 0) throw new Error(`Benchmark command exited with code ${exitCode}.`);
   }
   const benchmarks = parseResults(await readFile2(inputs.file, "utf8"), inputs.format);

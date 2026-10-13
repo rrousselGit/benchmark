@@ -169,4 +169,13 @@ npm ci
 npm run check   # typecheck, test, build
 ```
 
-The actions run from the bundled files in `dist/`, `comment/dist/` and `check/dist/`, which must be rebuilt and committed with every source change. CI fails when they are out of date. This repository benchmarks itself with `examples/bench.mjs`.
+The actions run from the bundled files in `dist/`, `comment/dist/` and `check/dist/`, which must be rebuilt and committed with every source change. CI fails when they are out of date.
+
+## Examples
+
+This repository runs the action on itself with two suites, see [`.github/workflows/benchmark.yml`](.github/workflows/benchmark.yml):
+
+- [`examples/dart`](examples/dart): a small Dart package with `benchmark_harness` benchmarks (recursion, sorting, text processing, JSON, an LRU cache) and its tests. Run them locally with `dart run benchmark/main.dart`.
+- [`examples/node`](examples/node): a few Node micro-benchmarks printing the JSON format.
+
+Because the runners are shared, the example checks use loose thresholds (20% and 25%).

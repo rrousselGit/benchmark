@@ -1,0 +1,11 @@
+name: benchmark_example
+description: Example Dart package benchmarked by rrousselgit/benchmark.
+publish_to: none
+
+environment:
+  sdk: ^3.10.0
+
+dev_dependencies:
+  benchmark_harness: ^2.4.0
+  lints: ^6.1.0
+  test: ^1.33.0

@@ -1,4 +1,5 @@
-# Runs this repository's own example benchmark through the action.
+# Runs the example benchmarks through the action: results are stored on
+# gh-pages for pushes to main, and commented on pull requests.
 name: Benchmark
 
 on:
@@ -15,7 +16,31 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  benchmark:
+  dart:
+    name: Dart benchmarks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dart-lang/setup-dart@v1
+      - run: dart pub get
+        working-directory: examples/dart
+      # Compiling ahead of time gives steadier numbers than `dart run`.
+      - run: dart compile exe benchmark/main.dart -o ${{ runner.temp }}/dart-bench
+        working-directory: examples/dart
+      - id: bench
+        uses: ./
+        with:
+          suite: dart
+          run: ${{ runner.temp }}/dart-bench | tee dart-bench.txt
+          file: dart-bench.txt
+          format: dart
+          threshold: 20%
+      - uses: ./check
+        with:
+          report: ${{ steps.bench.outputs.report }}
+
+  node:
+    name: Node benchmarks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -25,10 +50,10 @@ jobs:
       - id: bench
         uses: ./
         with:
-          run: node examples/bench.mjs > bench.json
-          file: bench.json
+          suite: node
+          run: node examples/node/bench.mjs > node-bench.json
+          file: node-bench.json
+          threshold: 25%
       - uses: ./check
         with:
           report: ${{ steps.bench.outputs.report }}
-          # The example benchmark is tiny and shared runners are noisy.
-          threshold: 25%

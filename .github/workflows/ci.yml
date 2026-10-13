@@ -9,7 +9,8 @@ permissions:
   contents: read
 
 jobs:
-  test:
+  action:
+    name: Action (typecheck, test, build)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -28,3 +29,17 @@ jobs:
             echo "::error::The built actions are out of date. Run 'npm run build' and commit the result."
             exit 1
           fi
+
+  dart-example:
+    name: Dart example (format, analyze, test)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: examples/dart
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dart-lang/setup-dart@v1
+      - run: dart pub get
+      - run: dart format --output=none --set-exit-if-changed .
+      - run: dart analyze --fatal-infos
+      - run: dart test

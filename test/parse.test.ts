@@ -43,6 +43,7 @@ describe('dart', () => {
       { name: 'ListCopy', value: 0.034, unit: 'us' },
       { name: 'Big', value: 1200, unit: 'us' },
       { name: 'Raw (RunTimeRaw)', value: 340, unit: 'ns' },
+      { name: 'Fibonacci recursive (20)', value: 611.607, unit: 'us' },
     ]);
   });
 
