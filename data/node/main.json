@@ -57,6 +57,55 @@
      "unit": "us"
     }
    ]
+  },
+  {
+   "commit": {
+    "sha": "b20ca8f74f06606d4786728db1736c83446c98f6",
+    "message": "Shorten the unsupported protocol error so comments show all of it\n\nCo-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_01XevFbruFj3utvS2mwxxcaG",
+    "author": "claude",
+    "timestamp": "2026-10-13T10:40:40Z",
+    "url": "https://github.com/rrousselGit/benchmark/commit/b20ca8f74f06606d4786728db1736c83446c98f6"
+   },
+   "branch": "main",
+   "runAt": "2026-10-13T10:54:14.443Z",
+   "machine": "AMD EPYC 7763 64-Core Processor · 4 cores · linux-x64",
+   "benchmarks": [
+    {
+     "name": "Array.prototype.map (1k)",
+     "value": 53.993365234375,
+     "unit": "us"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 0.7830026550292969,
+     "unit": "us"
+    },
+    {
+     "name": "String concat (100)",
+     "value": 0.754156982421875,
+     "unit": "us"
+    }
+   ],
+   "reference": {
+    "sha": "b20ca8f74f06606d4786728db1736c83446c98f6",
+    "benchmarks": [
+     {
+      "name": "Array.prototype.map (1k)",
+      "value": 53.993365234375,
+      "unit": "us"
+     },
+     {
+      "name": "JSON round trip",
+      "value": 0.7830026550292969,
+      "unit": "us"
+     },
+     {
+      "name": "String concat (100)",
+      "value": 0.754156982421875,
+      "unit": "us"
+     }
+    ]
+   }
   }
  ]
 }
