@@ -29,6 +29,34 @@
      "unit": "us"
     }
    ]
+  },
+  {
+   "commit": {
+    "sha": "9cebb1b46799daca150021c23c6687fe94bf8346",
+    "message": "Keep a single, reactive benchmark comment per pull request\n\nAll suites now share one comment. It shows a loading state before the\nbenchmarks run, then each suite's section is edited in place as its\nresults (or failure) arrive. The state lives in a hidden HTML comment so\nconcurrent jobs merge their own section, with read-back and retry for\nconcurrent writes. The comment workflow also runs when a benchmark run\nis requested, so fork pull requests get the loading state, and marks\nsuites that never reported once the run completes.\n\nCo-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_01XevFbruFj3utvS2mwxxcaG",
+    "author": "claude",
+    "timestamp": "2026-10-13T10:07:02Z",
+    "url": "https://github.com/rrousselGit/benchmark/commit/9cebb1b46799daca150021c23c6687fe94bf8346"
+   },
+   "branch": "main",
+   "runAt": "2026-10-13T10:07:20.630Z",
+   "benchmarks": [
+    {
+     "name": "Array.prototype.map (1k)",
+     "value": 49.194452,
+     "unit": "us"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 0.8257595,
+     "unit": "us"
+    },
+    {
+     "name": "String concat (100)",
+     "value": 0.899082,
+     "unit": "us"
+    }
+   ]
   }
  ]
 }
