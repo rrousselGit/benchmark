@@ -8,6 +8,7 @@ const els = {
   branch: $('branch'),
   range: $('range'),
   machine: $('machine'),
+  mode: $('mode'),
   filter: $('filter'),
   table: $('table-view'),
   charts: $('charts'),
@@ -51,7 +52,7 @@ async function init() {
   els.filter.value = hash.filter ?? '';
   els.suite.addEventListener('change', () => loadSuite([]));
   els.branch.addEventListener('change', loadBranch);
-  for (const el of [els.range, els.table, els.machine]) el.addEventListener('change', render);
+  for (const el of [els.range, els.table, els.machine, els.mode]) el.addEventListener('change', render);
   els.filter.addEventListener('input', () => { writeHash(); render(); });
   await loadSuite([hash.branch]);
 }
@@ -99,13 +100,25 @@ function showMessage(text) {
 function render() {
   const limit = Number(els.range.value);
   const machine = els.machine.value;
-  const matching = machine
-    ? branchData.entries.filter((e) => (e.machine ?? 'Unknown machine') === machine)
-    : branchData.entries;
+  const relative = els.mode.value === 'relative';
+  els.machine.disabled = relative;
+  // Relative values only compare against the same reference commit: use the
+  // latest one. Raw timings can be narrowed to one kind of machine instead.
+  const reference = branchData.entries.at(-1)?.reference?.sha;
+  const matching = relative
+    ? branchData.entries.filter((e) => e.reference && e.reference.sha === reference)
+    : machine
+      ? branchData.entries.filter((e) => (e.machine ?? 'Unknown machine') === machine)
+      : branchData.entries;
+  if (relative && matching.length === 0) {
+    showMessage('No results were measured against a reference commit yet. Switch to raw timings.');
+    return;
+  }
   const entries = limit > 0 ? matching.slice(-limit) : matching;
   const last = entries.at(-1);
   els.subtitle.textContent = last
-    ? `${entries.length} commit${entries.length === 1 ? '' : 's'} on ${branchData.branch}, latest ${shortDate(last.commit.timestamp)}`
+    ? `${entries.length} commit${entries.length === 1 ? '' : 's'} on ${branchData.branch}, latest ${shortDate(last.commit.timestamp)}` +
+      (relative ? `. Values are % versus reference ${reference.slice(0, 7)}, measured on the same machine as each commit.` : '')
     : '';
 
   const names = [];
@@ -121,20 +134,35 @@ function render() {
     showMessage(entries.length === 0 ? 'No results on this branch yet.' : 'No benchmark matches this filter.');
     return;
   }
-  els.charts.replaceChildren(...shown.map((name) => card(name, entries)));
+  const cards = shown.map((name) => card(name, entries)).filter(Boolean);
+  if (cards.length === 0) {
+    showMessage('The reference commit has none of these benchmarks. Switch to raw timings.');
+    return;
+  }
+  els.charts.replaceChildren(...cards);
 }
 
 function seriesFor(name, entries) {
+  const relative = els.mode.value === 'relative';
   const points = [];
   entries.forEach((entry, i) => {
     const b = entry.benchmarks.find((x) => x.name === name);
-    if (b) points.push({ i, entry, value: b.value, unit: b.unit, lowerIsBetter: b.lowerIsBetter !== false });
+    if (!b) return;
+    const lowerIsBetter = b.lowerIsBetter !== false;
+    if (!relative) {
+      points.push({ i, entry, value: b.value, unit: b.unit, raw: b, lowerIsBetter });
+      return;
+    }
+    const ref = entry.reference.benchmarks.find((x) => x.name === name);
+    if (!ref || ref.value === 0) return;
+    points.push({ i, entry, value: (b.value / ref.value - 1) * 100, unit: '%', raw: b, lowerIsBetter, relative: true });
   });
   return points;
 }
 
 function card(name, entries) {
   const points = seriesFor(name, entries);
+  if (points.length === 0) return null;
   const el = document.createElement('section');
   el.className = 'card';
   const h = document.createElement('h2');
@@ -147,9 +175,16 @@ function card(name, entries) {
   row.className = 'latest';
   const value = document.createElement('span');
   value.className = 'value';
-  value.textContent = formatValue(latest.value, latest.unit);
+  value.textContent = formatPoint(latest);
   row.append(value);
-  if (previous && previous.value !== 0) {
+  if (previous && latest.relative) {
+    const change = latest.value - previous.value;
+    const worse = latest.lowerIsBetter ? change > 0 : change < 0;
+    const span = document.createElement('span');
+    span.className = `change ${Math.abs(change) < 0.05 ? '' : worse ? 'worse' : 'better'}`;
+    span.textContent = `${change > 0 ? '+' : ''}${change.toFixed(1)} points vs previous commit`;
+    row.append(span);
+  } else if (previous && previous.value !== 0) {
     const change = ((latest.value - previous.value) / Math.abs(previous.value)) * 100;
     const worse = latest.lowerIsBetter ? change > 0 : change < 0;
     const span = document.createElement('span');
@@ -178,7 +213,7 @@ function table(points) {
     tr.insertCell().textContent = shortDate(p.entry.commit.timestamp);
     const v = tr.insertCell();
     v.className = 'num';
-    v.textContent = formatValue(p.value, p.unit);
+    v.textContent = formatPoint(p);
   }
   t.append(body);
   wrap.append(t);
@@ -197,7 +232,7 @@ function chart(points, count) {
   const height = 180;
   const pad = { top: 8, right: 8, bottom: 8, left: 52 };
   const svg = svgEl('svg', { class: 'chart', viewBox: `0 0 ${width} ${height}`, role: 'img' });
-  svg.setAttribute('aria-label', `${points.length} results, latest ${formatValue(points.at(-1).value, points.at(-1).unit)}`);
+  svg.setAttribute('aria-label', `${points.length} results, latest ${formatPoint(points.at(-1))}`);
 
   const values = points.map((p) => p.value);
   let min = Math.min(...values);
@@ -215,7 +250,7 @@ function chart(points, count) {
   for (const t of ticks(min, max, 4)) {
     svg.append(svgEl('line', { class: 'grid', x1: pad.left, x2: width - pad.right, y1: y(t), y2: y(t), 'vector-effect': 'non-scaling-stroke' }));
     const label = svgEl('text', { class: 'axis', x: pad.left - 6, y: y(t) + 4, 'text-anchor': 'end' });
-    label.textContent = formatNumber(t);
+    label.textContent = formatNumber(t) + (points[0].relative ? '%' : '');
     svg.append(label);
   }
 
@@ -265,7 +300,9 @@ function showTooltip(p, event) {
   const { commit } = p.entry;
   const value = document.createElement('div');
   value.className = 'tt-value';
-  value.textContent = formatValue(p.value, p.unit);
+  value.textContent = formatPoint(p);
+  const raw = document.createElement('div');
+  raw.textContent = p.relative ? `${formatValue(p.raw.value, p.raw.unit)} on this machine` : '';
   const meta = document.createElement('div');
   meta.textContent = `${commit.sha.slice(0, 7)} · ${shortDate(commit.timestamp)}${commit.author ? ` · ${commit.author}` : ''}`;
   const message = document.createElement('div');
@@ -274,7 +311,7 @@ function showTooltip(p, event) {
   const machine = document.createElement('div');
   machine.className = 'tt-message';
   machine.textContent = p.entry.machine ?? 'Unknown machine';
-  tt.replaceChildren(value, meta, message, machine);
+  tt.replaceChildren(value, raw, meta, message, machine);
   tt.hidden = false;
   const margin = 12;
   const { width, height } = tt.getBoundingClientRect();
@@ -299,6 +336,11 @@ function formatNumber(v) {
   const abs = Math.abs(v);
   if (abs !== 0 && (abs >= 1e6 || abs < 1e-3)) return v.toExponential(1);
   return Number(v.toPrecision(abs >= 1000 ? 6 : 4)).toLocaleString();
+}
+
+function formatPoint(p) {
+  if (!p.relative) return formatValue(p.value, p.unit);
+  return `${p.value > 0 ? '+' : ''}${p.value.toFixed(1)}% vs reference`;
 }
 
 function formatValue(v, unit) {

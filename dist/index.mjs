@@ -105743,6 +105743,28 @@ function findBaseline(allEntries, ancestors2, machine, exclude) {
   }
   return void 0;
 }
+function findReferenceBaseline(entries, ancestors2, reference, exclude) {
+  const withReference = entries.filter((e) => e.reference?.sha === reference);
+  const bySha = new Map(withReference.map((e) => [e.commit.sha, e]));
+  for (const sha2 of ancestors2) {
+    if (sha2 === exclude) continue;
+    const entry = bySha.get(sha2);
+    if (entry) return entry;
+  }
+  return void 0;
+}
+function scaleToMachine(baseline, current) {
+  const before = new Map(baseline.reference?.benchmarks.map((b) => [b.name, b.value]));
+  const now = new Map(current.reference?.benchmarks.map((b) => [b.name, b.value]));
+  const scaled = [];
+  for (const b of baseline.benchmarks) {
+    const refBefore = before.get(b.name);
+    const refNow = now.get(b.name);
+    if (refBefore === void 0 || refNow === void 0 || refBefore === 0) continue;
+    scaled.push({ ...b, value: b.value / refBefore * refNow });
+  }
+  return scaled;
+}
 
 // src/markdown.ts
 var statusOrder = {
@@ -105777,7 +105799,7 @@ function summarizeReport(report) {
 function renderReport(report) {
   const lines = [];
   if (report.baseline) {
-    const where2 = report.baseline.source === "rerun" ? ", benchmarked on the same machine" : "";
+    const where2 = report.baseline.source === "rerun" ? ", benchmarked on the same machine" : report.baseline.source === "reference" && report.baseline.reference ? ` (base values scaled to this machine through reference ${shortSha(report.baseline.reference)})` : "";
     lines.push(
       `Compared ${shortSha(report.current.sha)} against ${shortSha(report.baseline.sha)} on \`${escapeCode(report.baseline.branch)}\`${where2}, with a ${report.threshold}% threshold.`
     );
@@ -106014,9 +106036,10 @@ function validateReport(report) {
   check(report.baselineError === void 0 || typeof report.baselineError === "string", "baseline error");
   check(report.machine === void 0 || typeof report.machine === "string", "machine");
   check(
-    report.baseline?.source === void 0 || ["stored", "rerun"].includes(report.baseline.source),
+    report.baseline?.source === void 0 || ["stored", "rerun", "reference"].includes(report.baseline.source),
     "baseline source"
   );
+  check(report.baseline?.reference === void 0 || sha.test(report.baseline.reference), "reference");
   const statuses = ["regression", "improvement", "unchanged", "new", "removed"];
   for (const row of report.rows) {
     check(typeof row.name === "string" && typeof row.unit === "string", "row");
@@ -106418,6 +106441,7 @@ function readInputs() {
     comment: getBooleanInput("comment"),
     maxEntries,
     rerunBase,
+    reference: getInput("reference"),
     siteUrl: siteUrl || void 0
   };
 }
@@ -106504,7 +106528,7 @@ async function store(inputs, entry, onHistory) {
         branch: entry.branch,
         entries: []
       };
-      onHistory?.(stored);
+      onHistory?.(stored, index);
       await ws.writeJson(file, addEntry(stored, entry, inputs.maxEntries));
       await ws.writeJson("data/index.json", index);
     }
@@ -106516,16 +106540,48 @@ async function storeAndReport(octokit, inputs, benchmarks) {
   const entry = await commitEntry(octokit, context5.sha, branch, benchmarks);
   const history = await ancestors(octokit, context5.sha);
   const machine = entry.machine;
-  let baseline;
+  const reference = inputs.store ? await resolveReference(octokit, inputs) : void 0;
+  if (reference) {
+    try {
+      const results = reference === context5.sha ? benchmarks : await benchmarkCommit(inputs, reference);
+      entry.reference = { sha: reference, benchmarks: results };
+    } catch (e) {
+      warning(`Could not benchmark the reference commit ${reference}: ${e.message}`);
+    }
+  }
+  let stored;
   if (!inputs.store) {
-    const stored = await readHistory(octokit, inputs.dataBranch, inputs.suite, branch);
-    baseline = stored && findBaseline(stored.entries, history, machine, context5.sha);
+    stored = await readHistory(octokit, inputs.dataBranch, inputs.suite, branch);
   } else {
-    await store(inputs, entry, (stored) => {
-      baseline = findBaseline(stored.entries, history, machine, context5.sha);
+    await store(inputs, entry, (history2, index) => {
+      stored = history2;
+      if (entry.reference) index.suites[inputs.suite].reference = entry.reference.sha;
     });
   }
-  return toReport(inputs, benchmarks, { sha: context5.sha, ref: branch }, baseline);
+  const current = { sha: context5.sha, ref: branch };
+  const viaReference = entry.reference && stored && findReferenceBaseline(stored.entries, history, entry.reference.sha, context5.sha);
+  if (viaReference) {
+    const report = toReport(
+      inputs,
+      benchmarks,
+      current,
+      { ...viaReference, benchmarks: scaleToMachine(viaReference, entry) },
+      "reference"
+    );
+    report.baseline.reference = entry.reference.sha;
+    return report;
+  }
+  const sameMachine = stored && findBaseline(stored.entries, history, machine, context5.sha);
+  return toReport(inputs, benchmarks, current, sameMachine);
+}
+async function resolveReference(octokit, inputs) {
+  if (inputs.reference === "none" || !inputs.command) return void 0;
+  if (inputs.reference) {
+    const res = await octokit.rest.repos.getCommit({ ...context4.repo, ref: inputs.reference });
+    return res.data.sha;
+  }
+  const index = await readJsonFile(octokit, inputs.dataBranch, "data/index.json");
+  return index?.suites[inputs.suite]?.reference ?? context4.sha;
 }
 async function commitEntry(octokit, sha2, branch, benchmarks) {
   const { context: context5 } = github_exports;

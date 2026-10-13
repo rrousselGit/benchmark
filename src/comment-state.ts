@@ -252,9 +252,10 @@ export function validateReport(report: Report): void {
   check(report.baselineError === undefined || typeof report.baselineError === 'string', 'baseline error');
   check(report.machine === undefined || typeof report.machine === 'string', 'machine');
   check(
-    report.baseline?.source === undefined || ['stored', 'rerun'].includes(report.baseline.source),
+    report.baseline?.source === undefined || ['stored', 'rerun', 'reference'].includes(report.baseline.source),
     'baseline source',
   );
+  check(report.baseline?.reference === undefined || sha.test(report.baseline.reference), 'reference');
   const statuses = ['regression', 'improvement', 'unchanged', 'new', 'removed'];
   for (const row of report.rows) {
     check(typeof row.name === 'string' && typeof row.unit === 'string', 'row');

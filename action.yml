@@ -35,6 +35,12 @@ inputs:
   max-entries:
     description: Number of commits kept per branch. 0 keeps everything.
     default: '0'
+  rerun-base:
+    description: 'Pull requests: "always" benchmarks the base commit in the same job, "auto" uses stored results from the same kind of machine when there are any, "never" only uses those.'
+    default: always
+  reference:
+    description: 'Pushes: commit, tag or branch benchmarked alongside every push so results from different machines are comparable. Defaults to the first stored commit of the suite. "none" disables it.'
+    default: ''
   site-url:
     description: URL of the results site, linked from comments. Defaults to the GitHub Pages URL when data-branch is gh-pages.
     default: ''

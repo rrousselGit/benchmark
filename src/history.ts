@@ -1,4 +1,4 @@
-import type { BranchHistory, DataIndex, Entry } from './types.js';
+import type { Benchmark, BranchHistory, DataIndex, Entry } from './types.js';
 
 export function emptyIndex(): DataIndex {
   return { version: 1, suites: {} };
@@ -74,4 +74,42 @@ export function findBaseline(
     if (entries[i].commit.sha !== exclude) return entries[i];
   }
   return undefined;
+}
+
+/**
+ * Picks the nearest benchmarked ancestor measured against `reference`, on
+ * any machine: their ratios to the reference are comparable.
+ */
+export function findReferenceBaseline(
+  entries: Entry[],
+  ancestors: string[],
+  reference: string,
+  exclude?: string,
+): Entry | undefined {
+  const withReference = entries.filter((e) => e.reference?.sha === reference);
+  const bySha = new Map(withReference.map((e) => [e.commit.sha, e]));
+  for (const sha of ancestors) {
+    if (sha === exclude) continue;
+    const entry = bySha.get(sha);
+    if (entry) return entry;
+  }
+  return undefined;
+}
+
+/**
+ * Expresses `baseline`'s results as if measured on `current`'s machine:
+ * baseline / its reference × the reference measured alongside `current`.
+ * Benchmarks missing from either reference run are left out.
+ */
+export function scaleToMachine(baseline: Entry, current: Entry): Benchmark[] {
+  const before = new Map(baseline.reference?.benchmarks.map((b) => [b.name, b.value]));
+  const now = new Map(current.reference?.benchmarks.map((b) => [b.name, b.value]));
+  const scaled: Benchmark[] = [];
+  for (const b of baseline.benchmarks) {
+    const refBefore = before.get(b.name);
+    const refNow = now.get(b.name);
+    if (refBefore === undefined || refNow === undefined || refBefore === 0) continue;
+    scaled.push({ ...b, value: (b.value / refBefore) * refNow });
+  }
+  return scaled;
 }

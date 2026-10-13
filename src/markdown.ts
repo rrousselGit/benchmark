@@ -42,7 +42,12 @@ export function summarizeReport(report: Report): string {
 export function renderReport(report: Report): string {
   const lines: string[] = [];
   if (report.baseline) {
-    const where = report.baseline.source === 'rerun' ? ', benchmarked on the same machine' : '';
+    const where =
+      report.baseline.source === 'rerun'
+        ? ', benchmarked on the same machine'
+        : report.baseline.source === 'reference' && report.baseline.reference
+          ? ` (base values scaled to this machine through reference ${shortSha(report.baseline.reference)})`
+          : '';
     lines.push(
       `Compared ${shortSha(report.current.sha)} against ${shortSha(report.baseline.sha)} on \`${escapeCode(report.baseline.branch)}\`${where}, with a ${report.threshold}% threshold.`,
     );

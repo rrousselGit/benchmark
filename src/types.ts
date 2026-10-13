@@ -23,6 +23,12 @@ export interface Entry {
   /** The hardware the results were measured on, see `machineId`. */
   machine?: string;
   benchmarks: Benchmark[];
+  /**
+   * The suite's reference commit, benchmarked in the same job. Dividing by
+   * it cancels out the machine's speed, which makes entries from different
+   * machines comparable.
+   */
+  reference?: { sha: string; benchmarks: Benchmark[] };
 }
 
 /** File stored at `data/<suite>/<branch file>.json` on the data branch. */
@@ -35,7 +41,7 @@ export interface BranchHistory {
 /** File stored at `data/index.json` on the data branch. */
 export interface DataIndex {
   version: 1;
-  suites: Record<string, { branches: Record<string, string> }>;
+  suites: Record<string, { branches: Record<string, string>; reference?: string }>;
 }
 
 export type RowStatus = 'regression' | 'improvement' | 'unchanged' | 'new' | 'removed';
@@ -60,7 +66,9 @@ export interface Report {
     sha: string;
     branch: string;
     /** Whether the baseline was read from the data branch or benchmarked in this job. */
-    source?: 'stored' | 'rerun';
+    source?: 'stored' | 'rerun' | 'reference';
+    /** For `reference`: the commit both runs were normalized against. */
+    reference?: string;
   };
   machine?: string;
   /** Why there is no baseline, when benchmarking the base commit failed. */

@@ -8,13 +8,29 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compare, parseThreshold } from './compare.js';
 import { failSuite, finishSuite, startSuite, type CommentState } from './comment-state.js';
-import { ancestors, currentRunUrl, defaultSiteUrl, readHistory, updateBenchmarkComment, type Octokit } from './github.js';
-import { addEntry, findBaseline, historyPath, registerBranch, suitePath } from './history.js';
+import {
+  ancestors,
+  currentRunUrl,
+  defaultSiteUrl,
+  readHistory,
+  readJsonFile,
+  updateBenchmarkComment,
+  type Octokit,
+} from './github.js';
+import {
+  addEntry,
+  findBaseline,
+  findReferenceBaseline,
+  historyPath,
+  registerBranch,
+  scaleToMachine,
+  suitePath,
+} from './history.js';
 import { renderReport, summarizeReport } from './markdown.js';
 import { machineId } from './machine.js';
 import { formats, parseResults, type Format } from './parse.js';
 import { updateDataBranch } from './store.js';
-import type { Benchmark, BranchHistory, Entry, Report } from './types.js';
+import type { Benchmark, BranchHistory, DataIndex, Entry, Report } from './types.js';
 
 export const artifactPrefix = 'benchmark-report-';
 
@@ -131,6 +147,7 @@ interface Inputs {
   comment: boolean;
   maxEntries: number;
   rerunBase: 'auto' | 'always' | 'never';
+  reference: string;
   siteUrl?: string;
 }
 
@@ -161,6 +178,7 @@ function readInputs(): Inputs {
     comment: core.getBooleanInput('comment'),
     maxEntries,
     rerunBase: rerunBase as Inputs['rerunBase'],
+    reference: core.getInput('reference'),
     siteUrl: siteUrl || undefined,
   };
 }
@@ -170,7 +188,7 @@ function toReport(
   benchmarks: Benchmark[],
   current: Report['current'],
   baseline: Entry | undefined,
-  source: 'stored' | 'rerun' = 'stored',
+  source: NonNullable<Report['baseline']>['source'] = 'stored',
 ): Report {
   return {
     version: 1,
@@ -256,7 +274,7 @@ async function benchmarkCommit(inputs: Inputs, sha: string): Promise<Benchmark[]
 async function store(
   inputs: Inputs,
   entry: Entry,
-  onHistory?: (stored: BranchHistory) => void,
+  onHistory?: (stored: BranchHistory, index: DataIndex) => void,
 ): Promise<void> {
   const { context } = github;
   await updateDataBranch(
@@ -277,7 +295,7 @@ async function store(
         branch: entry.branch,
         entries: [],
       };
-      onHistory?.(stored);
+      onHistory?.(stored, index);
       await ws.writeJson(file, addEntry(stored, entry, inputs.maxEntries));
       await ws.writeJson('data/index.json', index);
     },
@@ -285,8 +303,10 @@ async function store(
 }
 
 /**
- * Pushes and other events: store results for this commit, and compare them
- * with the nearest ancestor benchmarked on the same kind of machine.
+ * Pushes and other events: store results for this commit along with the
+ * suite's reference commit, benchmarked on the same machine. Results are
+ * compared with the nearest ancestor measured against the same reference,
+ * scaled through it so that a different machine doesn't show as a change.
  */
 async function storeAndReport(
   octokit: Octokit,
@@ -298,17 +318,58 @@ async function storeAndReport(
   const entry = await commitEntry(octokit, context.sha, branch, benchmarks);
   const history = await ancestors(octokit, context.sha);
   const machine = entry.machine!;
-  let baseline: Entry | undefined;
 
+  const reference = inputs.store ? await resolveReference(octokit, inputs) : undefined;
+  if (reference) {
+    try {
+      const results = reference === context.sha ? benchmarks : await benchmarkCommit(inputs, reference);
+      entry.reference = { sha: reference, benchmarks: results };
+    } catch (e) {
+      core.warning(`Could not benchmark the reference commit ${reference}: ${(e as Error).message}`);
+    }
+  }
+
+  let stored: BranchHistory | undefined;
   if (!inputs.store) {
-    const stored = await readHistory(octokit, inputs.dataBranch, inputs.suite, branch);
-    baseline = stored && findBaseline(stored.entries, history, machine, context.sha);
+    stored = await readHistory(octokit, inputs.dataBranch, inputs.suite, branch);
   } else {
-    await store(inputs, entry, (stored) => {
-      baseline = findBaseline(stored.entries, history, machine, context.sha);
+    await store(inputs, entry, (history, index) => {
+      stored = history;
+      if (entry.reference) index.suites[inputs.suite].reference = entry.reference.sha;
     });
   }
-  return toReport(inputs, benchmarks, { sha: context.sha, ref: branch }, baseline);
+
+  const current = { sha: context.sha, ref: branch };
+  const viaReference =
+    entry.reference && stored && findReferenceBaseline(stored.entries, history, entry.reference.sha, context.sha);
+  if (viaReference) {
+    const report = toReport(
+      inputs,
+      benchmarks,
+      current,
+      { ...viaReference, benchmarks: scaleToMachine(viaReference, entry) },
+      'reference',
+    );
+    report.baseline!.reference = entry.reference!.sha;
+    return report;
+  }
+  const sameMachine = stored && findBaseline(stored.entries, history, machine, context.sha);
+  return toReport(inputs, benchmarks, current, sameMachine);
+}
+
+/**
+ * The commit every push of the suite is measured against: the `reference`
+ * input when set, else the one recorded on the data branch, else this commit
+ * (the suite's first stored run). `none` turns it off.
+ */
+async function resolveReference(octokit: Octokit, inputs: Inputs): Promise<string | undefined> {
+  if (inputs.reference === 'none' || !inputs.command) return undefined;
+  if (inputs.reference) {
+    const res = await octokit.rest.repos.getCommit({ ...github.context.repo, ref: inputs.reference });
+    return res.data.sha;
+  }
+  const index = await readJsonFile<DataIndex>(octokit, inputs.dataBranch, 'data/index.json');
+  return index?.suites[inputs.suite]?.reference ?? github.context.sha;
 }
 
 async function commitEntry(

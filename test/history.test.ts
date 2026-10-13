@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { addEntry, branchFileName, emptyIndex, findBaseline, historyPath, registerBranch } from '../src/history.js';
+import {
+  addEntry,
+  branchFileName,
+  emptyIndex,
+  findBaseline,
+  findReferenceBaseline,
+  historyPath,
+  registerBranch,
+  scaleToMachine,
+} from '../src/history.js';
 import type { Entry } from '../src/types.js';
 
 const entry = (sha: string, value = 1, machine = 'm1'): Entry => ({
@@ -63,5 +72,28 @@ describe('findBaseline', () => {
     expect(findBaseline(entries, ['x', 'y'], 'm1')?.commit.sha).toBe('c');
     expect(findBaseline(entries, ['x'], 'm1', 'c')?.commit.sha).toBe('b');
     expect(findBaseline([], ['x'], 'm1')).toBeUndefined();
+  });
+});
+
+describe('reference', () => {
+  const withRef = (sha: string, value: number, ref: string, refValue: number, machine: string): Entry => ({
+    ...entry(sha, value, machine),
+    reference: { sha: ref, benchmarks: [{ name: 'a', value: refValue, unit: 'us' }] },
+  });
+
+  it('finds the nearest ancestor measured against the same reference, on any machine', () => {
+    const entries = [withRef('a', 1, 'r', 1, 'm1'), withRef('b', 1, 'other', 1, 'm2'), withRef('c', 1, 'r', 1, 'm3')];
+    expect(findReferenceBaseline(entries, ['d', 'c', 'b', 'a'], 'r', 'd')?.commit.sha).toBe('c');
+    expect(findReferenceBaseline(entries, ['b', 'a'], 'r')?.commit.sha).toBe('a');
+    expect(findReferenceBaseline(entries, ['x'], 'r')).toBeUndefined();
+  });
+
+  it('scales a baseline from a slower machine to the current one', () => {
+    // Previous run: 120 on a machine where the reference took 100 (20% slower than the reference).
+    const before = withRef('a', 120, 'r', 100, 'slow');
+    // Current run: the reference takes 80 here, so the baseline becomes 96.
+    const now = withRef('b', 96, 'r', 80, 'fast');
+    expect(scaleToMachine(before, now)).toEqual([{ name: 'a', value: 96, unit: 'us' }]);
+    expect(scaleToMachine(before, { ...now, reference: undefined })).toEqual([]);
   });
 });

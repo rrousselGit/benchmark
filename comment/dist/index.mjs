@@ -104882,7 +104882,7 @@ function summarizeReport(report) {
 function renderReport(report) {
   const lines = [];
   if (report.baseline) {
-    const where2 = report.baseline.source === "rerun" ? ", benchmarked on the same machine" : "";
+    const where2 = report.baseline.source === "rerun" ? ", benchmarked on the same machine" : report.baseline.source === "reference" && report.baseline.reference ? ` (base values scaled to this machine through reference ${shortSha(report.baseline.reference)})` : "";
     lines.push(
       `Compared ${shortSha(report.current.sha)} against ${shortSha(report.baseline.sha)} on \`${escapeCode(report.baseline.branch)}\`${where2}, with a ${report.threshold}% threshold.`
     );
@@ -105125,9 +105125,10 @@ function validateReport(report) {
   check(report.baselineError === void 0 || typeof report.baselineError === "string", "baseline error");
   check(report.machine === void 0 || typeof report.machine === "string", "machine");
   check(
-    report.baseline?.source === void 0 || ["stored", "rerun"].includes(report.baseline.source),
+    report.baseline?.source === void 0 || ["stored", "rerun", "reference"].includes(report.baseline.source),
     "baseline source"
   );
+  check(report.baseline?.reference === void 0 || sha.test(report.baseline.reference), "reference");
   const statuses = ["regression", "improvement", "unchanged", "new", "removed"];
   for (const row of report.rows) {
     check(typeof row.name === "string" && typeof row.unit === "string", "row");

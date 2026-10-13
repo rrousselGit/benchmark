@@ -3,7 +3,7 @@
 A GitHub Action that keeps your benchmark results over time.
 
 - **On every push**, it runs your benchmarks and commits the results for that commit to a data branch (`gh-pages` by default), so a commit is never benchmarked twice.
-- **A static site** on that branch charts every benchmark over time. Host it for free with GitHub Pages.
+- **A static site** on that branch charts every benchmark over time, relative to a reference commit benchmarked on the same machine, so the graph holds up on shared runners whose hardware changes from run to run. Host it for free with GitHub Pages.
 - **On every pull request**, including ones from forks, it benchmarks both the pull request and its base commit in the same job, so both run on the same machine, and keeps a single comment up to date: a loading state as soon as benchmarks start, then each suite's comparison table as it comes in.
 - **A separate check step** fails the job when a benchmark regresses by more than a threshold.
 
@@ -110,10 +110,14 @@ The `dart` format reads lines printed by `benchmark_harness`, such as `Template(
 
 | Event | What the action does |
 | --- | --- |
-| `push` (and any non pull request event) | Stores the results for the commit on the data branch, with the machine they were measured on, then compares them with the nearest earlier commit benchmarked on the same kind of machine. |
+| `push` (and any non pull request event) | Runs the benchmarks, then runs them again on the suite's reference commit in a separate worktree. Stores both on the data branch, with the machine they were measured on, and compares with the nearest earlier commit measured against the same reference. |
 | `pull_request` | Runs the benchmarks, then checks out the pull request's base commit in a separate worktree and runs them again there, and compares the two. Nothing is stored. Updates the pull request comment, and uploads the report as an artifact for the `comment` action. |
 
-Why rerun the base: GitHub-hosted runners are drawn from a pool of different CPUs, and moving to another machine shifts every benchmark at once, often by 20% or more. Results are only meaningful against results from the same machine. If the base commit cannot be benchmarked (for example, the pull request adds the benchmarks), the comment says so and shows the results without a comparison.
+Why rerun: GitHub-hosted runners are drawn from a pool of different CPUs, and moving to another machine shifts every benchmark at once, often by 20% or more. Results are only meaningful against results from the same machine. If the base commit cannot be benchmarked (for example, the pull request adds the benchmarks), the comment says so and shows the results without a comparison.
+
+### The reference commit
+
+For the history to survive machine changes, every push also benchmarks one fixed commit, the suite's reference, on the same machine. The site then plots each benchmark as a percentage of the reference, which cancels out how fast that machine is. The reference is the first commit the suite stored, unless you set the `reference` input, for example to a release tag. Changing it starts a new relative series. Benchmarks that the reference commit does not have only appear in the raw timings view, so move the reference forward from time to time, for example on releases. This doubles the time of push runs, and `reference: none` turns it off.
 
 Data branch layout:
 
@@ -150,6 +154,7 @@ The comment stores its state in a hidden HTML comment, so every job merges its o
 | `store` | `true` | Set to `false` to never commit results. |
 | `comment` | `true` | Set to `false` to leave the pull request comment alone. |
 | `max-entries` | `0` | Commits kept per branch. `0` keeps everything. |
+| `reference` | first stored commit | Pushes only. Commit, tag or branch benchmarked alongside every push, see above. `none` turns it off. |
 | `rerun-base` | `always` | Pull requests only. `always` benchmarks the base commit in the same job. `auto` uses stored target branch results from the same kind of machine when there are any, and reruns otherwise. `never` only uses stored results from the same kind of machine. |
 | `site-url` | Pages URL | Linked from comments. |
 | `github-token` | `github.token` | Needs `contents: write` to store results and `pull-requests: write` to comment. |
@@ -177,7 +182,7 @@ Only runs on `workflow_run`, with `types: [requested, completed]`. It finds the 
 
 Shared GitHub runners are noisy. Benchmarking the base in the same job removes the difference between machines, but neighbors on the same machine still add a few percent between runs. Pick a threshold above that noise, report the median of several samples from your benchmark rather than a single run, and consider a self-hosted runner for precise tracking.
 
-The history on the site mixes machines, since each push lands on whichever runner is free. Use its machine filter to see one kind of machine at a time.
+The best fix is a machine that never changes: a self-hosted runner on fixed hardware, used only for pushes to the default branch (never for pull requests from forks). On shared runners, the site's default view, relative to the reference commit, removes most of the difference between machines. Its raw timings view mixes machines unless you filter by one.
 
 ## Development
 
