@@ -8,7 +8,9 @@ import 'package:benchmark_harness/benchmark_harness.dart';
 
 /// Runs [benchmarks] according to the environment:
 ///
-/// - `BENCHMARK_LIST=1`: prints each benchmark name on its own line.
+/// - `BENCHMARK_LIST=<path>`: writes each benchmark name on its own line to
+///   that file. Using a file rather than standard output lets the action tell
+///   a program that follows this protocol from one that ignores it.
 /// - `BENCHMARK_NAME=<name>` and `BENCHMARK_ITERATIONS=<n>`: runs that
 ///   benchmark's `setup`, then `run` n times, then `teardown`, and prints
 ///   nothing. The action counts the instructions this executes.
@@ -16,7 +18,6 @@ import 'package:benchmark_harness/benchmark_harness.dart';
 void runBenchmarks(
   List<BenchmarkBase> benchmarks, {
   Map<String, String>? environment,
-  void Function(String line) log = print,
 }) {
   final env = environment ?? Platform.environment;
   final names = <String>{};
@@ -26,10 +27,11 @@ void runBenchmarks(
     }
   }
 
-  if (env['BENCHMARK_LIST'] == '1') {
-    for (final benchmark in benchmarks) {
-      log(benchmark.name);
-    }
+  final listPath = env['BENCHMARK_LIST'];
+  if (listPath != null) {
+    File(
+      listPath,
+    ).writeAsStringSync(benchmarks.map((b) => '${b.name}\n').join());
     return;
   }
 

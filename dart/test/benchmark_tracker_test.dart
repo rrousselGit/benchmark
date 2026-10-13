@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:benchmark_harness/benchmark_harness.dart';
 import 'package:benchmark_tracker/benchmark_tracker.dart';
 import 'package:test/test.dart';
@@ -18,14 +20,15 @@ class Counter extends BenchmarkBase {
 }
 
 void main() {
-  test('lists benchmark names', () {
-    final lines = <String>[];
+  test('lists benchmark names to a file', () {
+    final dir = Directory.systemTemp.createTempSync();
+    addTearDown(() => dir.deleteSync(recursive: true));
+    final file = File('${dir.path}/names.txt');
     runBenchmarks(
       [Counter('a'), Counter('b')],
-      environment: {'BENCHMARK_LIST': '1'},
-      log: lines.add,
+      environment: {'BENCHMARK_LIST': file.path},
     );
-    expect(lines, ['a', 'b']);
+    expect(file.readAsLinesSync(), ['a', 'b']);
   });
 
   test('runs one benchmark a fixed number of times', () {

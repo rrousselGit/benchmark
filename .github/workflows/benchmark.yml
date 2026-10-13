@@ -33,8 +33,9 @@ jobs:
           build: |
             cd examples/dart
             dart pub get
-            dart compile exe benchmark/main.dart -o "$RUNNER_TEMP/dart-bench"
-          run: '"$RUNNER_TEMP/dart-bench"'
+            mkdir -p build
+            dart compile exe benchmark/main.dart -o build/dart-bench
+          run: examples/dart/build/dart-bench
           threshold: 5%
       - uses: ./check
         with:
@@ -58,8 +59,9 @@ jobs:
           build: |
             cd examples/dart
             dart pub get
-            dart compile exe benchmark/main.dart -o "$RUNNER_TEMP/dart-bench"
-          run: '"$RUNNER_TEMP/dart-bench" | tee dart-bench.txt'
+            mkdir -p build
+            dart compile exe benchmark/main.dart -o build/dart-bench
+          run: 'examples/dart/build/dart-bench | tee dart-bench.txt'
           file: dart-bench.txt
           format: dart
           threshold: 20%

@@ -20,6 +20,9 @@ inputs:
   run:
     description: 'Shell command that runs the benchmarks. mode: time, optional: runs before reading the results file. mode: instructions, required: a program following the BENCHMARK_LIST / BENCHMARK_NAME protocol, such as one using package:benchmark_tracker.'
     default: ''
+  samples:
+    description: 'mode: time. How many times to run the benchmarks; each one keeps its median. When the base commit is benchmarked in the same job, runs alternate between the two, so build outputs must stay inside the checkout.'
+    default: '5'
   iterations:
     description: 'mode: instructions. Each benchmark runs this many times and twice as many; the difference gives the cost of one iteration.'
     default: '10'

@@ -68,7 +68,7 @@ jobs:
 
 Then enable the site: **Settings → Pages → Build and deployment → Deploy from a branch**, and pick `gh-pages` / `(root)`. The branch is created by the first push that runs the action.
 
-Put everything needed to build and run the benchmarks in `build` and `run`, not in earlier steps: on pull requests, the action also runs them on a checkout of the base commit.
+Put everything needed to build and run the benchmarks in `build` and `run`, not in earlier steps: on pull requests, the action also runs them on a checkout of the base commit. Keep build outputs inside the checkout (for example `build/bench`, not `$RUNNER_TEMP/bench`): both builds must coexist while their runs alternate.
 
 ### Dart
 
@@ -88,8 +88,9 @@ jobs:
           mode: instructions
           build: |
             dart pub get
-            dart compile exe benchmark/main.dart -o "$RUNNER_TEMP/bench"
-          run: '"$RUNNER_TEMP/bench"'
+            mkdir -p build
+            dart compile exe benchmark/main.dart -o build/bench
+          run: build/bench
           threshold: 5%
       - uses: rrousselgit/benchmark/check@v1
         with:
@@ -107,8 +108,9 @@ jobs:
           suite: dart
           build: |
             dart pub get
-            dart compile exe benchmark/main.dart -o "$RUNNER_TEMP/bench"
-          run: '"$RUNNER_TEMP/bench" | tee bench.txt'
+            mkdir -p build
+            dart compile exe benchmark/main.dart -o build/bench
+          run: 'build/bench | tee bench.txt'
           file: bench.txt
           format: dart
           threshold: 20%
@@ -162,7 +164,7 @@ void main() => runBenchmarks([MyBenchmark(), OtherBenchmark()]);
 | Event | What the action does |
 | --- | --- |
 | `push` (and any non pull request event) | Runs the benchmarks, then runs them again on the suite's reference commit in a separate worktree. Stores both on the data branch, with the machine they were measured on, and compares with the nearest earlier commit measured against the same reference. |
-| `pull_request` | Runs the benchmarks, then checks out the pull request's base commit in a separate worktree and runs them again there, and compares the two. Nothing is stored. Updates the pull request comment, and uploads the report as an artifact for the `comment` action. |
+| `pull_request` | Builds the benchmarks, checks out the pull request's base commit in a separate worktree and builds them there too, then runs both sides alternately, `samples` times each (A B B A A B…), and compares the medians. Nothing is stored. Updates the pull request comment, and uploads the report as an artifact for the `comment` action. |
 
 Why rerun: GitHub-hosted runners are drawn from a pool of different CPUs, and moving to another machine shifts every benchmark at once, often by 20% or more. Results are only meaningful against results from the same machine. If the base commit cannot be benchmarked (for example, the pull request adds the benchmarks), the comment says so and shows the results without a comparison.
 
@@ -172,7 +174,7 @@ With `mode: instructions`, the action runs each benchmark under [Valgrind](https
 
 The `run` command must follow this protocol, which `runBenchmarks` implements for Dart:
 
-- With `BENCHMARK_LIST=1`, print the name of each benchmark, one per line, and exit.
+- With `BENCHMARK_LIST=<path>`, write the name of each benchmark to that file, one per line, and exit. A program that does not write the file is reported as not supporting the protocol.
 - With `BENCHMARK_NAME=<name>` and `BENCHMARK_ITERATIONS=<n>`, set the benchmark up, run it `n` times, tear it down, and exit.
 
 Each benchmark runs with `iterations` and twice as many iterations, and the difference, divided by `iterations`, is the cost of one iteration, so startup and setup cancel out. Benchmarks too small to measure that way get more iterations automatically.
@@ -218,6 +220,7 @@ The comment stores its state in a hidden HTML comment, so every job merges its o
 | `run` | | `mode: time`: shell command to run first, typically the benchmark itself. `mode: instructions`, required: the program following the protocol. |
 | `file` | | `mode: time`, required: results file. |
 | `format` | `json` | `json` or `dart`. |
+| `samples` | `5` | `mode: time`: how many times the benchmarks run on each side. Each benchmark keeps its median. |
 | `iterations` | `10` | `mode: instructions`: iterations per measurement. |
 | `suite` | `default` | Name of this set of benchmarks. Use several to track independent suites (packages, platforms) in one repository; each gets its own section in the pull request comment. |
 | `threshold` | `10%` | Change beyond which a benchmark is flagged in the comment. |
@@ -251,7 +254,7 @@ Only runs on `workflow_run`, with `types: [requested, completed]`. It finds the 
 
 ## Noise
 
-Shared GitHub runners are noisy. Benchmarking the base in the same job removes the difference between machines, but neighbors on the same machine still add a few percent between runs. Pick a threshold above that noise, report the median of several samples from your benchmark rather than a single run, and consider a self-hosted runner for precise tracking.
+Shared GitHub runners are noisy. Benchmarking the base in the same job removes the difference between machines, but two runs of the same program on the same machine still differ: neighbors come and go, and a JIT can make different decisions in each process. Running each side `samples` times, alternately, and keeping the medians removes most of it. Inside your benchmark, measure samples of a few milliseconds or more and report their median, rather than timing a single short run. Pick a threshold above what remains, or count instructions instead.
 
 The best fix is a machine that never changes: a self-hosted runner on fixed hardware, used only for pushes to the default branch (never for pull requests from forks). On shared runners, the site's default view, relative to the reference commit, removes most of the difference between machines. Its raw timings view mixes machines unless you filter by one.
 

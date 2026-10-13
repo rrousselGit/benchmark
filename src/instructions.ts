@@ -1,6 +1,8 @@
 import * as core from '@actions/core';
 import * as exec from '@actions/exec';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import os from 'node:os';
+import path from 'node:path';
 import type { Benchmark } from './types.js';
 
 /**
@@ -9,7 +11,9 @@ import type { Benchmark } from './types.js';
  * the machine, so results stay comparable on shared CI runners.
  *
  * The command follows a small protocol (see `package:benchmark_tracker` for
- * Dart): with `BENCHMARK_LIST=1` it prints one benchmark name per line; with
+ * Dart): with `BENCHMARK_LIST=<file>` it writes one benchmark name per line
+ * to that file (a file, so a program that ignores the protocol is detected
+ * instead of having its output taken for names); with
  * `BENCHMARK_NAME` and `BENCHMARK_ITERATIONS` it runs that benchmark's body
  * that many times. Each benchmark runs with N and 2N iterations, and the
  * difference divided by N is the cost of one iteration: startup, setup and
@@ -21,18 +25,7 @@ export async function countInstructions(
   iterations: number,
 ): Promise<Benchmark[]> {
   await ensureValgrind();
-  const list = await exec.getExecOutput('bash', ['-eo', 'pipefail', '-c', command], {
-    cwd,
-    env: { ...childEnv(), BENCHMARK_LIST: '1' },
-    silent: true,
-  });
-  const names = list.stdout
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean);
-  if (names.length === 0) {
-    throw new Error('The benchmark command listed no benchmarks. Does it support BENCHMARK_LIST=1?');
-  }
+  const names = await listBenchmarks(command, cwd);
   core.info(`Counting instructions for ${names.length} benchmark(s), ${iterations} and ${iterations * 2} iterations each.`);
 
   // Instruction counts don't suffer from running in parallel, unlike timings.
@@ -59,6 +52,32 @@ export async function countInstructions(
   };
   await Promise.all(Array.from({ length: Math.max(1, os.cpus().length) }, worker));
   return results;
+}
+
+async function listBenchmarks(command: string, cwd: string): Promise<string[]> {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'benchmark-list-'));
+  try {
+    const file = path.join(dir, 'names.txt');
+    await exec.exec('bash', ['-eo', 'pipefail', '-c', command], {
+      cwd,
+      env: { ...childEnv(), BENCHMARK_LIST: file },
+      silent: true,
+    });
+    const content = await readFile(file, 'utf8').catch(() => {
+      throw new Error(
+        'The benchmark command did not write the list of its benchmarks to the file named by BENCHMARK_LIST, ' +
+          'so it does not support counting instructions. For Dart, run the benchmarks with runBenchmarks from package:benchmark_tracker.',
+      );
+    });
+    const names = content
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+    if (names.length === 0) throw new Error('The benchmark command listed no benchmarks.');
+    return names;
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
 }
 
 const minimumMeasured = 5_000_000;

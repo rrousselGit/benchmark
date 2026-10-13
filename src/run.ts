@@ -28,6 +28,7 @@ import {
 } from './history.js';
 import { renderReport, summarizeReport } from './markdown.js';
 import { countInstructions } from './instructions.js';
+import { alternatingOrder, medianBenchmarks } from './samples.js';
 import { machineId } from './machine.js';
 import { formats, parseResults, type Format } from './parse.js';
 import { updateDataBranch } from './store.js';
@@ -43,11 +44,9 @@ async function main(): Promise<void> {
 
   await comment?.start();
   try {
-    const benchmarks = await measure(inputs, process.cwd());
-
     const report = pr
-      ? await pullRequestReport(octokit, inputs, benchmarks, pr)
-      : await storeAndReport(octokit, inputs, benchmarks);
+      ? await pullRequestReport(octokit, inputs, pr)
+      : await storeAndReport(octokit, inputs, await measure(inputs, process.cwd()));
 
     const title = inputs.suite === 'default' ? 'Benchmarks' : `Benchmarks: ${inputs.suite}`;
     const markdown = `### ${title}\n\n${summarizeReport(report)}\n\n${renderReport(report)}\n`;
@@ -126,16 +125,24 @@ class PullRequestComment {
  * a checkout of another commit (the base or the reference).
  */
 async function measure(inputs: Inputs, cwd: string): Promise<Benchmark[]> {
-  if (inputs.build) {
-    const exitCode = await exec.exec('bash', ['-eo', 'pipefail', '-c', inputs.build], {
-      cwd,
-      ignoreReturnCode: true,
-    });
-    if (exitCode !== 0) throw new Error(`Build command exited with code ${exitCode}.`);
-  }
-  if (inputs.mode === 'instructions') {
-    return countInstructions(inputs.command, cwd, inputs.iterations);
-  }
+  await build(inputs, cwd);
+  if (inputs.mode === 'instructions') return countInstructions(inputs.command, cwd, inputs.iterations);
+  const runs: Benchmark[][] = [];
+  for (let i = 0; i < inputs.samples; i++) runs.push(await runOnce(inputs, cwd));
+  return medianBenchmarks(runs);
+}
+
+async function build(inputs: Inputs, cwd: string): Promise<void> {
+  if (!inputs.build) return;
+  const exitCode = await exec.exec('bash', ['-eo', 'pipefail', '-c', inputs.build], {
+    cwd,
+    ignoreReturnCode: true,
+  });
+  if (exitCode !== 0) throw new Error(`Build command exited with code ${exitCode}.`);
+}
+
+/** mode: time. Runs the benchmarks once and reads their results file. */
+async function runOnce(inputs: Inputs, cwd: string): Promise<Benchmark[]> {
   if (inputs.command) {
     const exitCode = await exec.exec('bash', ['-eo', 'pipefail', '-c', inputs.command], {
       cwd,
@@ -153,6 +160,7 @@ interface Inputs {
   mode: 'time' | 'instructions';
   build: string;
   iterations: number;
+  samples: number;
   token: string;
   file: string;
   format: Format;
@@ -183,6 +191,8 @@ function readInputs(): Inputs {
   if (mode !== 'time' && mode !== 'instructions') throw new Error('mode must be "time" or "instructions".');
   const iterations = Number(core.getInput('iterations') || '10');
   if (!Number.isInteger(iterations) || iterations < 1) throw new Error('iterations must be a positive integer.');
+  const samples = Number(core.getInput('samples') || '5');
+  if (!Number.isInteger(samples) || samples < 1) throw new Error('samples must be a positive integer.');
   const command = core.getInput('run');
   const file = core.getInput('file');
   if (mode === 'instructions' && !command) throw new Error('mode: instructions needs the "run" input.');
@@ -197,6 +207,7 @@ function readInputs(): Inputs {
     mode,
     build: core.getInput('build'),
     iterations,
+    samples: command ? samples : 1,
     token: core.getInput('github-token', { required: true }),
     file,
     format: format as Format,
@@ -241,9 +252,9 @@ function toReport(
 async function pullRequestReport(
   octokit: Octokit,
   inputs: Inputs,
-  benchmarks: Benchmark[],
   pr: NonNullable<typeof github.context.payload.pull_request>,
 ): Promise<Report> {
+  const cwd = process.cwd();
   const baseRef: string = pr.base.ref;
   const baseSha: string = pr.base.sha;
   const current = { sha: pr.head.sha as string, ref: pr.head.ref as string };
@@ -255,35 +266,90 @@ async function pullRequestReport(
     const baseline = history && findBaseline(history.entries, await ancestors(octokit, baseSha), machine);
     if (baseline) {
       core.info(`Comparing against stored results of ${baseline.commit.sha} on ${baseRef}, from the same machine.`);
+      const benchmarks = await measure(inputs, cwd);
       return { ...toReport(inputs, benchmarks, current, baseline), pullRequest: pr.number };
     }
   }
   if (inputs.rerunBase === 'never' || !inputs.command) {
     core.info(`No stored results for ${baseRef} from this machine; reporting without a comparison.`);
     if (!inputs.command) core.warning('Set the "run" input so the base commit can be benchmarked on this machine.');
+    const benchmarks = await measure(inputs, cwd);
     return { ...toReport(inputs, benchmarks, current, undefined), pullRequest: pr.number };
   }
 
   core.info(`Benchmarking the base commit ${baseSha} in this job.`);
-  let baseResults: Benchmark[];
-  try {
-    baseResults = await benchmarkCommit(inputs, baseSha);
-  } catch (e) {
+  const result = await benchmarkWithBase(inputs, cwd, baseSha);
+  if ('error' in result) {
     // For example, the pull request adds the benchmarks or changes how they run.
-    const message = (e as Error).message;
-    core.warning(`Could not benchmark the base commit ${baseSha}: ${message}`);
+    core.warning(`Could not benchmark the base commit ${baseSha}: ${result.error}`);
     return {
-      ...toReport(inputs, benchmarks, current, undefined),
+      ...toReport(inputs, result.head, current, undefined),
       pullRequest: pr.number,
-      baselineError: `Could not benchmark the base commit ${baseSha.slice(0, 7)}: ${message}`,
+      baselineError: `Could not benchmark the base commit ${baseSha.slice(0, 7)}: ${result.error}`,
     };
   }
-  const baseline = await commitEntry(octokit, baseSha, baseRef, baseResults, machineId(inputs.mode));
-  return { ...toReport(inputs, benchmarks, current, baseline, 'rerun'), pullRequest: pr.number };
+  const baseline = await commitEntry(octokit, baseSha, baseRef, result.base, machine);
+  return { ...toReport(inputs, result.head, current, baseline, 'rerun'), pullRequest: pr.number };
+}
+
+/** A failure of this commit's benchmarks, as opposed to the base commit's. */
+class HeadError extends Error {}
+
+/**
+ * Benchmarks this checkout and the base commit. Timings run alternately,
+ * `samples` times each, so that a machine getting faster or slower during
+ * the job affects both sides alike; each side keeps the median of its runs.
+ * Both builds must then coexist, so their outputs must stay in the checkout.
+ */
+async function benchmarkWithBase(
+  inputs: Inputs,
+  cwd: string,
+  baseSha: string,
+): Promise<{ head: Benchmark[]; base: Benchmark[] } | { head: Benchmark[]; error: string }> {
+  if (inputs.mode === 'instructions') {
+    // Deterministic: no need to alternate. Measure this commit before the
+    // base build can overwrite anything it built.
+    const head = await measure(inputs, cwd);
+    try {
+      return { head, base: await withCheckout(baseSha, (dir) => measure(inputs, dir)) };
+    } catch (e) {
+      return { head, error: (e as Error).message };
+    }
+  }
+
+  await build(inputs, cwd);
+  try {
+    return await withCheckout(baseSha, async (dir) => {
+      await build(inputs, dir);
+      const runs: Benchmark[][][] = [[], []];
+      for (const side of alternatingOrder(inputs.samples)) {
+        const sideCwd = side === 0 ? cwd : dir;
+        core.info(`Running the benchmarks of ${side === 0 ? 'this commit' : 'the base commit'}.`);
+        runs[side].push(
+          await runOnce(inputs, sideCwd).catch((e: Error) => {
+            throw side === 0 ? new HeadError(e.message) : e;
+          }),
+        );
+      }
+      return { head: medianBenchmarks(runs[0]), base: medianBenchmarks(runs[1]) };
+    });
+  } catch (e) {
+    if (e instanceof HeadError) throw e;
+    // The base build may have overwritten files outside the checkout.
+    return { head: await measure(inputs, cwd), error: (e as Error).message };
+  }
 }
 
 /** Checks out `sha` next to the workspace and benchmarks it there. */
-async function benchmarkCommit(inputs: Inputs, sha: string): Promise<Benchmark[]> {
+function benchmarkCommit(inputs: Inputs, sha: string): Promise<Benchmark[]> {
+  return withCheckout(sha, (dir) => measure(inputs, dir));
+}
+
+/**
+ * Checks out `sha` next to the workspace and calls `fn` with the directory
+ * matching the current one in that checkout.
+ */
+async function withCheckout<T>(sha: string, fn: (dir: string) => Promise<T>): Promise<T> {
   const workspace = process.env.GITHUB_WORKSPACE ?? process.cwd();
   const dir = await mkdtemp(path.join(process.env.RUNNER_TEMP ?? tmpdir(), 'benchmark-base-'));
   const git = (...args: string[]) => exec.exec('git', args, { cwd: workspace });
@@ -295,7 +361,7 @@ async function benchmarkCommit(inputs: Inputs, sha: string): Promise<Benchmark[]
   await git('worktree', 'add', '--detach', dir, sha);
   try {
     const relative = path.relative(workspace, process.cwd());
-    return await measure(inputs, path.join(dir, relative));
+    return await fn(path.join(dir, relative));
   } finally {
     await git('worktree', 'remove', '--force', dir);
   }
