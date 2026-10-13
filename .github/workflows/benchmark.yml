@@ -23,16 +23,18 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: dart-lang/setup-dart@v1
-      - run: dart pub get
-        working-directory: examples/dart
-      # Compiling ahead of time gives steadier numbers than `dart run`.
-      - run: dart compile exe benchmark/main.dart -o ${{ runner.temp }}/dart-bench
-        working-directory: examples/dart
       - id: bench
         uses: ./
         with:
           suite: dart
-          run: ${{ runner.temp }}/dart-bench | tee dart-bench.txt
+          # Everything that builds the benchmark goes in `run`: on pull
+          # requests it also runs on a checkout of the base commit.
+          # Compiling ahead of time gives steadier numbers than `dart run`.
+          run: |
+            cd examples/dart
+            dart pub get
+            dart compile exe benchmark/main.dart -o "$RUNNER_TEMP/dart-bench"
+            "$RUNNER_TEMP/dart-bench" | tee ../../dart-bench.txt
           file: dart-bench.txt
           format: dart
           threshold: 20%

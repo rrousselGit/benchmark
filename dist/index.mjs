@@ -44469,8 +44469,8 @@ var require_processor = __commonJS({
     var minimatch_1 = require_commonjs3();
     var HasWalkedCache = class _HasWalkedCache {
       store;
-      constructor(store = /* @__PURE__ */ new Map()) {
-        this.store = store;
+      constructor(store2 = /* @__PURE__ */ new Map()) {
+        this.store = store2;
       }
       copy() {
         return new _HasWalkedCache(new Map(this.store));
@@ -57824,7 +57824,7 @@ var require_buffers = __commonJS({
 // node_modules/binary/lib/vars.js
 var require_vars = __commonJS({
   "node_modules/binary/lib/vars.js"(exports2, module) {
-    module.exports = function(store) {
+    module.exports = function(store2) {
       function getset(name, value) {
         var node = vars.store;
         var keys = name.split(".");
@@ -57846,7 +57846,7 @@ var require_vars = __commonJS({
         set: function(name, value) {
           return getset(name, value);
         },
-        store: store || {}
+        store: store2 || {}
       };
       return vars;
     };
@@ -105635,7 +105635,8 @@ If the error persists, please check whether Actions and API requests are operati
 var client = new DefaultArtifactClient();
 
 // src/run.ts
-import { mkdir as mkdir3, readFile as readFile2, writeFile as writeFile3 } from "node:fs/promises";
+import { mkdir as mkdir3, mkdtemp as mkdtemp2, readFile as readFile2, writeFile as writeFile3 } from "node:fs/promises";
+import { tmpdir as tmpdir2 } from "node:os";
 import path8 from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -105721,13 +105722,16 @@ function registerBranch(index, suite, branch) {
 }
 function addEntry(history, entry, maxEntries) {
   const entries = [...history.entries];
-  const existing = entries.findIndex((e) => e.commit.sha === entry.commit.sha);
+  const existing = entries.findIndex(
+    (e) => e.commit.sha === entry.commit.sha && e.machine === entry.machine
+  );
   if (existing >= 0) entries[existing] = entry;
   else entries.push(entry);
   const trimmed = maxEntries > 0 && entries.length > maxEntries ? entries.slice(-maxEntries) : entries;
   return { ...history, entries: trimmed };
 }
-function findBaseline(entries, ancestors2, exclude) {
+function findBaseline(allEntries, ancestors2, machine, exclude) {
+  const entries = allEntries.filter((e) => e.machine === machine);
   const bySha = new Map(entries.map((e) => [e.commit.sha, e]));
   for (const sha2 of ancestors2) {
     if (sha2 === exclude) continue;
@@ -105773,12 +105777,15 @@ function summarizeReport(report) {
 function renderReport(report) {
   const lines = [];
   if (report.baseline) {
+    const where2 = report.baseline.source === "rerun" ? ", benchmarked on the same machine" : "";
     lines.push(
-      `Compared ${shortSha(report.current.sha)} against ${shortSha(report.baseline.sha)} on \`${escapeCode(report.baseline.branch)}\`, with a ${report.threshold}% threshold.`
+      `Compared ${shortSha(report.current.sha)} against ${shortSha(report.baseline.sha)} on \`${escapeCode(report.baseline.branch)}\`${where2}, with a ${report.threshold}% threshold.`
     );
+  } else if (report.baselineError) {
+    lines.push(`\u26A0\uFE0F ${escape2(report.baselineError)}`);
   } else {
     lines.push(
-      `No stored results for the target branch yet, so there is nothing to compare ${shortSha(report.current.sha)} against.`
+      `No results from the same machine to compare ${shortSha(report.current.sha)} against yet.`
     );
   }
   lines.push("");
@@ -106004,6 +106011,12 @@ function validateReport(report) {
     check(sha.test(report.baseline.sha) && typeof report.baseline.branch === "string", "baseline");
   }
   check(report.siteUrl === void 0 || url2.test(report.siteUrl), "site url");
+  check(report.baselineError === void 0 || typeof report.baselineError === "string", "baseline error");
+  check(report.machine === void 0 || typeof report.machine === "string", "machine");
+  check(
+    report.baseline?.source === void 0 || ["stored", "rerun"].includes(report.baseline.source),
+    "baseline source"
+  );
   const statuses = ["regression", "improvement", "unchanged", "new", "removed"];
   for (const row of report.rows) {
     check(typeof row.name === "string" && typeof row.unit === "string", "row");
@@ -106123,6 +106136,14 @@ function defaultSiteUrl() {
   if ((process.env.GITHUB_SERVER_URL ?? "https://github.com") !== "https://github.com") return void 0;
   const host = `${owner.toLowerCase()}.github.io`;
   return name.toLowerCase() === host ? `https://${host}/` : `https://${host}/${name}/`;
+}
+
+// src/machine.ts
+import os8 from "node:os";
+function machineId() {
+  const cpus = os8.cpus();
+  const model = (cpus[0]?.model ?? "unknown CPU").replace(/\s+/g, " ").trim();
+  return `${model} \xB7 ${cpus.length} cores \xB7 ${process.platform}-${process.arch}`;
 }
 
 // src/parse.ts
@@ -106289,12 +106310,7 @@ async function main() {
   const comment = pr && inputs.comment ? new PullRequestComment(octokit, pr.number, inputs.suite, pr.head.sha) : void 0;
   await comment?.start();
   try {
-    if (inputs.command) {
-      const exitCode = await exec("bash", ["-eo", "pipefail", "-c", inputs.command], { ignoreReturnCode: true });
-      if (exitCode !== 0) throw new Error(`Benchmark command exited with code ${exitCode}.`);
-    }
-    const benchmarks = parseResults(await readFile2(inputs.file, "utf8"), inputs.format);
-    info(`Parsed ${benchmarks.length} benchmark(s) from ${inputs.file}.`);
+    const benchmarks = await measure(inputs, process.cwd());
     const report = pr ? await pullRequestReport(octokit, inputs, benchmarks, pr) : await storeAndReport(octokit, inputs, benchmarks);
     const title = inputs.suite === "default" ? "Benchmarks" : `Benchmarks: ${inputs.suite}`;
     const markdown = `### ${title}
@@ -106362,6 +106378,19 @@ var PullRequestComment = class {
     }
   }
 };
+async function measure(inputs, cwd) {
+  if (inputs.command) {
+    const exitCode = await exec("bash", ["-eo", "pipefail", "-c", inputs.command], {
+      cwd,
+      ignoreReturnCode: true
+    });
+    if (exitCode !== 0) throw new Error(`Benchmark command exited with code ${exitCode}.`);
+  }
+  const file = path8.resolve(cwd, inputs.file);
+  const benchmarks = parseResults(await readFile2(file, "utf8"), inputs.format);
+  info(`Parsed ${benchmarks.length} benchmark(s) from ${file}.`);
+  return benchmarks;
+}
 function readInputs() {
   const format = getInput("format") || "json";
   if (!formats.includes(format)) {
@@ -106372,6 +106401,10 @@ function readInputs() {
   const maxEntries = Number(getInput("max-entries") || "0");
   if (!Number.isInteger(maxEntries) || maxEntries < 0) {
     throw new Error("max-entries must be a non-negative integer.");
+  }
+  const rerunBase = getInput("rerun-base") || "always";
+  if (!["auto", "always", "never"].includes(rerunBase)) {
+    throw new Error('rerun-base must be "auto", "always" or "never".');
   }
   return {
     token: getInput("github-token", { required: true }),
@@ -106384,16 +106417,18 @@ function readInputs() {
     store: getBooleanInput("store"),
     comment: getBooleanInput("comment"),
     maxEntries,
+    rerunBase,
     siteUrl: siteUrl || void 0
   };
 }
-function toReport(inputs, benchmarks, current, baseline) {
+function toReport(inputs, benchmarks, current, baseline, source = "stored") {
   return {
     version: 1,
     suite: inputs.suite,
     threshold: inputs.threshold,
     current,
-    baseline: baseline && { sha: baseline.commit.sha, branch: baseline.branch },
+    baseline: baseline && { sha: baseline.commit.sha, branch: baseline.branch, source },
+    machine: machineId(),
     siteUrl: inputs.siteUrl,
     rows: compare(benchmarks, baseline?.benchmarks, inputs.threshold)
   };
@@ -106401,59 +106436,102 @@ function toReport(inputs, benchmarks, current, baseline) {
 async function pullRequestReport(octokit, inputs, benchmarks, pr) {
   const baseRef = pr.base.ref;
   const baseSha = pr.base.sha;
-  const history = await readHistory(octokit, inputs.dataBranch, inputs.suite, baseRef);
-  const baseline = history && findBaseline(history.entries, await ancestors(octokit, baseSha));
-  if (baseline) {
-    info(`Comparing against ${baseline.commit.sha} on ${baseRef}.`);
-  } else {
-    info(`No stored results for ${baseRef}; reporting without a comparison.`);
+  const current = { sha: pr.head.sha, ref: pr.head.ref };
+  const machine = machineId();
+  info(`Machine: ${machine}`);
+  if (inputs.rerunBase !== "always" || !inputs.command) {
+    const history = await readHistory(octokit, inputs.dataBranch, inputs.suite, baseRef);
+    const baseline2 = history && findBaseline(history.entries, await ancestors(octokit, baseSha), machine);
+    if (baseline2) {
+      info(`Comparing against stored results of ${baseline2.commit.sha} on ${baseRef}, from the same machine.`);
+      return { ...toReport(inputs, benchmarks, current, baseline2), pullRequest: pr.number };
+    }
   }
-  return {
-    ...toReport(inputs, benchmarks, { sha: pr.head.sha, ref: pr.head.ref }, baseline),
-    pullRequest: pr.number
-  };
+  if (inputs.rerunBase === "never" || !inputs.command) {
+    info(`No stored results for ${baseRef} from this machine; reporting without a comparison.`);
+    if (!inputs.command) warning('Set the "run" input so the base commit can be benchmarked on this machine.');
+    return { ...toReport(inputs, benchmarks, current, void 0), pullRequest: pr.number };
+  }
+  info(`Benchmarking the base commit ${baseSha} in this job.`);
+  let baseResults;
+  try {
+    baseResults = await benchmarkCommit(inputs, baseSha);
+  } catch (e) {
+    const message = e.message;
+    warning(`Could not benchmark the base commit ${baseSha}: ${message}`);
+    return {
+      ...toReport(inputs, benchmarks, current, void 0),
+      pullRequest: pr.number,
+      baselineError: `Could not benchmark the base commit ${baseSha.slice(0, 7)}: ${message}`
+    };
+  }
+  const baseline = await commitEntry(octokit, baseSha, baseRef, baseResults);
+  return { ...toReport(inputs, benchmarks, current, baseline, "rerun"), pullRequest: pr.number };
+}
+async function benchmarkCommit(inputs, sha2) {
+  const workspace2 = process.env.GITHUB_WORKSPACE ?? process.cwd();
+  const dir = await mkdtemp2(path8.join(process.env.RUNNER_TEMP ?? tmpdir2(), "benchmark-base-"));
+  const git = (...args) => exec("git", args, { cwd: workspace2 });
+  await exec("git", ["fetch", "--no-tags", "--depth=1", "origin", sha2], {
+    cwd: workspace2,
+    ignoreReturnCode: true
+  });
+  await git("worktree", "add", "--detach", dir, sha2);
+  try {
+    const relative2 = path8.relative(workspace2, process.cwd());
+    return await measure(inputs, path8.join(dir, relative2));
+  } finally {
+    await git("worktree", "remove", "--force", dir);
+  }
+}
+async function store(inputs, entry, onHistory) {
+  const { context: context5 } = github_exports;
+  await updateDataBranch(
+    {
+      token: inputs.token,
+      repository: `${context5.repo.owner}/${context5.repo.repo}`,
+      branch: inputs.dataBranch,
+      serverUrl: context5.serverUrl,
+      siteDir: siteDir()
+    },
+    `Add ${inputs.suite} benchmark results for ${entry.commit.sha.slice(0, 7)}`,
+    async (ws) => {
+      const index = await ws.readIndex();
+      registerBranch(index, inputs.suite, entry.branch);
+      const file = historyPath(index, inputs.suite, entry.branch);
+      const stored = await ws.readJson(file) ?? {
+        suite: inputs.suite,
+        branch: entry.branch,
+        entries: []
+      };
+      onHistory?.(stored);
+      await ws.writeJson(file, addEntry(stored, entry, inputs.maxEntries));
+      await ws.writeJson("data/index.json", index);
+    }
+  );
 }
 async function storeAndReport(octokit, inputs, benchmarks) {
   const { context: context5 } = github_exports;
   const branch = process.env.GITHUB_REF_NAME || context5.ref.replace(/^refs\/(heads|tags)\//, "");
-  const entry = await currentEntry(octokit, branch, benchmarks);
+  const entry = await commitEntry(octokit, context5.sha, branch, benchmarks);
   const history = await ancestors(octokit, context5.sha);
+  const machine = entry.machine;
   let baseline;
   if (!inputs.store) {
     const stored = await readHistory(octokit, inputs.dataBranch, inputs.suite, branch);
-    baseline = stored && findBaseline(stored.entries, history, context5.sha);
+    baseline = stored && findBaseline(stored.entries, history, machine, context5.sha);
   } else {
-    await updateDataBranch(
-      {
-        token: inputs.token,
-        repository: `${context5.repo.owner}/${context5.repo.repo}`,
-        branch: inputs.dataBranch,
-        serverUrl: context5.serverUrl,
-        siteDir: siteDir()
-      },
-      `Add ${inputs.suite} benchmark results for ${context5.sha.slice(0, 7)}`,
-      async (ws) => {
-        const index = await ws.readIndex();
-        registerBranch(index, inputs.suite, branch);
-        const file = historyPath(index, inputs.suite, branch);
-        const stored = await ws.readJson(file) ?? {
-          suite: inputs.suite,
-          branch,
-          entries: []
-        };
-        baseline = findBaseline(stored.entries, history, context5.sha);
-        await ws.writeJson(file, addEntry(stored, entry, inputs.maxEntries));
-        await ws.writeJson("data/index.json", index);
-      }
-    );
+    await store(inputs, entry, (stored) => {
+      baseline = findBaseline(stored.entries, history, machine, context5.sha);
+    });
   }
   return toReport(inputs, benchmarks, { sha: context5.sha, ref: branch }, baseline);
 }
-async function currentEntry(octokit, branch, benchmarks) {
+async function commitEntry(octokit, sha2, branch, benchmarks) {
   const { context: context5 } = github_exports;
   const head = context5.payload.head_commit;
   let commit;
-  if (head && head.id === context5.sha) {
+  if (head && head.id === sha2) {
     commit = {
       sha: head.id,
       message: head.message,
@@ -106462,7 +106540,7 @@ async function currentEntry(octokit, branch, benchmarks) {
       url: head.url
     };
   } else {
-    const res = await octokit.rest.repos.getCommit({ ...context5.repo, ref: context5.sha });
+    const res = await octokit.rest.repos.getCommit({ ...context5.repo, ref: sha2 });
     commit = {
       sha: res.data.sha,
       message: res.data.commit.message,
@@ -106471,7 +106549,7 @@ async function currentEntry(octokit, branch, benchmarks) {
       url: res.data.html_url
     };
   }
-  return { commit, branch, runAt: (/* @__PURE__ */ new Date()).toISOString(), benchmarks };
+  return { commit, branch, runAt: (/* @__PURE__ */ new Date()).toISOString(), machine: machineId(), benchmarks };
 }
 async function uploadReport(suite, reportPath) {
   try {

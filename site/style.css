@@ -61,6 +61,7 @@ h1 { font-size: 22px; margin: 0 0 4px; }
 }
 #controls label { display: flex; flex-direction: column; gap: 4px; color: var(--text-secondary); font-size: 12px; }
 #controls label.grow { flex: 1 1 180px; }
+#machine { max-width: 280px; }
 #controls label.toggle { flex-direction: row; align-items: center; font-size: 14px; padding-bottom: 6px; }
 select, input[type="search"] {
   font: inherit;

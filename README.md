@@ -4,7 +4,7 @@ A GitHub Action that keeps your benchmark results over time.
 
 - **On every push**, it runs your benchmarks and commits the results for that commit to a data branch (`gh-pages` by default), so a commit is never benchmarked twice.
 - **A static site** on that branch charts every benchmark over time. Host it for free with GitHub Pages.
-- **On every pull request**, including ones from forks, it keeps a single comment up to date: it shows a loading state as soon as benchmarks start, then each suite's table comparing the results against the target branch as they come in.
+- **On every pull request**, including ones from forks, it benchmarks both the pull request and its base commit in the same job, so both run on the same machine, and keeps a single comment up to date: a loading state as soon as benchmarks start, then each suite's comparison table as it comes in.
 - **A separate check step** fails the job when a benchmark regresses by more than a threshold.
 
 It reads results from a JSON file, and has a built-in adapter for Dart's [`benchmark_harness`](https://pub.dev/packages/benchmark_harness).
@@ -68,14 +68,18 @@ jobs:
 
 Then enable the site: **Settings → Pages → Build and deployment → Deploy from a branch**, and pick `gh-pages` / `(root)`. The branch is created by the first push that runs the action.
 
+Put everything needed to build and run the benchmarks in `run`, not in earlier steps: on pull requests, the action also runs it on a checkout of the base commit.
+
 ### Dart
 
 ```yaml
       - uses: dart-lang/setup-dart@v1
-      - run: dart pub get
       - uses: rrousselgit/benchmark@v1
         with:
-          run: dart run benchmark/main.dart | tee bench.txt
+          run: |
+            dart pub get
+            dart compile exe benchmark/main.dart -o "$RUNNER_TEMP/bench"
+            "$RUNNER_TEMP/bench" | tee bench.txt
           file: bench.txt
           format: dart
 ```
@@ -106,10 +110,10 @@ The `dart` format reads lines printed by `benchmark_harness`, such as `Template(
 
 | Event | What the action does |
 | --- | --- |
-| `push` (and any non pull request event) | Stores the results for the commit on the data branch, then compares them with the nearest earlier commit that has results. |
-| `pull_request` | Compares the results with the nearest benchmarked commit of the target branch, at or before the pull request's base. Nothing is stored. Updates the pull request comment, and uploads the report as an artifact for the `comment` action. |
+| `push` (and any non pull request event) | Stores the results for the commit on the data branch, with the machine they were measured on, then compares them with the nearest earlier commit benchmarked on the same kind of machine. |
+| `pull_request` | Runs the benchmarks, then checks out the pull request's base commit in a separate worktree and runs them again there, and compares the two. Nothing is stored. Updates the pull request comment, and uploads the report as an artifact for the `comment` action. |
 
-When none of the recent target branch commits were benchmarked, the most recent stored result on that branch is used. When the branch has no results at all, the comment lists the raw results without a comparison.
+Why rerun the base: GitHub-hosted runners are drawn from a pool of different CPUs, and moving to another machine shifts every benchmark at once, often by 20% or more. Results are only meaningful against results from the same machine. If the base commit cannot be benchmarked (for example, the pull request adds the benchmarks), the comment says so and shows the results without a comparison.
 
 Data branch layout:
 
@@ -146,6 +150,7 @@ The comment stores its state in a hidden HTML comment, so every job merges its o
 | `store` | `true` | Set to `false` to never commit results. |
 | `comment` | `true` | Set to `false` to leave the pull request comment alone. |
 | `max-entries` | `0` | Commits kept per branch. `0` keeps everything. |
+| `rerun-base` | `always` | Pull requests only. `always` benchmarks the base commit in the same job. `auto` uses stored target branch results from the same kind of machine when there are any, and reruns otherwise. `never` only uses stored results from the same kind of machine. |
 | `site-url` | Pages URL | Linked from comments. |
 | `github-token` | `github.token` | Needs `contents: write` to store results and `pull-requests: write` to comment. |
 
@@ -170,7 +175,9 @@ Only runs on `workflow_run`, with `types: [requested, completed]`. It finds the 
 
 ## Noise
 
-Shared GitHub runners are noisy, often by several percent between runs. Pick a threshold above that noise, report the median of several samples from your benchmark rather than a single run, and consider a self-hosted runner for precise tracking.
+Shared GitHub runners are noisy. Benchmarking the base in the same job removes the difference between machines, but neighbors on the same machine still add a few percent between runs. Pick a threshold above that noise, report the median of several samples from your benchmark rather than a single run, and consider a self-hosted runner for precise tracking.
+
+The history on the site mixes machines, since each push lands on whichever runner is free. Use its machine filter to see one kind of machine at a time.
 
 ## Development
 

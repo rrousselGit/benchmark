@@ -104882,12 +104882,15 @@ function summarizeReport(report) {
 function renderReport(report) {
   const lines = [];
   if (report.baseline) {
+    const where2 = report.baseline.source === "rerun" ? ", benchmarked on the same machine" : "";
     lines.push(
-      `Compared ${shortSha(report.current.sha)} against ${shortSha(report.baseline.sha)} on \`${escapeCode(report.baseline.branch)}\`, with a ${report.threshold}% threshold.`
+      `Compared ${shortSha(report.current.sha)} against ${shortSha(report.baseline.sha)} on \`${escapeCode(report.baseline.branch)}\`${where2}, with a ${report.threshold}% threshold.`
     );
+  } else if (report.baselineError) {
+    lines.push(`\u26A0\uFE0F ${escape2(report.baselineError)}`);
   } else {
     lines.push(
-      `No stored results for the target branch yet, so there is nothing to compare ${shortSha(report.current.sha)} against.`
+      `No results from the same machine to compare ${shortSha(report.current.sha)} against yet.`
     );
   }
   lines.push("");
@@ -105119,6 +105122,12 @@ function validateReport(report) {
     check(sha.test(report.baseline.sha) && typeof report.baseline.branch === "string", "baseline");
   }
   check(report.siteUrl === void 0 || url2.test(report.siteUrl), "site url");
+  check(report.baselineError === void 0 || typeof report.baselineError === "string", "baseline error");
+  check(report.machine === void 0 || typeof report.machine === "string", "machine");
+  check(
+    report.baseline?.source === void 0 || ["stored", "rerun"].includes(report.baseline.source),
+    "baseline source"
+  );
   const statuses = ["regression", "improvement", "unchanged", "new", "removed"];
   for (const row of report.rows) {
     check(typeof row.name === "string" && typeof row.unit === "string", "row");

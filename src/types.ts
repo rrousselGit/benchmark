@@ -20,6 +20,8 @@ export interface Entry {
   commit: CommitInfo;
   branch: string;
   runAt: string;
+  /** The hardware the results were measured on, see `machineId`. */
+  machine?: string;
   benchmarks: Benchmark[];
 }
 
@@ -54,7 +56,15 @@ export interface Report {
   suite: string;
   threshold: number;
   current: { sha: string; ref: string };
-  baseline?: { sha: string; branch: string };
+  baseline?: {
+    sha: string;
+    branch: string;
+    /** Whether the baseline was read from the data branch or benchmarked in this job. */
+    source?: 'stored' | 'rerun';
+  };
+  machine?: string;
+  /** Why there is no baseline, when benchmarking the base commit failed. */
+  baselineError?: string;
   pullRequest?: number;
   siteUrl?: string;
   rows: ReportRow[];

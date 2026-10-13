@@ -2,7 +2,8 @@ import { DefaultArtifactClient } from '@actions/artifact';
 import * as core from '@actions/core';
 import * as exec from '@actions/exec';
 import * as github from '@actions/github';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compare, parseThreshold } from './compare.js';
@@ -10,6 +11,7 @@ import { failSuite, finishSuite, startSuite, type CommentState } from './comment
 import { ancestors, currentRunUrl, defaultSiteUrl, readHistory, updateBenchmarkComment, type Octokit } from './github.js';
 import { addEntry, findBaseline, historyPath, registerBranch, suitePath } from './history.js';
 import { renderReport, summarizeReport } from './markdown.js';
+import { machineId } from './machine.js';
 import { formats, parseResults, type Format } from './parse.js';
 import { updateDataBranch } from './store.js';
 import type { Benchmark, BranchHistory, Entry, Report } from './types.js';
@@ -24,12 +26,7 @@ async function main(): Promise<void> {
 
   await comment?.start();
   try {
-    if (inputs.command) {
-      const exitCode = await exec.exec('bash', ['-eo', 'pipefail', '-c', inputs.command], { ignoreReturnCode: true });
-      if (exitCode !== 0) throw new Error(`Benchmark command exited with code ${exitCode}.`);
-    }
-    const benchmarks = parseResults(await readFile(inputs.file, 'utf8'), inputs.format);
-    core.info(`Parsed ${benchmarks.length} benchmark(s) from ${inputs.file}.`);
+    const benchmarks = await measure(inputs, process.cwd());
 
     const report = pr
       ? await pullRequestReport(octokit, inputs, benchmarks, pr)
@@ -107,6 +104,21 @@ class PullRequestComment {
   }
 }
 
+/** Runs the benchmark command (if any) in `cwd` and reads its results file there. */
+async function measure(inputs: Inputs, cwd: string): Promise<Benchmark[]> {
+  if (inputs.command) {
+    const exitCode = await exec.exec('bash', ['-eo', 'pipefail', '-c', inputs.command], {
+      cwd,
+      ignoreReturnCode: true,
+    });
+    if (exitCode !== 0) throw new Error(`Benchmark command exited with code ${exitCode}.`);
+  }
+  const file = path.resolve(cwd, inputs.file);
+  const benchmarks = parseResults(await readFile(file, 'utf8'), inputs.format);
+  core.info(`Parsed ${benchmarks.length} benchmark(s) from ${file}.`);
+  return benchmarks;
+}
+
 interface Inputs {
   token: string;
   file: string;
@@ -118,6 +130,7 @@ interface Inputs {
   store: boolean;
   comment: boolean;
   maxEntries: number;
+  rerunBase: 'auto' | 'always' | 'never';
   siteUrl?: string;
 }
 
@@ -132,6 +145,10 @@ function readInputs(): Inputs {
   if (!Number.isInteger(maxEntries) || maxEntries < 0) {
     throw new Error('max-entries must be a non-negative integer.');
   }
+  const rerunBase = core.getInput('rerun-base') || 'always';
+  if (!['auto', 'always', 'never'].includes(rerunBase)) {
+    throw new Error('rerun-base must be "auto", "always" or "never".');
+  }
   return {
     token: core.getInput('github-token', { required: true }),
     file: core.getInput('file', { required: true }),
@@ -143,6 +160,7 @@ function readInputs(): Inputs {
     store: core.getBooleanInput('store'),
     comment: core.getBooleanInput('comment'),
     maxEntries,
+    rerunBase: rerunBase as Inputs['rerunBase'],
     siteUrl: siteUrl || undefined,
   };
 }
@@ -152,19 +170,26 @@ function toReport(
   benchmarks: Benchmark[],
   current: Report['current'],
   baseline: Entry | undefined,
+  source: 'stored' | 'rerun' = 'stored',
 ): Report {
   return {
     version: 1,
     suite: inputs.suite,
     threshold: inputs.threshold,
     current,
-    baseline: baseline && { sha: baseline.commit.sha, branch: baseline.branch },
+    baseline: baseline && { sha: baseline.commit.sha, branch: baseline.branch, source },
+    machine: machineId(),
     siteUrl: inputs.siteUrl,
     rows: compare(benchmarks, baseline?.benchmarks, inputs.threshold),
   };
 }
 
-/** Pull requests: compare against the stored results of the target branch. */
+/**
+ * Pull requests: compare against the base commit benchmarked in this same
+ * job, since shared runners differ in hardware from one run to the next.
+ * With `rerun-base: auto`, stored results of the target branch from the
+ * same kind of machine are used instead when there are any.
+ */
 async function pullRequestReport(
   octokit: Octokit,
   inputs: Inputs,
@@ -173,20 +198,96 @@ async function pullRequestReport(
 ): Promise<Report> {
   const baseRef: string = pr.base.ref;
   const baseSha: string = pr.base.sha;
-  const history = await readHistory(octokit, inputs.dataBranch, inputs.suite, baseRef);
-  const baseline = history && findBaseline(history.entries, await ancestors(octokit, baseSha));
-  if (baseline) {
-    core.info(`Comparing against ${baseline.commit.sha} on ${baseRef}.`);
-  } else {
-    core.info(`No stored results for ${baseRef}; reporting without a comparison.`);
+  const current = { sha: pr.head.sha as string, ref: pr.head.ref as string };
+  const machine = machineId();
+  core.info(`Machine: ${machine}`);
+
+  if (inputs.rerunBase !== 'always' || !inputs.command) {
+    const history = await readHistory(octokit, inputs.dataBranch, inputs.suite, baseRef);
+    const baseline = history && findBaseline(history.entries, await ancestors(octokit, baseSha), machine);
+    if (baseline) {
+      core.info(`Comparing against stored results of ${baseline.commit.sha} on ${baseRef}, from the same machine.`);
+      return { ...toReport(inputs, benchmarks, current, baseline), pullRequest: pr.number };
+    }
   }
-  return {
-    ...toReport(inputs, benchmarks, { sha: pr.head.sha, ref: pr.head.ref }, baseline),
-    pullRequest: pr.number,
-  };
+  if (inputs.rerunBase === 'never' || !inputs.command) {
+    core.info(`No stored results for ${baseRef} from this machine; reporting without a comparison.`);
+    if (!inputs.command) core.warning('Set the "run" input so the base commit can be benchmarked on this machine.');
+    return { ...toReport(inputs, benchmarks, current, undefined), pullRequest: pr.number };
+  }
+
+  core.info(`Benchmarking the base commit ${baseSha} in this job.`);
+  let baseResults: Benchmark[];
+  try {
+    baseResults = await benchmarkCommit(inputs, baseSha);
+  } catch (e) {
+    // For example, the pull request adds the benchmarks or changes how they run.
+    const message = (e as Error).message;
+    core.warning(`Could not benchmark the base commit ${baseSha}: ${message}`);
+    return {
+      ...toReport(inputs, benchmarks, current, undefined),
+      pullRequest: pr.number,
+      baselineError: `Could not benchmark the base commit ${baseSha.slice(0, 7)}: ${message}`,
+    };
+  }
+  const baseline = await commitEntry(octokit, baseSha, baseRef, baseResults);
+  return { ...toReport(inputs, benchmarks, current, baseline, 'rerun'), pullRequest: pr.number };
 }
 
-/** Pushes and other events: store results for this commit, compare against its ancestor. */
+/** Checks out `sha` next to the workspace and benchmarks it there. */
+async function benchmarkCommit(inputs: Inputs, sha: string): Promise<Benchmark[]> {
+  const workspace = process.env.GITHUB_WORKSPACE ?? process.cwd();
+  const dir = await mkdtemp(path.join(process.env.RUNNER_TEMP ?? tmpdir(), 'benchmark-base-'));
+  const git = (...args: string[]) => exec.exec('git', args, { cwd: workspace });
+  // Shallow clones (the actions/checkout default) do not have the base commit.
+  await exec.exec('git', ['fetch', '--no-tags', '--depth=1', 'origin', sha], {
+    cwd: workspace,
+    ignoreReturnCode: true,
+  });
+  await git('worktree', 'add', '--detach', dir, sha);
+  try {
+    const relative = path.relative(workspace, process.cwd());
+    return await measure(inputs, path.join(dir, relative));
+  } finally {
+    await git('worktree', 'remove', '--force', dir);
+  }
+}
+
+async function store(
+  inputs: Inputs,
+  entry: Entry,
+  onHistory?: (stored: BranchHistory) => void,
+): Promise<void> {
+  const { context } = github;
+  await updateDataBranch(
+    {
+      token: inputs.token,
+      repository: `${context.repo.owner}/${context.repo.repo}`,
+      branch: inputs.dataBranch,
+      serverUrl: context.serverUrl,
+      siteDir: siteDir(),
+    },
+    `Add ${inputs.suite} benchmark results for ${entry.commit.sha.slice(0, 7)}`,
+    async (ws) => {
+      const index = await ws.readIndex();
+      registerBranch(index, inputs.suite, entry.branch);
+      const file = historyPath(index, inputs.suite, entry.branch);
+      const stored = (await ws.readJson<BranchHistory>(file)) ?? {
+        suite: inputs.suite,
+        branch: entry.branch,
+        entries: [],
+      };
+      onHistory?.(stored);
+      await ws.writeJson(file, addEntry(stored, entry, inputs.maxEntries));
+      await ws.writeJson('data/index.json', index);
+    },
+  );
+}
+
+/**
+ * Pushes and other events: store results for this commit, and compare them
+ * with the nearest ancestor benchmarked on the same kind of machine.
+ */
 async function storeAndReport(
   octokit: Octokit,
   inputs: Inputs,
@@ -194,48 +295,34 @@ async function storeAndReport(
 ): Promise<Report> {
   const { context } = github;
   const branch = process.env.GITHUB_REF_NAME || context.ref.replace(/^refs\/(heads|tags)\//, '');
-  const entry = await currentEntry(octokit, branch, benchmarks);
+  const entry = await commitEntry(octokit, context.sha, branch, benchmarks);
   const history = await ancestors(octokit, context.sha);
+  const machine = entry.machine!;
   let baseline: Entry | undefined;
 
   if (!inputs.store) {
     const stored = await readHistory(octokit, inputs.dataBranch, inputs.suite, branch);
-    baseline = stored && findBaseline(stored.entries, history, context.sha);
+    baseline = stored && findBaseline(stored.entries, history, machine, context.sha);
   } else {
-    await updateDataBranch(
-      {
-        token: inputs.token,
-        repository: `${context.repo.owner}/${context.repo.repo}`,
-        branch: inputs.dataBranch,
-        serverUrl: context.serverUrl,
-        siteDir: siteDir(),
-      },
-      `Add ${inputs.suite} benchmark results for ${context.sha.slice(0, 7)}`,
-      async (ws) => {
-        const index = await ws.readIndex();
-        registerBranch(index, inputs.suite, branch);
-        const file = historyPath(index, inputs.suite, branch);
-        const stored = (await ws.readJson<BranchHistory>(file)) ?? {
-          suite: inputs.suite,
-          branch,
-          entries: [],
-        };
-        baseline = findBaseline(stored.entries, history, context.sha);
-        await ws.writeJson(file, addEntry(stored, entry, inputs.maxEntries));
-        await ws.writeJson('data/index.json', index);
-      },
-    );
+    await store(inputs, entry, (stored) => {
+      baseline = findBaseline(stored.entries, history, machine, context.sha);
+    });
   }
   return toReport(inputs, benchmarks, { sha: context.sha, ref: branch }, baseline);
 }
 
-async function currentEntry(octokit: Octokit, branch: string, benchmarks: Benchmark[]): Promise<Entry> {
+async function commitEntry(
+  octokit: Octokit,
+  sha: string,
+  branch: string,
+  benchmarks: Benchmark[],
+): Promise<Entry> {
   const { context } = github;
   const head = context.payload.head_commit as
     | { id: string; message: string; timestamp: string; url: string; author?: { name?: string; username?: string } }
     | undefined;
   let commit: Entry['commit'];
-  if (head && head.id === context.sha) {
+  if (head && head.id === sha) {
     commit = {
       sha: head.id,
       message: head.message,
@@ -244,7 +331,7 @@ async function currentEntry(octokit: Octokit, branch: string, benchmarks: Benchm
       url: head.url,
     };
   } else {
-    const res = await octokit.rest.repos.getCommit({ ...context.repo, ref: context.sha });
+    const res = await octokit.rest.repos.getCommit({ ...context.repo, ref: sha });
     commit = {
       sha: res.data.sha,
       message: res.data.commit.message,
@@ -253,7 +340,7 @@ async function currentEntry(octokit: Octokit, branch: string, benchmarks: Benchm
       url: res.data.html_url,
     };
   }
-  return { commit, branch, runAt: new Date().toISOString(), benchmarks };
+  return { commit, branch, runAt: new Date().toISOString(), machine: machineId(), benchmarks };
 }
 
 // Pull requests from forks get a read-only token, so the companion `comment`

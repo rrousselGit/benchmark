@@ -25,8 +25,20 @@ describe('renderReport', () => {
   it('renders results without a baseline', () => {
     expect(summarizeReport(report(false))).toBe('No baseline yet');
     const md = renderReport(report(false));
-    expect(md).toContain('No stored results');
+    expect(md).toContain('No results from the same machine');
     expect(md).toContain('| slow | 150 us |');
+  });
+});
+
+describe('baseline wording', () => {
+  it('says when the base was benchmarked in the same job', () => {
+    const r = report();
+    r.baseline!.source = 'rerun';
+    expect(renderReport(r)).toContain('on `main`, benchmarked on the same machine, with');
+  });
+  it('explains a failed base run', () => {
+    const r = { ...report(false), baselineError: 'Could not benchmark the base commit aaaaaaa: exit 1' };
+    expect(renderReport(r)).toContain('⚠️ Could not benchmark the base commit aaaaaaa: exit 1');
   });
 });
 

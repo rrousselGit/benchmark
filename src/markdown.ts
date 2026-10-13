@@ -42,12 +42,15 @@ export function summarizeReport(report: Report): string {
 export function renderReport(report: Report): string {
   const lines: string[] = [];
   if (report.baseline) {
+    const where = report.baseline.source === 'rerun' ? ', benchmarked on the same machine' : '';
     lines.push(
-      `Compared ${shortSha(report.current.sha)} against ${shortSha(report.baseline.sha)} on \`${escapeCode(report.baseline.branch)}\`, with a ${report.threshold}% threshold.`,
+      `Compared ${shortSha(report.current.sha)} against ${shortSha(report.baseline.sha)} on \`${escapeCode(report.baseline.branch)}\`${where}, with a ${report.threshold}% threshold.`,
     );
+  } else if (report.baselineError) {
+    lines.push(`⚠️ ${escape(report.baselineError)}`);
   } else {
     lines.push(
-      `No stored results for the target branch yet, so there is nothing to compare ${shortSha(report.current.sha)} against.`,
+      `No results from the same machine to compare ${shortSha(report.current.sha)} against yet.`,
     );
   }
   lines.push('');

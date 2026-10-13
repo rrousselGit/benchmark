@@ -36,12 +36,15 @@ export function registerBranch(index: DataIndex, suite: string, branch: string):
 }
 
 /**
- * Adds or replaces the entry for a commit, keeping entries in the order
+ * Adds or replaces the entry for a commit on the same machine (a commit may
+ * have results from several machines), keeping entries in the order
  * they were first recorded and trimming the oldest beyond `maxEntries`.
  */
 export function addEntry(history: BranchHistory, entry: Entry, maxEntries: number): BranchHistory {
   const entries = [...history.entries];
-  const existing = entries.findIndex((e) => e.commit.sha === entry.commit.sha);
+  const existing = entries.findIndex(
+    (e) => e.commit.sha === entry.commit.sha && e.machine === entry.machine,
+  );
   if (existing >= 0) entries[existing] = entry;
   else entries.push(entry);
   const trimmed = maxEntries > 0 && entries.length > maxEntries ? entries.slice(-maxEntries) : entries;
@@ -49,15 +52,18 @@ export function addEntry(history: BranchHistory, entry: Entry, maxEntries: numbe
 }
 
 /**
- * Picks the stored entry to compare against. `ancestors` lists commit shas
- * newest first; the first one with stored results wins. Falls back to the
- * most recent stored entry when none of the ancestors were benchmarked.
+ * Picks the stored entry to compare against, among those measured on
+ * `machine`. `ancestors` lists commit shas newest first; the first one with
+ * stored results wins. Falls back to the most recent matching entry when
+ * none of the ancestors were benchmarked on that machine.
  */
 export function findBaseline(
-  entries: Entry[],
+  allEntries: Entry[],
   ancestors: string[],
+  machine: string,
   exclude?: string,
 ): Entry | undefined {
+  const entries = allEntries.filter((e) => e.machine === machine);
   const bySha = new Map(entries.map((e) => [e.commit.sha, e]));
   for (const sha of ancestors) {
     if (sha === exclude) continue;

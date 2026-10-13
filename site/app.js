@@ -7,6 +7,7 @@ const els = {
   suite: $('suite'),
   branch: $('branch'),
   range: $('range'),
+  machine: $('machine'),
   filter: $('filter'),
   table: $('table-view'),
   charts: $('charts'),
@@ -50,7 +51,7 @@ async function init() {
   els.filter.value = hash.filter ?? '';
   els.suite.addEventListener('change', () => loadSuite([]));
   els.branch.addEventListener('change', loadBranch);
-  for (const el of [els.range, els.table]) el.addEventListener('change', render);
+  for (const el of [els.range, els.table, els.machine]) el.addEventListener('change', render);
   els.filter.addEventListener('input', () => { writeHash(); render(); });
   await loadSuite([hash.branch]);
 }
@@ -71,6 +72,20 @@ async function loadBranch() {
     showMessage(`Could not load results: ${e.message}`);
     return;
   }
+  // Shared CI runners differ in hardware, which shifts every benchmark at
+  // once, so the history can be narrowed to one kind of machine.
+  const counts = new Map();
+  for (const e of branchData.entries) {
+    const m = e.machine ?? 'Unknown machine';
+    counts.set(m, (counts.get(m) ?? 0) + 1);
+  }
+  const options = [new Option('All machines', '')];
+  for (const [m, n] of [...counts].sort((a, b) => b[1] - a[1])) {
+    options.push(new Option(`${m} (${n})`, m));
+  }
+  const previous = els.machine.value;
+  els.machine.replaceChildren(...options);
+  els.machine.value = counts.has(previous) ? previous : '';
   render();
 }
 
@@ -83,7 +98,11 @@ function showMessage(text) {
 
 function render() {
   const limit = Number(els.range.value);
-  const entries = limit > 0 ? branchData.entries.slice(-limit) : branchData.entries;
+  const machine = els.machine.value;
+  const matching = machine
+    ? branchData.entries.filter((e) => (e.machine ?? 'Unknown machine') === machine)
+    : branchData.entries;
+  const entries = limit > 0 ? matching.slice(-limit) : matching;
   const last = entries.at(-1);
   els.subtitle.textContent = last
     ? `${entries.length} commit${entries.length === 1 ? '' : 's'} on ${branchData.branch}, latest ${shortDate(last.commit.timestamp)}`
@@ -252,7 +271,10 @@ function showTooltip(p, event) {
   const message = document.createElement('div');
   message.className = 'tt-message';
   message.textContent = commit.message.split('\n')[0];
-  tt.replaceChildren(value, meta, message);
+  const machine = document.createElement('div');
+  machine.className = 'tt-message';
+  machine.textContent = p.entry.machine ?? 'Unknown machine';
+  tt.replaceChildren(value, meta, message, machine);
   tt.hidden = false;
   const margin = 12;
   const { width, height } = tt.getBoundingClientRect();

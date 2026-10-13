@@ -2,10 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { addEntry, branchFileName, emptyIndex, findBaseline, historyPath, registerBranch } from '../src/history.js';
 import type { Entry } from '../src/types.js';
 
-const entry = (sha: string, value = 1): Entry => ({
+const entry = (sha: string, value = 1, machine = 'm1'): Entry => ({
   commit: { sha, message: sha, author: 'me', timestamp: '2026-01-01T00:00:00Z', url: `u/${sha}` },
   branch: 'main',
   runAt: '2026-01-01T00:00:00Z',
+  machine,
   benchmarks: [{ name: 'a', value, unit: 'us' }],
 });
 
@@ -39,20 +40,28 @@ describe('addEntry', () => {
     ]);
     h = addEntry(h, entry('c'), 2);
     expect(h.entries.map((e) => e.commit.sha)).toEqual(['b', 'c']);
+    h = addEntry(h, entry('c', 5, 'm2'), 0);
+    expect(h.entries.map((e) => `${e.commit.sha}@${e.machine}`)).toEqual(['b@m1', 'c@m1', 'c@m2']);
   });
 });
 
 describe('findBaseline', () => {
   const entries = [entry('a'), entry('b'), entry('c')];
   it('prefers the nearest benchmarked ancestor', () => {
-    expect(findBaseline(entries, ['x', 'b', 'a'])?.commit.sha).toBe('b');
+    expect(findBaseline(entries, ['x', 'b', 'a'], 'm1')?.commit.sha).toBe('b');
   });
   it('skips the commit itself', () => {
-    expect(findBaseline(entries, ['c', 'b'], 'c')?.commit.sha).toBe('b');
+    expect(findBaseline(entries, ['c', 'b'], 'm1', 'c')?.commit.sha).toBe('b');
+  });
+  it('only uses results from the same machine', () => {
+    const mixed = [entry('a', 1, 'm1'), entry('b', 1, 'm2')];
+    expect(findBaseline(mixed, ['b', 'a'], 'm1')?.commit.sha).toBe('a');
+    expect(findBaseline(mixed, ['b', 'a'], 'm3')).toBeUndefined();
+    expect(findBaseline([{ ...entry('a'), machine: undefined }], ['a'], 'm1')).toBeUndefined();
   });
   it('falls back to the latest entry', () => {
-    expect(findBaseline(entries, ['x', 'y'])?.commit.sha).toBe('c');
-    expect(findBaseline(entries, ['x'], 'c')?.commit.sha).toBe('b');
-    expect(findBaseline([], ['x'])).toBeUndefined();
+    expect(findBaseline(entries, ['x', 'y'], 'm1')?.commit.sha).toBe('c');
+    expect(findBaseline(entries, ['x'], 'm1', 'c')?.commit.sha).toBe('b');
+    expect(findBaseline([], ['x'], 'm1')).toBeUndefined();
   });
 });
