@@ -1,0 +1,13 @@
+name: Benchmark tracker comment
+description: Post benchmark comments for pull requests from forks. Runs on workflow_run after the benchmark workflow.
+author: Remi Rousselet
+branding:
+  icon: message-square
+  color: blue
+inputs:
+  github-token:
+    description: Token used to download the report and comment on the pull request.
+    default: ${{ github.token }}
+runs:
+  using: node24
+  main: dist/index.mjs

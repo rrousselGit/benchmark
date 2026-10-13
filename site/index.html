@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Benchmark history</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1 id="title">Benchmark history</h1>
+    <p id="subtitle" class="muted"></p>
+  </header>
+  <form id="controls" aria-label="Filters">
+    <label>Suite <select id="suite"></select></label>
+    <label>Branch <select id="branch"></select></label>
+    <label>Commits
+      <select id="range">
+        <option value="30">Last 30</option>
+        <option value="100" selected>Last 100</option>
+        <option value="500">Last 500</option>
+        <option value="0">All</option>
+      </select>
+    </label>
+    <label class="grow">Filter <input id="filter" type="search" placeholder="Benchmark name"></label>
+    <label class="toggle"><input id="table-view" type="checkbox"> Table view</label>
+  </form>
+  <main id="charts" aria-live="polite"></main>
+  <div id="tooltip" role="tooltip" hidden></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

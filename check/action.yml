@@ -1,0 +1,19 @@
+name: Benchmark tracker regression check
+description: Fail the job when a benchmark regressed beyond a threshold.
+author: Remi Rousselet
+branding:
+  icon: alert-triangle
+  color: red
+inputs:
+  report:
+    description: Path to the report produced by rrousselgit/benchmark. Defaults to the last one produced in this job.
+    default: ''
+  threshold:
+    description: Allowed regression, such as "10%". Defaults to the threshold given to rrousselgit/benchmark.
+    default: ''
+outputs:
+  regressions:
+    description: Number of benchmarks that regressed beyond the threshold.
+runs:
+  using: node24
+  main: dist/index.mjs

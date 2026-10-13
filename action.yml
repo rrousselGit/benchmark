@@ -1,0 +1,50 @@
+name: Benchmark tracker
+description: Store benchmark results per commit, chart them over time, and comment on pull requests with the impact.
+author: Remi Rousselet
+branding:
+  icon: trending-up
+  color: blue
+inputs:
+  file:
+    description: Path to the results file the benchmarks produced.
+    required: true
+  format:
+    description: 'Format of the results file: "json" or "dart" (output of package:benchmark_harness).'
+    default: json
+  run:
+    description: Optional shell command to run before reading the results file, such as the benchmark itself.
+    default: ''
+  suite:
+    description: Name of this set of benchmarks. Use different names to track several suites in one repository.
+    default: default
+  github-token:
+    description: Token used to read and push results and to comment on pull requests.
+    default: ${{ github.token }}
+  data-branch:
+    description: Branch where results and the site are stored.
+    default: gh-pages
+  threshold:
+    description: How much worse a benchmark must get to be reported as a regression, such as "10%".
+    default: 10%
+  store:
+    description: Whether to commit results to the data branch. Ignored on pull requests, which are never stored.
+    default: 'true'
+  comment:
+    description: Whether to comment on pull requests with the results.
+    default: 'true'
+  max-entries:
+    description: Number of commits kept per branch. 0 keeps everything.
+    default: '0'
+  site-url:
+    description: URL of the results site, linked from comments. Defaults to the GitHub Pages URL when data-branch is gh-pages.
+    default: ''
+outputs:
+  report:
+    description: Path to the JSON report, used by rrousselgit/benchmark/check.
+  markdown:
+    description: The report rendered as markdown.
+  regressions:
+    description: Number of benchmarks that regressed beyond the threshold.
+runs:
+  using: node24
+  main: dist/index.mjs

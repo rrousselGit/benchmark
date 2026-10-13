@@ -1,0 +1,3 @@
+dist/** linguist-generated=true
+comment/dist/** linguist-generated=true
+check/dist/** linguist-generated=true

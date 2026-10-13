@@ -1,0 +1,20 @@
+# Posts benchmark comments on pull requests from forks, whose own runs
+# only get a read-only token.
+name: Benchmark comment
+
+on:
+  workflow_run:
+    workflows: [Benchmark]
+    types: [completed]
+
+permissions:
+  actions: read # download the report artifact
+  pull-requests: write
+
+jobs:
+  comment:
+    if: github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./comment
