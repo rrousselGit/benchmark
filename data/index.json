@@ -11,6 +11,11 @@
    "branches": {
     "main": "main.json"
    }
+  },
+  "dart-instructions": {
+   "branches": {
+    "main": "main.json"
+   }
   }
  }
 }

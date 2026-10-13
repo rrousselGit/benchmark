@@ -1,0 +1,65 @@
+{
+ "suite": "dart-instructions",
+ "branch": "main",
+ "entries": [
+  {
+   "commit": {
+    "sha": "b20ca8f74f06606d4786728db1736c83446c98f6",
+    "message": "Shorten the unsupported protocol error so comments show all of it\n\nCo-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_01XevFbruFj3utvS2mwxxcaG",
+    "author": "claude",
+    "timestamp": "2026-10-13T10:40:40Z",
+    "url": "https://github.com/rrousselGit/benchmark/commit/b20ca8f74f06606d4786728db1736c83446c98f6"
+   },
+   "branch": "main",
+   "runAt": "2026-10-13T10:54:36.536Z",
+   "machine": "instruction counts · linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 383147,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 931,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1205044,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1673155,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 646695,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1595891,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 620506,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 404493,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2449346,
+     "unit": "instructions"
+    }
+   ]
+  }
+ ]
+}
