@@ -1,11 +1,14 @@
-// Runs every benchmark and prints benchmark_harness reports, such as
-// `Fibonacci recursive (20)(RunTime): 41.2 us.`, which the action parses
-// with `format: dart`.
+// Runs the benchmarks through package:benchmark_tracker. Run directly, it
+// prints benchmark_harness reports such as
+// `Fibonacci recursive (20)(RunTime): 41.2 us.` (the action's `format: dart`).
+// Under the action's `mode: instructions`, it runs one benchmark at a time so
+// the action can count the instructions each iteration executes.
 import 'dart:convert';
 import 'dart:math';
 
 import 'package:benchmark_example/benchmark_example.dart';
 import 'package:benchmark_harness/benchmark_harness.dart';
+import 'package:benchmark_tracker/benchmark_tracker.dart';
 
 class FibonacciRecursive extends BenchmarkBase {
   FibonacciRecursive() : super('Fibonacci recursive (20)');
@@ -114,7 +117,7 @@ List<int> _randomList(int length) {
 }
 
 void main() {
-  for (final benchmark in [
+  runBenchmarks([
     FibonacciRecursive(),
     FibonacciIterative(),
     InsertionSort(),
@@ -124,7 +127,5 @@ void main() {
     JoinNumbers(),
     JsonRoundTrip(),
     LruCacheChurn(),
-  ]) {
-    benchmark.report();
-  }
+  ]);
 }

@@ -5,15 +5,24 @@ branding:
   icon: trending-up
   color: blue
 inputs:
+  mode:
+    description: '"time" reads timings from the results file. "instructions" counts the CPU instructions each benchmark iteration executes, under Valgrind, which stays stable across machines.'
+    default: time
+  build:
+    description: Optional shell command that builds the benchmarks, run before "run" in every checkout (this commit, and the base or reference commit).
+    default: ''
   file:
-    description: Path to the results file the benchmarks produced.
-    required: true
+    description: 'mode: time. Path to the results file the benchmarks produced.'
+    default: ''
   format:
     description: 'Format of the results file: "json" or "dart" (output of package:benchmark_harness).'
     default: json
   run:
-    description: Optional shell command to run before reading the results file, such as the benchmark itself.
+    description: 'Shell command that runs the benchmarks. mode: time, optional: runs before reading the results file. mode: instructions, required: a program following the BENCHMARK_LIST / BENCHMARK_NAME protocol, such as one using package:benchmark_tracker.'
     default: ''
+  iterations:
+    description: 'mode: instructions. Each benchmark runs this many times and twice as many; the difference gives the cost of one iteration.'
+    default: '10'
   suite:
     description: Name of this set of benchmarks. Use different names to track several suites in one repository.
     default: default
@@ -36,10 +45,10 @@ inputs:
     description: Number of commits kept per branch. 0 keeps everything.
     default: '0'
   rerun-base:
-    description: 'Pull requests: "always" benchmarks the base commit in the same job, "auto" uses stored results from the same kind of machine when there are any, "never" only uses those.'
-    default: always
+    description: 'Pull requests: "always" benchmarks the base commit in the same job, "auto" uses stored results from the same kind of machine when there are any, "never" only uses those. Defaults to "always" for mode: time and "auto" for mode: instructions.'
+    default: ''
   reference:
-    description: 'Pushes: commit, tag or branch benchmarked alongside every push so results from different machines are comparable. Defaults to the first stored commit of the suite. "none" disables it.'
+    description: 'mode: time, pushes: commit, tag or branch benchmarked alongside every push so results from different machines are comparable. Defaults to the first stored commit of the suite. "none" disables it, the default for mode: instructions.'
     default: ''
   site-url:
     description: URL of the results site, linked from comments. Defaults to the GitHub Pages URL when data-branch is gh-pages.

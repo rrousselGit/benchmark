@@ -42,6 +42,15 @@ describe('baseline wording', () => {
   });
 });
 
+describe('formatValue', () => {
+  it('keeps large counts readable', async () => {
+    const { formatValue } = await import('../src/markdown.js');
+    expect(formatValue(383487, 'instructions')).toBe('383.5K instructions');
+    expect(formatValue(12_345_678, '')).toBe('12.35M');
+    expect(formatValue(1234.5, 'us')).toBe('1234.5 us');
+  });
+});
+
 describe('escape', () => {
   it('neutralizes tables, html and mentions', () => {
     expect(escape('a|b')).toBe('a\\|b');

@@ -105849,10 +105849,11 @@ function table(rows, withBaseline) {
     )
   ];
 }
+var compact = new Intl.NumberFormat("en-US", { notation: "compact", maximumSignificantDigits: 4 });
 function formatValue(value, unit) {
   if (value === void 0) return "\u2013";
   const abs = Math.abs(value);
-  const text = abs !== 0 && (abs >= 1e6 || abs < 1e-3) ? value.toExponential(2) : Number(value.toPrecision(abs >= 1e3 ? 6 : 4)).toString();
+  const text = abs >= 1e5 ? compact.format(value) : abs !== 0 && abs < 1e-3 ? value.toExponential(2) : Number(value.toPrecision(abs >= 1e3 ? 6 : 4)).toString();
   return unit ? `${text} ${escape2(unit)}` : text;
 }
 function formatChange(row) {
@@ -106161,10 +106162,106 @@ function defaultSiteUrl() {
   return name.toLowerCase() === host ? `https://${host}/` : `https://${host}/${name}/`;
 }
 
-// src/machine.ts
+// src/instructions.ts
 import os8 from "node:os";
-function machineId() {
-  const cpus = os8.cpus();
+async function countInstructions(command, cwd, iterations) {
+  await ensureValgrind();
+  const list = await getExecOutput("bash", ["-eo", "pipefail", "-c", command], {
+    cwd,
+    env: { ...childEnv(), BENCHMARK_LIST: "1" },
+    silent: true
+  });
+  const names = list.stdout.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  if (names.length === 0) {
+    throw new Error("The benchmark command listed no benchmarks. Does it support BENCHMARK_LIST=1?");
+  }
+  info(`Counting instructions for ${names.length} benchmark(s), ${iterations} and ${iterations * 2} iterations each.`);
+  const results = new Array(names.length);
+  let next = 0;
+  const worker = async () => {
+    while (next < names.length) {
+      const i = next++;
+      let n = iterations;
+      let once = await instructionsFor(command, cwd, names[i], n);
+      let twice = await instructionsFor(command, cwd, names[i], n * 2);
+      if (twice - once < minimumMeasured) {
+        const perIteration = Math.max(1, (twice - once) / n);
+        n = Math.min(maximumIterations, Math.ceil(minimumMeasured / perIteration));
+        once = await instructionsFor(command, cwd, names[i], n);
+        twice = await instructionsFor(command, cwd, names[i], n * 2);
+      }
+      const value = Math.max(0, Math.round((twice - once) / n));
+      info(`${names[i]}: ${value.toLocaleString("en-US")} instructions per iteration`);
+      results[i] = { name: names[i], value, unit: "instructions" };
+    }
+  };
+  await Promise.all(Array.from({ length: Math.max(1, os8.cpus().length) }, worker));
+  return results;
+}
+var minimumMeasured = 5e6;
+var maximumIterations = 1e6;
+async function instructionsFor(command, cwd, name, iterations) {
+  const res = await getExecOutput(
+    "valgrind",
+    [
+      "--tool=cachegrind",
+      "--cache-sim=no",
+      "--cachegrind-out-file=/dev/null",
+      "--trace-children=yes",
+      "bash",
+      "-eo",
+      "pipefail",
+      "-c",
+      command
+    ],
+    {
+      cwd,
+      env: { ...childEnv(), BENCHMARK_NAME: name, BENCHMARK_ITERATIONS: String(iterations) },
+      silent: true,
+      ignoreReturnCode: true
+    }
+  );
+  if (res.exitCode !== 0) {
+    throw new Error(`Benchmark "${name}" exited with code ${res.exitCode}:
+${res.stderr.slice(-2e3)}`);
+  }
+  return parseInstructionCount(res.stderr);
+}
+function parseInstructionCount(stderr) {
+  let total = 0;
+  let found = false;
+  for (const match of stderr.matchAll(/^==\d+== I\s+refs:\s+([\d,]+)/gm)) {
+    total += Number(match[1].replace(/,/g, ""));
+    found = true;
+  }
+  if (!found) throw new Error(`Valgrind reported no instruction count:
+${stderr.slice(-2e3)}`);
+  return total;
+}
+async function ensureValgrind() {
+  const check2 = await getExecOutput("valgrind", ["--version"], { ignoreReturnCode: true, silent: true }).catch(
+    () => ({ exitCode: 1 })
+  );
+  if (check2.exitCode === 0) return;
+  if (process.platform !== "linux") throw new Error("Counting instructions needs Valgrind, which only runs on Linux here.");
+  info("Installing Valgrind.");
+  const install = () => exec("sudo", ["apt-get", "install", "-y", "-q", "valgrind"], { ignoreReturnCode: true });
+  if (await install() !== 0) {
+    await exec("sudo", ["apt-get", "update", "-q"]);
+    if (await install() !== 0) throw new Error("Could not install Valgrind.");
+  }
+}
+function childEnv() {
+  return Object.fromEntries(
+    Object.entries(process.env).filter((entry) => entry[1] !== void 0)
+  );
+}
+
+// src/machine.ts
+import os9 from "node:os";
+function machineId(mode = "time") {
+  if (mode === "instructions") return `instruction counts \xB7 ${process.platform}-${process.arch}`;
+  const cpus = os9.cpus();
   const model = (cpus[0]?.model ?? "unknown CPU").replace(/\s+/g, " ").trim();
   return `${model} \xB7 ${cpus.length} cores \xB7 ${process.platform}-${process.arch}`;
 }
@@ -106402,6 +106499,16 @@ var PullRequestComment = class {
   }
 };
 async function measure(inputs, cwd) {
+  if (inputs.build) {
+    const exitCode = await exec("bash", ["-eo", "pipefail", "-c", inputs.build], {
+      cwd,
+      ignoreReturnCode: true
+    });
+    if (exitCode !== 0) throw new Error(`Build command exited with code ${exitCode}.`);
+  }
+  if (inputs.mode === "instructions") {
+    return countInstructions(inputs.command, cwd, inputs.iterations);
+  }
   if (inputs.command) {
     const exitCode = await exec("bash", ["-eo", "pipefail", "-c", inputs.command], {
       cwd,
@@ -106425,15 +106532,26 @@ function readInputs() {
   if (!Number.isInteger(maxEntries) || maxEntries < 0) {
     throw new Error("max-entries must be a non-negative integer.");
   }
-  const rerunBase = getInput("rerun-base") || "always";
+  const mode = getInput("mode") || "time";
+  if (mode !== "time" && mode !== "instructions") throw new Error('mode must be "time" or "instructions".');
+  const iterations = Number(getInput("iterations") || "10");
+  if (!Number.isInteger(iterations) || iterations < 1) throw new Error("iterations must be a positive integer.");
+  const command = getInput("run");
+  const file = getInput("file");
+  if (mode === "instructions" && !command) throw new Error('mode: instructions needs the "run" input.');
+  if (mode === "time" && !file) throw new Error("Input required and not supplied: file");
+  const rerunBase = getInput("rerun-base") || (mode === "instructions" ? "auto" : "always");
   if (!["auto", "always", "never"].includes(rerunBase)) {
     throw new Error('rerun-base must be "auto", "always" or "never".');
   }
   return {
+    mode,
+    build: getInput("build"),
+    iterations,
     token: getInput("github-token", { required: true }),
-    file: getInput("file", { required: true }),
+    file,
     format,
-    command: getInput("run"),
+    command,
     suite: suitePath(getInput("suite") || "default"),
     dataBranch,
     threshold: parseThreshold(getInput("threshold") || "10%"),
@@ -106441,7 +106559,7 @@ function readInputs() {
     comment: getBooleanInput("comment"),
     maxEntries,
     rerunBase,
-    reference: getInput("reference"),
+    reference: getInput("reference") || (mode === "instructions" ? "none" : ""),
     siteUrl: siteUrl || void 0
   };
 }
@@ -106452,7 +106570,7 @@ function toReport(inputs, benchmarks, current, baseline, source = "stored") {
     threshold: inputs.threshold,
     current,
     baseline: baseline && { sha: baseline.commit.sha, branch: baseline.branch, source },
-    machine: machineId(),
+    machine: machineId(inputs.mode),
     siteUrl: inputs.siteUrl,
     rows: compare(benchmarks, baseline?.benchmarks, inputs.threshold)
   };
@@ -106461,7 +106579,7 @@ async function pullRequestReport(octokit, inputs, benchmarks, pr) {
   const baseRef = pr.base.ref;
   const baseSha = pr.base.sha;
   const current = { sha: pr.head.sha, ref: pr.head.ref };
-  const machine = machineId();
+  const machine = machineId(inputs.mode);
   info(`Machine: ${machine}`);
   if (inputs.rerunBase !== "always" || !inputs.command) {
     const history = await readHistory(octokit, inputs.dataBranch, inputs.suite, baseRef);
@@ -106489,7 +106607,7 @@ async function pullRequestReport(octokit, inputs, benchmarks, pr) {
       baselineError: `Could not benchmark the base commit ${baseSha.slice(0, 7)}: ${message}`
     };
   }
-  const baseline = await commitEntry(octokit, baseSha, baseRef, baseResults);
+  const baseline = await commitEntry(octokit, baseSha, baseRef, baseResults, machineId(inputs.mode));
   return { ...toReport(inputs, benchmarks, current, baseline, "rerun"), pullRequest: pr.number };
 }
 async function benchmarkCommit(inputs, sha2) {
@@ -106537,7 +106655,7 @@ async function store(inputs, entry, onHistory) {
 async function storeAndReport(octokit, inputs, benchmarks) {
   const { context: context5 } = github_exports;
   const branch = process.env.GITHUB_REF_NAME || context5.ref.replace(/^refs\/(heads|tags)\//, "");
-  const entry = await commitEntry(octokit, context5.sha, branch, benchmarks);
+  const entry = await commitEntry(octokit, context5.sha, branch, benchmarks, machineId(inputs.mode));
   const history = await ancestors(octokit, context5.sha);
   const machine = entry.machine;
   const reference = inputs.store ? await resolveReference(octokit, inputs) : void 0;
@@ -106583,7 +106701,7 @@ async function resolveReference(octokit, inputs) {
   const index = await readJsonFile(octokit, inputs.dataBranch, "data/index.json");
   return index?.suites[inputs.suite]?.reference ?? context4.sha;
 }
-async function commitEntry(octokit, sha2, branch, benchmarks) {
+async function commitEntry(octokit, sha2, branch, benchmarks, machine) {
   const { context: context5 } = github_exports;
   const head = context5.payload.head_commit;
   let commit;
@@ -106605,7 +106723,7 @@ async function commitEntry(octokit, sha2, branch, benchmarks) {
       url: res.data.html_url
     };
   }
-  return { commit, branch, runAt: (/* @__PURE__ */ new Date()).toISOString(), machine: machineId(), benchmarks };
+  return { commit, branch, runAt: (/* @__PURE__ */ new Date()).toISOString(), machine, benchmarks };
 }
 async function uploadReport(suite, reportPath) {
   try {

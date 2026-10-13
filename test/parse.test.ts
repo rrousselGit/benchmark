@@ -51,3 +51,17 @@ describe('dart', () => {
     expect(() => parseResults('hello', 'dart')).toThrow(/No benchmark results/);
   });
 });
+
+describe('instruction counts', async () => {
+  const { parseInstructionCount } = await import('../src/instructions.js');
+  it('sums every traced process', () => {
+    const stderr = [
+      '==100== Cachegrind, a high-precision tracing profiler',
+      '==100== I refs:        1,000',
+      '==101== I   refs:      2,345,678',
+      'unrelated I refs: 5',
+    ].join('\n');
+    expect(parseInstructionCount(stderr)).toBe(2_346_678);
+    expect(() => parseInstructionCount('nothing')).toThrow(/no instruction count/);
+  });
+});

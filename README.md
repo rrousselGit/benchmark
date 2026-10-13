@@ -3,11 +3,11 @@
 A GitHub Action that keeps your benchmark results over time.
 
 - **On every push**, it runs your benchmarks and commits the results for that commit to a data branch (`gh-pages` by default), so a commit is never benchmarked twice.
-- **A static site** on that branch charts every benchmark over time, relative to a reference commit benchmarked on the same machine, so the graph holds up on shared runners whose hardware changes from run to run. Host it for free with GitHub Pages.
+- **A static site** on that branch charts every benchmark over time. Host it for free with GitHub Pages. Shared runners change hardware from run to run, so for history that holds up, track [instruction counts](#instruction-counts) (stable across machines, like CodSpeed), or timings relative to a [reference commit](#the-reference-commit) benchmarked on the same machine.
 - **On every pull request**, including ones from forks, it benchmarks both the pull request and its base commit in the same job, so both run on the same machine, and keeps a single comment up to date: a loading state as soon as benchmarks start, then each suite's comparison table as it comes in.
 - **A separate check step** fails the job when a benchmark regresses by more than a threshold.
 
-It reads results from a JSON file, and has a built-in adapter for Dart's [`benchmark_harness`](https://pub.dev/packages/benchmark_harness).
+It reads timings from a JSON file, has a built-in adapter for Dart's [`benchmark_harness`](https://pub.dev/packages/benchmark_harness), and can count instructions for any program that follows a small protocol, with a ready-made Dart helper.
 
 ## Quick start
 
@@ -68,23 +68,74 @@ jobs:
 
 Then enable the site: **Settings → Pages → Build and deployment → Deploy from a branch**, and pick `gh-pages` / `(root)`. The branch is created by the first push that runs the action.
 
-Put everything needed to build and run the benchmarks in `run`, not in earlier steps: on pull requests, the action also runs it on a checkout of the base commit.
+Put everything needed to build and run the benchmarks in `build` and `run`, not in earlier steps: on pull requests, the action also runs them on a checkout of the base commit.
 
 ### Dart
 
+The recommended setup runs two suites: instruction counts for the history graphs, and real timings against the base commit on pull requests.
+
 ```yaml
+jobs:
+  instructions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
       - uses: dart-lang/setup-dart@v1
-      - uses: rrousselgit/benchmark@v1
+      - id: bench
+        uses: rrousselgit/benchmark@v1
         with:
-          run: |
+          suite: dart-instructions
+          mode: instructions
+          build: |
             dart pub get
             dart compile exe benchmark/main.dart -o "$RUNNER_TEMP/bench"
-            "$RUNNER_TEMP/bench" | tee bench.txt
+          run: '"$RUNNER_TEMP/bench"'
+          threshold: 5%
+      - uses: rrousselgit/benchmark/check@v1
+        with:
+          report: ${{ steps.bench.outputs.report }}
+
+  timings:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dart-lang/setup-dart@v1
+      - id: bench
+        uses: rrousselgit/benchmark@v1
+        with:
+          suite: dart
+          build: |
+            dart pub get
+            dart compile exe benchmark/main.dart -o "$RUNNER_TEMP/bench"
+          run: '"$RUNNER_TEMP/bench" | tee bench.txt'
           file: bench.txt
           format: dart
+          threshold: 20%
+      - uses: rrousselgit/benchmark/check@v1
+        with:
+          report: ${{ steps.bench.outputs.report }}
 ```
 
-The `dart` format reads lines printed by `benchmark_harness`, such as `Template(RunTime): 12.5 us.`, and ignores everything else.
+The timings job only runs on pull requests, where it benchmarks the base commit in the same job, so nothing machine-dependent reaches the graphs. The `dart` format reads lines printed by `benchmark_harness`, such as `Template(RunTime): 12.5 us.`, and ignores everything else.
+
+The benchmark entry point hands its benchmarks to `runBenchmarks` from the [`benchmark_tracker`](dart) package in this repository, which implements the instruction counting protocol and otherwise prints `benchmark_harness` results as usual:
+
+```yaml
+# pubspec.yaml
+dev_dependencies:
+  benchmark_harness: ^2.4.0
+  benchmark_tracker:
+    git:
+      url: https://github.com/rrousselGit/benchmark
+      path: dart
+```
+
+```dart
+import 'package:benchmark_tracker/benchmark_tracker.dart';
+
+void main() => runBenchmarks([MyBenchmark(), OtherBenchmark()]);
+```
 
 ## Results format
 
@@ -115,9 +166,26 @@ The `dart` format reads lines printed by `benchmark_harness`, such as `Template(
 
 Why rerun: GitHub-hosted runners are drawn from a pool of different CPUs, and moving to another machine shifts every benchmark at once, often by 20% or more. Results are only meaningful against results from the same machine. If the base commit cannot be benchmarked (for example, the pull request adds the benchmarks), the comment says so and shows the results without a comparison.
 
+### Instruction counts
+
+With `mode: instructions`, the action runs each benchmark under [Valgrind](https://valgrind.org) (installed with `apt-get` when missing) and counts the CPU instructions one iteration executes. Counts do not depend on how fast the machine is or what else runs on it, so they repeat to within about 0.1% from one runner to the next and can be stored and graphed directly. This is the approach [CodSpeed](https://codspeed.io) takes.
+
+The `run` command must follow this protocol, which `runBenchmarks` implements for Dart:
+
+- With `BENCHMARK_LIST=1`, print the name of each benchmark, one per line, and exit.
+- With `BENCHMARK_NAME=<name>` and `BENCHMARK_ITERATIONS=<n>`, set the benchmark up, run it `n` times, tear it down, and exit.
+
+Each benchmark runs with `iterations` and twice as many iterations, and the difference, divided by `iterations`, is the cost of one iteration, so startup and setup cancel out. Benchmarks too small to measure that way get more iterations automatically.
+
+Things to know:
+
+- Linux only, and only for native code: compile Dart with `dart compile exe`. A JIT spends its instructions compiling, not running your code.
+- Instructions are not time. They miss cache misses, memory bandwidth, I/O and syscalls, and a change that executes more but cheaper instructions can be faster. That is why the example pairs them with real timings on pull requests.
+- Counts only change when the code or toolchain does, so a tight `threshold`, such as `5%`, works. A new Dart SDK can shift every count at once.
+
 ### The reference commit
 
-For the history to survive machine changes, every push also benchmarks one fixed commit, the suite's reference, on the same machine. The site then plots each benchmark as a percentage of the reference, which cancels out how fast that machine is. The reference is the first commit the suite stored, unless you set the `reference` input, for example to a release tag. Changing it starts a new relative series. Benchmarks that the reference commit does not have only appear in the raw timings view, so move the reference forward from time to time, for example on releases. This doubles the time of push runs, and `reference: none` turns it off.
+For `mode: time`. For the history to survive machine changes, every push also benchmarks one fixed commit, the suite's reference, on the same machine. The site then plots each benchmark as a percentage of the reference, which cancels out how fast that machine is. The reference is the first commit the suite stored, unless you set the `reference` input, for example to a release tag. Changing it starts a new relative series. Benchmarks that the reference commit does not have only appear in the raw timings view, so move the reference forward from time to time, for example on releases. This doubles the time of push runs, and `reference: none` turns it off.
 
 Data branch layout:
 
@@ -145,17 +213,20 @@ The comment stores its state in a hidden HTML comment, so every job merges its o
 
 | Input | Default | Description |
 | --- | --- | --- |
-| `file` | required | Results file. |
+| `mode` | `time` | `time` reads timings from `file`. `instructions` counts instructions, see [Instruction counts](#instruction-counts). |
+| `build` | | Shell command that builds the benchmarks, run before `run` in every checkout. |
+| `run` | | `mode: time`: shell command to run first, typically the benchmark itself. `mode: instructions`, required: the program following the protocol. |
+| `file` | | `mode: time`, required: results file. |
 | `format` | `json` | `json` or `dart`. |
-| `run` | | Shell command to run first, typically the benchmark itself. |
+| `iterations` | `10` | `mode: instructions`: iterations per measurement. |
 | `suite` | `default` | Name of this set of benchmarks. Use several to track independent suites (packages, platforms) in one repository; each gets its own section in the pull request comment. |
 | `threshold` | `10%` | Change beyond which a benchmark is flagged in the comment. |
 | `data-branch` | `gh-pages` | Branch storing results and the site. |
 | `store` | `true` | Set to `false` to never commit results. |
 | `comment` | `true` | Set to `false` to leave the pull request comment alone. |
 | `max-entries` | `0` | Commits kept per branch. `0` keeps everything. |
-| `reference` | first stored commit | Pushes only. Commit, tag or branch benchmarked alongside every push, see above. `none` turns it off. |
-| `rerun-base` | `always` | Pull requests only. `always` benchmarks the base commit in the same job. `auto` uses stored target branch results from the same kind of machine when there are any, and reruns otherwise. `never` only uses stored results from the same kind of machine. |
+| `reference` | first stored commit | `mode: time`, pushes only. Commit, tag or branch benchmarked alongside every push, see above. `none` turns it off, and is the default for `mode: instructions`. |
+| `rerun-base` | `always`, `auto` for instructions | Pull requests only. `always` benchmarks the base commit in the same job. `auto` uses stored target branch results from the same kind of machine when there are any, and reruns otherwise. `never` only uses stored results from the same kind of machine. |
 | `site-url` | Pages URL | Linked from comments. |
 | `github-token` | `github.token` | Needs `contents: write` to store results and `pull-requests: write` to comment. |
 
@@ -195,9 +266,9 @@ The actions run from the bundled files in `dist/`, `comment/dist/` and `check/di
 
 ## Examples
 
-This repository runs the action on itself with two suites, see [`.github/workflows/benchmark.yml`](.github/workflows/benchmark.yml):
+This repository runs the action on itself, see [`.github/workflows/benchmark.yml`](.github/workflows/benchmark.yml):
 
-- [`examples/dart`](examples/dart): a small Dart package with `benchmark_harness` benchmarks (recursion, sorting, text processing, JSON, an LRU cache) and its tests. Run them locally with `dart run benchmark/main.dart`.
+- [`examples/dart`](examples/dart): a small Dart package with `benchmark_harness` benchmarks (recursion, sorting, text processing, JSON, an LRU cache) and its tests. Run them locally with `dart run benchmark/main.dart`. It is tracked as two suites: `dart-instructions` (instruction counts, stored and graphed) and `dart` (timings against the base, pull requests only).
 - [`examples/node`](examples/node): a few Node micro-benchmarks printing the JSON format.
 
-Because the runners are shared, the example checks use loose thresholds (20% and 25%).
+Because the runners are shared, the timing checks use loose thresholds (20% and 25%); instruction counts use 5%.

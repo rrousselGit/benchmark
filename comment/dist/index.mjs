@@ -104932,10 +104932,11 @@ function table(rows, withBaseline) {
     )
   ];
 }
+var compact = new Intl.NumberFormat("en-US", { notation: "compact", maximumSignificantDigits: 4 });
 function formatValue(value, unit) {
   if (value === void 0) return "\u2013";
   const abs = Math.abs(value);
-  const text = abs !== 0 && (abs >= 1e6 || abs < 1e-3) ? value.toExponential(2) : Number(value.toPrecision(abs >= 1e3 ? 6 : 4)).toString();
+  const text = abs >= 1e5 ? compact.format(value) : abs !== 0 && abs < 1e-3 ? value.toExponential(2) : Number(value.toPrecision(abs >= 1e3 ? 6 : 4)).toString();
   return unit ? `${text} ${escape2(unit)}` : text;
 }
 function formatChange(row) {

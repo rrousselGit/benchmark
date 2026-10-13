@@ -100,20 +100,18 @@ function showMessage(text) {
 function render() {
   const limit = Number(els.range.value);
   const machine = els.machine.value;
-  const relative = els.mode.value === 'relative';
-  els.machine.disabled = relative;
   // Relative values only compare against the same reference commit: use the
-  // latest one. Raw timings can be narrowed to one kind of machine instead.
+  // latest one. Raw values can be narrowed to one kind of machine instead.
+  // Suites without a reference (such as instruction counts) only have raw values.
   const reference = branchData.entries.at(-1)?.reference?.sha;
+  els.mode.disabled = !reference;
+  const relative = Boolean(reference) && els.mode.value === 'relative';
+  els.machine.disabled = relative;
   const matching = relative
     ? branchData.entries.filter((e) => e.reference && e.reference.sha === reference)
     : machine
       ? branchData.entries.filter((e) => (e.machine ?? 'Unknown machine') === machine)
       : branchData.entries;
-  if (relative && matching.length === 0) {
-    showMessage('No results were measured against a reference commit yet. Switch to raw timings.');
-    return;
-  }
   const entries = limit > 0 ? matching.slice(-limit) : matching;
   const last = entries.at(-1);
   els.subtitle.textContent = last
@@ -134,16 +132,15 @@ function render() {
     showMessage(entries.length === 0 ? 'No results on this branch yet.' : 'No benchmark matches this filter.');
     return;
   }
-  const cards = shown.map((name) => card(name, entries)).filter(Boolean);
+  const cards = shown.map((name) => card(name, entries, relative)).filter(Boolean);
   if (cards.length === 0) {
-    showMessage('The reference commit has none of these benchmarks. Switch to raw timings.');
+    showMessage('The reference commit has none of these benchmarks. Switch to raw values.');
     return;
   }
   els.charts.replaceChildren(...cards);
 }
 
-function seriesFor(name, entries) {
-  const relative = els.mode.value === 'relative';
+function seriesFor(name, entries, relative) {
   const points = [];
   entries.forEach((entry, i) => {
     const b = entry.benchmarks.find((x) => x.name === name);
@@ -160,8 +157,8 @@ function seriesFor(name, entries) {
   return points;
 }
 
-function card(name, entries) {
-  const points = seriesFor(name, entries);
+function card(name, entries, relative) {
+  const points = seriesFor(name, entries, relative);
   if (points.length === 0) return null;
   const el = document.createElement('section');
   el.className = 'card';
@@ -332,9 +329,12 @@ function ticks(min, max, count) {
   return out;
 }
 
+const compact = new Intl.NumberFormat(undefined, { notation: 'compact', maximumSignificantDigits: 4 });
+
 function formatNumber(v) {
   const abs = Math.abs(v);
-  if (abs !== 0 && (abs >= 1e6 || abs < 1e-3)) return v.toExponential(1);
+  if (abs >= 1e5) return compact.format(v);
+  if (abs !== 0 && abs < 1e-3) return v.toExponential(1);
   return Number(v.toPrecision(abs >= 1000 ? 6 : 4)).toLocaleString();
 }
 

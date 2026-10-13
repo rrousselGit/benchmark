@@ -101,13 +101,18 @@ function table(rows: ReportRow[], withBaseline: boolean): string[] {
   ];
 }
 
+// 1.234M, 383.5K: instruction counts get large.
+const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumSignificantDigits: 4 });
+
 export function formatValue(value: number | undefined, unit: string): string {
   if (value === undefined) return '–';
   const abs = Math.abs(value);
   const text =
-    abs !== 0 && (abs >= 1e6 || abs < 1e-3)
-      ? value.toExponential(2)
-      : Number(value.toPrecision(abs >= 1000 ? 6 : 4)).toString();
+    abs >= 1e5
+      ? compact.format(value)
+      : abs !== 0 && abs < 1e-3
+        ? value.toExponential(2)
+        : Number(value.toPrecision(abs >= 1000 ? 6 : 4)).toString();
   return unit ? `${text} ${escape(unit)}` : text;
 }
 

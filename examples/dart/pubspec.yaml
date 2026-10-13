@@ -7,5 +7,7 @@ environment:
 
 dev_dependencies:
   benchmark_harness: ^2.4.0
+  benchmark_tracker:
+    path: ../../dart
   lints: ^6.1.0
   test: ^1.33.0

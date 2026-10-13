@@ -27,6 +27,7 @@ import {
   suitePath,
 } from './history.js';
 import { renderReport, summarizeReport } from './markdown.js';
+import { countInstructions } from './instructions.js';
 import { machineId } from './machine.js';
 import { formats, parseResults, type Format } from './parse.js';
 import { updateDataBranch } from './store.js';
@@ -120,8 +121,21 @@ class PullRequestComment {
   }
 }
 
-/** Runs the benchmark command (if any) in `cwd` and reads its results file there. */
+/**
+ * Builds and runs the benchmarks in `cwd`, which is either the workspace or
+ * a checkout of another commit (the base or the reference).
+ */
 async function measure(inputs: Inputs, cwd: string): Promise<Benchmark[]> {
+  if (inputs.build) {
+    const exitCode = await exec.exec('bash', ['-eo', 'pipefail', '-c', inputs.build], {
+      cwd,
+      ignoreReturnCode: true,
+    });
+    if (exitCode !== 0) throw new Error(`Build command exited with code ${exitCode}.`);
+  }
+  if (inputs.mode === 'instructions') {
+    return countInstructions(inputs.command, cwd, inputs.iterations);
+  }
   if (inputs.command) {
     const exitCode = await exec.exec('bash', ['-eo', 'pipefail', '-c', inputs.command], {
       cwd,
@@ -136,6 +150,9 @@ async function measure(inputs: Inputs, cwd: string): Promise<Benchmark[]> {
 }
 
 interface Inputs {
+  mode: 'time' | 'instructions';
+  build: string;
+  iterations: number;
   token: string;
   file: string;
   format: Format;
@@ -162,15 +179,28 @@ function readInputs(): Inputs {
   if (!Number.isInteger(maxEntries) || maxEntries < 0) {
     throw new Error('max-entries must be a non-negative integer.');
   }
-  const rerunBase = core.getInput('rerun-base') || 'always';
+  const mode = core.getInput('mode') || 'time';
+  if (mode !== 'time' && mode !== 'instructions') throw new Error('mode must be "time" or "instructions".');
+  const iterations = Number(core.getInput('iterations') || '10');
+  if (!Number.isInteger(iterations) || iterations < 1) throw new Error('iterations must be a positive integer.');
+  const command = core.getInput('run');
+  const file = core.getInput('file');
+  if (mode === 'instructions' && !command) throw new Error('mode: instructions needs the "run" input.');
+  if (mode === 'time' && !file) throw new Error('Input required and not supplied: file');
+  // Instruction counts barely depend on the machine: stored results can be
+  // reused, and there is no need for a reference commit.
+  const rerunBase = core.getInput('rerun-base') || (mode === 'instructions' ? 'auto' : 'always');
   if (!['auto', 'always', 'never'].includes(rerunBase)) {
     throw new Error('rerun-base must be "auto", "always" or "never".');
   }
   return {
+    mode,
+    build: core.getInput('build'),
+    iterations,
     token: core.getInput('github-token', { required: true }),
-    file: core.getInput('file', { required: true }),
+    file,
     format: format as Format,
-    command: core.getInput('run'),
+    command,
     suite: suitePath(core.getInput('suite') || 'default'),
     dataBranch,
     threshold: parseThreshold(core.getInput('threshold') || '10%'),
@@ -178,7 +208,7 @@ function readInputs(): Inputs {
     comment: core.getBooleanInput('comment'),
     maxEntries,
     rerunBase: rerunBase as Inputs['rerunBase'],
-    reference: core.getInput('reference'),
+    reference: core.getInput('reference') || (mode === 'instructions' ? 'none' : ''),
     siteUrl: siteUrl || undefined,
   };
 }
@@ -196,7 +226,7 @@ function toReport(
     threshold: inputs.threshold,
     current,
     baseline: baseline && { sha: baseline.commit.sha, branch: baseline.branch, source },
-    machine: machineId(),
+    machine: machineId(inputs.mode),
     siteUrl: inputs.siteUrl,
     rows: compare(benchmarks, baseline?.benchmarks, inputs.threshold),
   };
@@ -217,7 +247,7 @@ async function pullRequestReport(
   const baseRef: string = pr.base.ref;
   const baseSha: string = pr.base.sha;
   const current = { sha: pr.head.sha as string, ref: pr.head.ref as string };
-  const machine = machineId();
+  const machine = machineId(inputs.mode);
   core.info(`Machine: ${machine}`);
 
   if (inputs.rerunBase !== 'always' || !inputs.command) {
@@ -248,7 +278,7 @@ async function pullRequestReport(
       baselineError: `Could not benchmark the base commit ${baseSha.slice(0, 7)}: ${message}`,
     };
   }
-  const baseline = await commitEntry(octokit, baseSha, baseRef, baseResults);
+  const baseline = await commitEntry(octokit, baseSha, baseRef, baseResults, machineId(inputs.mode));
   return { ...toReport(inputs, benchmarks, current, baseline, 'rerun'), pullRequest: pr.number };
 }
 
@@ -315,7 +345,7 @@ async function storeAndReport(
 ): Promise<Report> {
   const { context } = github;
   const branch = process.env.GITHUB_REF_NAME || context.ref.replace(/^refs\/(heads|tags)\//, '');
-  const entry = await commitEntry(octokit, context.sha, branch, benchmarks);
+  const entry = await commitEntry(octokit, context.sha, branch, benchmarks, machineId(inputs.mode));
   const history = await ancestors(octokit, context.sha);
   const machine = entry.machine!;
 
@@ -377,6 +407,7 @@ async function commitEntry(
   sha: string,
   branch: string,
   benchmarks: Benchmark[],
+  machine: string,
 ): Promise<Entry> {
   const { context } = github;
   const head = context.payload.head_commit as
@@ -401,7 +432,7 @@ async function commitEntry(
       url: res.data.html_url,
     };
   }
-  return { commit, branch, runAt: new Date().toISOString(), machine: machineId(), benchmarks };
+  return { commit, branch, runAt: new Date().toISOString(), machine, benchmarks };
 }
 
 // Pull requests from forks get a read-only token, so the companion `comment`
