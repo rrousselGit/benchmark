@@ -60,6 +60,65 @@
      "unit": "instructions"
     }
    ]
+  },
+  {
+   "commit": {
+    "sha": "b9cd7fa7004dbc4dd0036a7427321e3d45ba8200",
+    "message": "Merge pull request #2 from rrousselGit/claude/project-thread-qk9ep3\n\nShow instruction counts and timings side by side in pull requests",
+    "author": "rrousselGit",
+    "timestamp": "2026-10-13T14:21:01+02:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/b9cd7fa7004dbc4dd0036a7427321e3d45ba8200"
+   },
+   "branch": "main",
+   "runAt": "2026-10-13T12:21:49.002Z",
+   "machine": "instruction counts · linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 383205,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 931,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1205107,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1674953,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 646635,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1595083,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 621893,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 404416,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2447381,
+     "unit": "instructions"
+    }
+   ]
   }
  ]
 }
