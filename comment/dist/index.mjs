@@ -1029,15 +1029,15 @@ var require_util = __commonJS({
         return (sTag === "Blob" || sTag === "File") && ("stream" in object && typeof object.stream === "function" || "arrayBuffer" in object && typeof object.arrayBuffer === "function");
       }
     }
-    function buildURL(url2, queryParams) {
-      if (url2.includes("?") || url2.includes("#")) {
+    function buildURL(url3, queryParams) {
+      if (url3.includes("?") || url3.includes("#")) {
         throw new Error('Query params cannot be passed when url already contains "?" or "#".');
       }
       const stringified = stringify(queryParams);
       if (stringified) {
-        url2 += "?" + stringified;
+        url3 += "?" + stringified;
       }
-      return url2;
+      return url3;
     }
     function isValidPort(port) {
       const value = parseInt(port, 10);
@@ -1046,39 +1046,39 @@ var require_util = __commonJS({
     function isHttpOrHttpsPrefixed(value) {
       return value != null && value[0] === "h" && value[1] === "t" && value[2] === "t" && value[3] === "p" && (value[4] === ":" || value[4] === "s" && value[5] === ":");
     }
-    function parseURL(url2) {
-      if (typeof url2 === "string") {
-        url2 = new URL(url2);
-        if (!isHttpOrHttpsPrefixed(url2.origin || url2.protocol)) {
+    function parseURL(url3) {
+      if (typeof url3 === "string") {
+        url3 = new URL(url3);
+        if (!isHttpOrHttpsPrefixed(url3.origin || url3.protocol)) {
           throw new InvalidArgumentError("Invalid URL protocol: the URL must start with `http:` or `https:`.");
         }
-        return url2;
+        return url3;
       }
-      if (!url2 || typeof url2 !== "object") {
+      if (!url3 || typeof url3 !== "object") {
         throw new InvalidArgumentError("Invalid URL: The URL argument must be a non-null object.");
       }
-      if (!(url2 instanceof URL)) {
-        if (url2.port != null && url2.port !== "" && isValidPort(url2.port) === false) {
+      if (!(url3 instanceof URL)) {
+        if (url3.port != null && url3.port !== "" && isValidPort(url3.port) === false) {
           throw new InvalidArgumentError("Invalid URL: port must be a valid integer or a string representation of an integer.");
         }
-        if (url2.path != null && typeof url2.path !== "string") {
+        if (url3.path != null && typeof url3.path !== "string") {
           throw new InvalidArgumentError("Invalid URL path: the path must be a string or null/undefined.");
         }
-        if (url2.pathname != null && typeof url2.pathname !== "string") {
+        if (url3.pathname != null && typeof url3.pathname !== "string") {
           throw new InvalidArgumentError("Invalid URL pathname: the pathname must be a string or null/undefined.");
         }
-        if (url2.hostname != null && typeof url2.hostname !== "string") {
+        if (url3.hostname != null && typeof url3.hostname !== "string") {
           throw new InvalidArgumentError("Invalid URL hostname: the hostname must be a string or null/undefined.");
         }
-        if (url2.origin != null && typeof url2.origin !== "string") {
+        if (url3.origin != null && typeof url3.origin !== "string") {
           throw new InvalidArgumentError("Invalid URL origin: the origin must be a string or null/undefined.");
         }
-        if (!isHttpOrHttpsPrefixed(url2.origin || url2.protocol)) {
+        if (!isHttpOrHttpsPrefixed(url3.origin || url3.protocol)) {
           throw new InvalidArgumentError("Invalid URL protocol: the URL must start with `http:` or `https:`.");
         }
-        const port = url2.port != null ? url2.port : url2.protocol === "https:" ? 443 : 80;
-        let origin = url2.origin != null ? url2.origin : `${url2.protocol || ""}//${url2.hostname || ""}:${port}`;
-        let path5 = url2.path != null ? url2.path : `${url2.pathname || ""}${url2.search || ""}`;
+        const port = url3.port != null ? url3.port : url3.protocol === "https:" ? 443 : 80;
+        let origin = url3.origin != null ? url3.origin : `${url3.protocol || ""}//${url3.hostname || ""}:${port}`;
+        let path5 = url3.path != null ? url3.path : `${url3.pathname || ""}${url3.search || ""}`;
         if (origin[origin.length - 1] === "/") {
           origin = origin.slice(0, origin.length - 1);
         }
@@ -1087,17 +1087,17 @@ var require_util = __commonJS({
         }
         return new URL(`${origin}${path5}`);
       }
-      if (!isHttpOrHttpsPrefixed(url2.origin || url2.protocol)) {
+      if (!isHttpOrHttpsPrefixed(url3.origin || url3.protocol)) {
         throw new InvalidArgumentError("Invalid URL protocol: the URL must start with `http:` or `https:`.");
       }
-      return url2;
+      return url3;
     }
-    function parseOrigin(url2) {
-      url2 = parseURL(url2);
-      if (url2.pathname !== "/" || url2.search || url2.hash) {
+    function parseOrigin(url3) {
+      url3 = parseURL(url3);
+      if (url3.pathname !== "/" || url3.search || url3.hash) {
         throw new InvalidArgumentError("invalid url");
       }
-      return url2;
+      return url3;
     }
     function getHostname(host) {
       if (host[0] === "[") {
@@ -3344,12 +3344,12 @@ var require_data_url = __commonJS({
       }
       return { mimeType: mimeTypeRecord, body: body2 };
     }
-    function URLSerializer(url2, excludeFragment = false) {
+    function URLSerializer(url3, excludeFragment = false) {
       if (!excludeFragment) {
-        return url2.href;
+        return url3.href;
       }
-      const href = url2.href;
-      const hashLength = url2.hash.length;
+      const href = url3.href;
+      const hashLength = url3.hash.length;
       const serialized = hashLength === 0 ? href : href.substring(0, href.length - hashLength);
       if (!hashLength && href.endsWith("#")) {
         return serialized.slice(0, -1);
@@ -4111,9 +4111,9 @@ var require_util2 = __commonJS({
       }
       return location;
     }
-    function isValidEncodedURL(url2) {
-      for (let i = 0; i < url2.length; ++i) {
-        const code = url2.charCodeAt(i);
+    function isValidEncodedURL(url3) {
+      for (let i = 0; i < url3.length; ++i) {
+        const code = url3.charCodeAt(i);
         if (code > 126 || // Non-US-ASCII + DEL
         code < 32) {
           return false;
@@ -4128,8 +4128,8 @@ var require_util2 = __commonJS({
       return request2.urlList[request2.urlList.length - 1];
     }
     function requestBadPort(request2) {
-      const url2 = requestCurrentURL(request2);
-      if (urlIsHttpHttpsScheme(url2) && badPortsSet.has(url2.port)) {
+      const url3 = requestCurrentURL(request2);
+      if (urlIsHttpHttpsScheme(url3) && badPortsSet.has(url3.port)) {
         return "blocked";
       }
       return "allowed";
@@ -4322,31 +4322,31 @@ var require_util2 = __commonJS({
           return isNonPotentiallyTrustWorthy ? "no-referrer" : referrerOrigin;
       }
     }
-    function stripURLForReferrer(url2, originOnly) {
-      assert(url2 instanceof URL);
-      url2 = new URL(url2);
-      if (url2.protocol === "file:" || url2.protocol === "about:" || url2.protocol === "blank:") {
+    function stripURLForReferrer(url3, originOnly) {
+      assert(url3 instanceof URL);
+      url3 = new URL(url3);
+      if (url3.protocol === "file:" || url3.protocol === "about:" || url3.protocol === "blank:") {
         return "no-referrer";
       }
-      url2.username = "";
-      url2.password = "";
-      url2.hash = "";
+      url3.username = "";
+      url3.password = "";
+      url3.hash = "";
       if (originOnly) {
-        url2.pathname = "";
-        url2.search = "";
+        url3.pathname = "";
+        url3.search = "";
       }
-      return url2;
+      return url3;
     }
-    function isURLPotentiallyTrustworthy(url2) {
-      if (!(url2 instanceof URL)) {
+    function isURLPotentiallyTrustworthy(url3) {
+      if (!(url3 instanceof URL)) {
         return false;
       }
-      if (url2.href === "about:blank" || url2.href === "about:srcdoc") {
+      if (url3.href === "about:blank" || url3.href === "about:srcdoc") {
         return true;
       }
-      if (url2.protocol === "data:") return true;
-      if (url2.protocol === "file:") return true;
-      return isOriginPotentiallyTrustworthy(url2.origin);
+      if (url3.protocol === "data:") return true;
+      if (url3.protocol === "file:") return true;
+      return isOriginPotentiallyTrustworthy(url3.origin);
       function isOriginPotentiallyTrustworthy(origin) {
         if (origin == null || origin === "null") return false;
         const originAsURL = new URL(origin);
@@ -4667,17 +4667,17 @@ var require_util2 = __commonJS({
         byteLength += chunk.length;
       }
     }
-    function urlIsLocal(url2) {
-      assert("protocol" in url2);
-      const protocol = url2.protocol;
+    function urlIsLocal(url3) {
+      assert("protocol" in url3);
+      const protocol = url3.protocol;
       return protocol === "about:" || protocol === "blob:" || protocol === "data:";
     }
-    function urlHasHttpsScheme(url2) {
-      return typeof url2 === "string" && url2[5] === ":" && url2[0] === "h" && url2[1] === "t" && url2[2] === "t" && url2[3] === "p" && url2[4] === "s" || url2.protocol === "https:";
+    function urlHasHttpsScheme(url3) {
+      return typeof url3 === "string" && url3[5] === ":" && url3[0] === "h" && url3[1] === "t" && url3[2] === "t" && url3[3] === "p" && url3[4] === "s" || url3.protocol === "https:";
     }
-    function urlIsHttpHttpsScheme(url2) {
-      assert("protocol" in url2);
-      const protocol = url2.protocol;
+    function urlIsHttpHttpsScheme(url3) {
+      assert("protocol" in url3);
+      const protocol = url3.protocol;
       return protocol === "http:" || protocol === "https:";
     }
     function simpleRangeHeaderValue(value, allowWhitespace) {
@@ -5311,12 +5311,12 @@ var require_formdata_parser = __commonJS({
               return "failure";
             }
             if (bufferStartsWith(input, filenameBuffer, position)) {
-              let check = position.position + filenameBuffer.length;
-              if (input[check] === 42) {
+              let check2 = position.position + filenameBuffer.length;
+              if (input[check2] === 42) {
                 position.position += 1;
-                check += 1;
+                check2 += 1;
               }
-              if (input[check] !== 61 || input[check + 1] !== 34) {
+              if (input[check2] !== 61 || input[check2 + 1] !== 34) {
                 return "failure";
               }
               position.position += 12;
@@ -7689,7 +7689,7 @@ var require_client = __commonJS({
        * @param {string|URL} url
        * @param {import('../../types/client.js').Client.Options} options
        */
-      constructor(url2, {
+      constructor(url3, {
         interceptors,
         maxHeaderSize,
         headersTimeout,
@@ -7806,7 +7806,7 @@ var require_client = __commonJS({
         } else {
           this[kInterceptors] = [createRedirectInterceptor({ maxRedirections })];
         }
-        this[kUrl] = util3.parseOrigin(url2);
+        this[kUrl] = util3.parseOrigin(url3);
         this[kConnector] = connect2;
         this[kPipelining] = pipelining != null ? pipelining : 1;
         this[kMaxHeadersSize] = maxHeaderSize || http3.maxHeaderSize;
@@ -8781,8 +8781,8 @@ var require_proxy_agent = __commonJS({
           throw new InvalidArgumentError("Proxy opts.clientFactory must be a function.");
         }
         const { proxyTunnel = true } = opts;
-        const url2 = this.#getUrl(opts);
-        const { href, origin, port, protocol, username, password, hostname: proxyHostname } = url2;
+        const url3 = this.#getUrl(opts);
+        const { href, origin, port, protocol, username, password, hostname: proxyHostname } = url3;
         this[kProxy] = { uri: href, protocol };
         this[kInterceptors] = opts.interceptors?.ProxyAgent && Array.isArray(opts.interceptors.ProxyAgent) ? opts.interceptors.ProxyAgent : [];
         this[kRequestTls] = opts.requestTls;
@@ -8812,7 +8812,7 @@ var require_proxy_agent = __commonJS({
           }
           return agentFactory(origin2, options);
         };
-        this[kClient] = clientFactory(url2, { connect });
+        this[kClient] = clientFactory(url3, { connect });
         this[kAgent] = new Agent3({
           ...opts,
           factory,
@@ -8958,8 +8958,8 @@ var require_env_http_proxy_agent = __commonJS({
         this.#parseNoProxy();
       }
       [kDispatch](opts, handler2) {
-        const url2 = new URL(opts.origin);
-        const agent = this.#getProxyAgentForUrl(url2);
+        const url3 = new URL(opts.origin);
+        const agent = this.#getProxyAgentForUrl(url3);
         return agent.dispatch(opts, handler2);
       }
       async [kClose]() {
@@ -8980,8 +8980,8 @@ var require_env_http_proxy_agent = __commonJS({
           await this[kHttpsProxyAgent].destroy(err);
         }
       }
-      #getProxyAgentForUrl(url2) {
-        let { protocol, host: hostname, port } = url2;
+      #getProxyAgentForUrl(url3) {
+        let { protocol, host: hostname, port } = url3;
         hostname = hostname.replace(/:\d*$/, "").toLowerCase();
         port = Number.parseInt(port, 10) || DEFAULT_PORTS[protocol] || 0;
         if (!this.#shouldProxy(hostname, port)) {
@@ -10908,10 +10908,10 @@ var require_mock_utils = __commonJS({
       };
     }
     function checkNetConnect(netConnect, origin) {
-      const url2 = new URL(origin);
+      const url3 = new URL(origin);
       if (netConnect === true) {
         return true;
-      } else if (Array.isArray(netConnect) && netConnect.some((matcher) => matchValue(matcher, url2.host))) {
+      } else if (Array.isArray(netConnect) && netConnect.some((matcher) => matchValue(matcher, url3.host))) {
         return true;
       }
       return false;
@@ -12416,15 +12416,15 @@ var require_response = __commonJS({
         return responseObject;
       }
       // Creates a redirect Response that redirects to url with status status.
-      static redirect(url2, status = 302) {
+      static redirect(url3, status = 302) {
         webidl.argumentLengthCheck(arguments, 1, "Response.redirect");
-        url2 = webidl.converters.USVString(url2);
+        url3 = webidl.converters.USVString(url3);
         status = webidl.converters["unsigned short"](status);
         let parsedURL;
         try {
-          parsedURL = new URL(url2, relevantRealm.settingsObject.baseUrl);
+          parsedURL = new URL(url3, relevantRealm.settingsObject.baseUrl);
         } catch (err) {
-          throw new TypeError(`Failed to parse URL from ${url2}`, { cause: err });
+          throw new TypeError(`Failed to parse URL from ${url3}`, { cause: err });
         }
         if (!redirectStatusSet.has(status)) {
           throw new RangeError(`Invalid status code ${status}`);
@@ -12465,11 +12465,11 @@ var require_response = __commonJS({
       get url() {
         webidl.brandCheck(this, _Response);
         const urlList = this[kState].urlList;
-        const url2 = urlList[urlList.length - 1] ?? null;
-        if (url2 === null) {
+        const url3 = urlList[urlList.length - 1] ?? null;
+        if (url3 === null) {
           return "";
         }
-        return URLSerializer(url2, true);
+        return URLSerializer(url3, true);
       }
       // Returns whether response was obtained through a redirect.
       get redirected() {
@@ -14422,12 +14422,12 @@ var require_fetch = __commonJS({
       }
       return response;
       function dispatch({ body: body2 }) {
-        const url2 = requestCurrentURL(request2);
+        const url3 = requestCurrentURL(request2);
         const agent = fetchParams.controller.dispatcher;
         return new Promise((resolve2, reject) => agent.dispatch(
           {
-            path: url2.pathname + url2.search,
-            origin: url2.origin,
+            path: url3.pathname + url3.search,
+            origin: url3.origin,
             method: request2.method,
             body: agent.isMockActive ? request2.body && (request2.body.source || request2.body.stream) : body2,
             headers: request2.headersList.entries,
@@ -17176,9 +17176,9 @@ var require_connection = __commonJS({
       crypto3 = __require("node:crypto");
     } catch {
     }
-    function establishWebSocketConnection(url2, protocols, client2, ws, onEstablish, options) {
-      const requestURL = url2;
-      requestURL.protocol = url2.protocol === "ws:" ? "http:" : "https:";
+    function establishWebSocketConnection(url3, protocols, client2, ws, onEstablish, options) {
+      const requestURL = url3;
+      requestURL.protocol = url3.protocol === "ws:" ? "http:" : "https:";
       const request2 = makeRequest({
         urlList: [requestURL],
         client: client2,
@@ -17919,18 +17919,18 @@ var require_websocket = __commonJS({
        * @param {string} url
        * @param {string|string[]} protocols
        */
-      constructor(url2, protocols = []) {
+      constructor(url3, protocols = []) {
         super();
         webidl.util.markAsUncloneable(this);
         const prefix2 = "WebSocket constructor";
         webidl.argumentLengthCheck(arguments, 1, prefix2);
         const options = webidl.converters["DOMString or sequence<DOMString> or WebSocketInit"](protocols, prefix2, "options");
-        url2 = webidl.converters.USVString(url2, prefix2, "url");
+        url3 = webidl.converters.USVString(url3, prefix2, "url");
         protocols = options.protocols;
         const baseURL = environmentSettingsObject.settingsObject.baseUrl;
         let urlRecord;
         try {
-          urlRecord = new URL(url2, baseURL);
+          urlRecord = new URL(url3, baseURL);
         } catch (e) {
           throw new DOMException(e, "SyntaxError");
         }
@@ -18673,7 +18673,7 @@ var require_eventsource = __commonJS({
        * @param {EventSourceInit} [eventSourceInitDict]
        * @see https://html.spec.whatwg.org/multipage/server-sent-events.html#the-eventsource-interface
        */
-      constructor(url2, eventSourceInitDict = {}) {
+      constructor(url3, eventSourceInitDict = {}) {
         super();
         webidl.util.markAsUncloneable(this);
         const prefix2 = "EventSource constructor";
@@ -18684,7 +18684,7 @@ var require_eventsource = __commonJS({
             code: "UNDICI-ES"
           });
         }
-        url2 = webidl.converters.USVString(url2, prefix2, "url");
+        url3 = webidl.converters.USVString(url3, prefix2, "url");
         eventSourceInitDict = webidl.converters.EventSourceInitDict(eventSourceInitDict, prefix2, "eventSourceInitDict");
         this.#dispatcher = eventSourceInitDict.dispatcher;
         this.#state = {
@@ -18694,7 +18694,7 @@ var require_eventsource = __commonJS({
         const settings = environmentSettingsObject;
         let urlRecord;
         try {
-          urlRecord = new URL(url2, settings.settingsObject.baseUrl);
+          urlRecord = new URL(url3, settings.settingsObject.baseUrl);
           this.#state.origin = urlRecord.origin;
         } catch (e) {
           throw new DOMException(e, "SyntaxError");
@@ -18978,12 +18978,12 @@ var require_undici = __commonJS({
       headerNameToString: util3.headerNameToString
     };
     function makeDispatcher(fn) {
-      return (url2, opts, handler2) => {
+      return (url3, opts, handler2) => {
         if (typeof opts === "function") {
           handler2 = opts;
           opts = null;
         }
-        if (!url2 || typeof url2 !== "string" && typeof url2 !== "object" && !(url2 instanceof URL)) {
+        if (!url3 || typeof url3 !== "string" && typeof url3 !== "object" && !(url3 instanceof URL)) {
           throw new InvalidArgumentError("invalid url");
         }
         if (opts != null && typeof opts !== "object") {
@@ -18997,12 +18997,12 @@ var require_undici = __commonJS({
           if (!opts.path.startsWith("/")) {
             path5 = `/${path5}`;
           }
-          url2 = new URL(util3.parseOrigin(url2).origin + path5);
+          url3 = new URL(util3.parseOrigin(url3).origin + path5);
         } else {
           if (!opts) {
-            opts = typeof url2 === "object" ? url2 : {};
+            opts = typeof url3 === "object" ? url3 : {};
           }
-          url2 = util3.parseURL(url2);
+          url3 = util3.parseURL(url3);
         }
         const { agent, dispatcher = getGlobalDispatcher() } = opts;
         if (agent) {
@@ -19010,8 +19010,8 @@ var require_undici = __commonJS({
         }
         return fn.call(dispatcher, {
           ...opts,
-          origin: url2.origin,
-          path: url2.search ? `${url2.pathname}${url2.search}` : url2.pathname,
+          origin: url3.origin,
+          path: url3.search ? `${url3.pathname}${url3.search}` : url3.pathname,
           method: opts.method || (opts.body ? "PUT" : "GET")
         }, handler2);
       };
@@ -20076,10 +20076,10 @@ var require_binary_writer = __commonJS({
        */
       sfixed64(value) {
         let chunk = new Uint8Array(8);
-        let view = new DataView(chunk.buffer);
+        let view2 = new DataView(chunk.buffer);
         let long = pb_long_1.PbLong.from(value);
-        view.setInt32(0, long.lo, true);
-        view.setInt32(4, long.hi, true);
+        view2.setInt32(0, long.lo, true);
+        view2.setInt32(4, long.hi, true);
         return this.raw(chunk);
       }
       /**
@@ -20087,10 +20087,10 @@ var require_binary_writer = __commonJS({
        */
       fixed64(value) {
         let chunk = new Uint8Array(8);
-        let view = new DataView(chunk.buffer);
+        let view2 = new DataView(chunk.buffer);
         let long = pb_long_1.PbULong.from(value);
-        view.setInt32(0, long.lo, true);
-        view.setInt32(4, long.hi, true);
+        view2.setInt32(0, long.lo, true);
+        view2.setInt32(4, long.hi, true);
         return this.raw(chunk);
       }
       /**
@@ -24090,9 +24090,9 @@ var require_helpers = __commonJS({
       }
     }
     exports2.json = json;
-    function req(url2, opts = {}) {
-      const href = typeof url2 === "string" ? url2 : url2.href;
-      const req2 = (href.startsWith("https:") ? https3 : http3).request(url2, opts);
+    function req(url3, opts = {}) {
+      const href = typeof url3 === "string" ? url3 : url3.href;
+      const req2 = (href.startsWith("https:") ? https3 : http3).request(url3, opts);
       const promise = new Promise((resolve2, reject) => {
         req2.once("response", resolve2).once("error", reject).end();
       });
@@ -24572,11 +24572,11 @@ var require_dist3 = __commonJS({
         const protocol = opts.secureEndpoint ? "https:" : "http:";
         const hostname = req.getHeader("host") || "localhost";
         const base = `${protocol}//${hostname}`;
-        const url2 = new url_1.URL(req.path, base);
+        const url3 = new url_1.URL(req.path, base);
         if (opts.port !== 80) {
-          url2.port = String(opts.port);
+          url3.port = String(opts.port);
         }
-        req.path = String(url2);
+        req.path = String(url3);
         const headers = typeof this.proxyHeaders === "function" ? this.proxyHeaders() : { ...this.proxyHeaders };
         if (proxy.username || proxy.password) {
           const auth2 = `${decodeURIComponent(proxy.username)}:${decodeURIComponent(proxy.password)}`;
@@ -26793,7 +26793,7 @@ var require_async = __commonJS({
           return callback(null, ...args);
         };
       }
-      function _createTester(check, getResult) {
+      function _createTester(check2, getResult) {
         return (eachfn, arr, _iteratee, cb) => {
           var testPassed = false;
           var testResult;
@@ -26801,7 +26801,7 @@ var require_async = __commonJS({
           eachfn(arr, (value, _2, callback) => {
             iteratee(value, (err, result) => {
               if (err || err === false) return callback(err);
-              if (check(result) && !testResult) {
+              if (check2(result) && !testResult) {
                 testPassed = true;
                 testResult = getResult(true, value);
                 return callback(null, breakLoop);
@@ -26849,15 +26849,15 @@ var require_async = __commonJS({
           if (err) return callback(err);
           if (err === false) return;
           results = args;
-          _test(...args, check);
+          _test(...args, check2);
         }
-        function check(err, truth) {
+        function check2(err, truth) {
           if (err) return callback(err);
           if (err === false) return;
           if (!truth) return callback(null, ...results);
           _fn(next);
         }
-        return check(null, true);
+        return check2(null, true);
       }
       var doWhilst$1 = awaitify(doWhilst, 3);
       function doUntil(iteratee, test, callback) {
@@ -27453,15 +27453,15 @@ var require_async = __commonJS({
           if (err) return callback(err);
           results = rest;
           if (err === false) return;
-          _test(check);
+          _test(check2);
         }
-        function check(err, truth) {
+        function check2(err, truth) {
           if (err) return callback(err);
           if (err === false) return;
           if (!truth) return callback(null, ...results);
           _fn(next);
         }
-        return _test(check);
+        return _test(check2);
       }
       var whilst$1 = awaitify(whilst, 3);
       function until(test, iteratee, callback) {
@@ -50359,8 +50359,8 @@ var require_proxy = __commonJS({
       return hostLower === "localhost" || hostLower.startsWith("127.") || hostLower.startsWith("[::1]") || hostLower.startsWith("[0:0:0:0:0:0:0:1]");
     }
     var DecodedURL2 = class extends URL {
-      constructor(url2, base) {
-        super(url2, base);
+      constructor(url3, base) {
+        super(url3, base);
         this._decodedUsername = decodeURIComponent(super.username);
         this._decodedPassword = decodeURIComponent(super.password);
       }
@@ -60562,8 +60562,8 @@ function isLoopbackAddress(host) {
   return hostLower === "localhost" || hostLower.startsWith("127.") || hostLower.startsWith("[::1]") || hostLower.startsWith("[0:0:0:0:0:0:0:1]");
 }
 var DecodedURL = class extends URL {
-  constructor(url2, base) {
-    super(url2, base);
+  constructor(url3, base) {
+    super(url3, base);
     this._decodedUsername = decodeURIComponent(super.username);
     this._decodedPassword = decodeURIComponent(super.password);
   }
@@ -63521,18 +63521,18 @@ function getBackendIdsFromToken() {
   }
   throw InvalidJwtError;
 }
-function maskSigUrl(url2) {
-  if (!url2)
+function maskSigUrl(url3) {
+  if (!url3)
     return;
   try {
-    const parsedUrl = new URL(url2);
+    const parsedUrl = new URL(url3);
     const signature = parsedUrl.searchParams.get("sig");
     if (signature) {
       setSecret(signature);
       setSecret(encodeURIComponent(signature));
     }
   } catch (error2) {
-    debug(`Failed to parse URL: ${url2} ${error2 instanceof Error ? error2.message : String(error2)}`);
+    debug(`Failed to parse URL: ${url3} ${error2 instanceof Error ? error2.message : String(error2)}`);
   }
 }
 function maskSecretUrls(body2) {
@@ -63601,14 +63601,14 @@ var ArtifactHttpClient = class {
   // JSON generated client.
   request(service, method, contentType2, data) {
     return __awaiter4(this, void 0, void 0, function* () {
-      const url2 = new URL(`/twirp/${service}/${method}`, this.baseUrl).href;
-      debug(`[Request] ${method} ${url2}`);
+      const url3 = new URL(`/twirp/${service}/${method}`, this.baseUrl).href;
+      debug(`[Request] ${method} ${url3}`);
       const headers = {
         "Content-Type": contentType2
       };
       try {
         const { body: body2 } = yield this.retryableRequest(() => __awaiter4(this, void 0, void 0, function* () {
-          return this.httpClient.post(url2, JSON.stringify(data), headers);
+          return this.httpClient.post(url3, JSON.stringify(data), headers);
         }));
         return body2;
       } catch (error2) {
@@ -64483,16 +64483,16 @@ var Sanitizer = class {
     if (typeof value !== "string" || value === null || value === "") {
       return value;
     }
-    const url2 = new URL(value);
-    if (!url2.search) {
+    const url3 = new URL(value);
+    if (!url3.search) {
       return value;
     }
-    for (const [key] of url2.searchParams) {
+    for (const [key] of url3.searchParams) {
       if (!this.allowedQueryParameters.has(key.toLowerCase())) {
-        url2.searchParams.set(key, RedactedString);
+        url3.searchParams.set(key, RedactedString);
       }
     }
-    return url2.toString();
+    return url3.toString();
   }
   sanitizeHeaders(obj) {
     const sanitized = {};
@@ -64757,17 +64757,17 @@ var NodeHttpClient = class {
     }
   }
   makeRequest(request2, abortController, body2) {
-    const url2 = new URL(request2.url);
-    const isInsecure = url2.protocol !== "https:";
+    const url3 = new URL(request2.url);
+    const isInsecure = url3.protocol !== "https:";
     if (isInsecure && !request2.allowInsecureConnection) {
       throw new Error(`Cannot connect to ${request2.url} while allowInsecureConnection is false.`);
     }
     const agent = request2.agent ?? this.getOrCreateAgent(request2, isInsecure);
     const options = {
       agent,
-      hostname: url2.hostname,
-      path: `${url2.pathname}${url2.search}`,
-      port: url2.port,
+      hostname: url3.hostname,
+      path: `${url3.pathname}${url3.search}`,
+      port: url3.port,
       method: request2.method,
       headers: request2.headers.toJSON({ preserveCase: true }),
       ...request2.requestOverrides
@@ -65393,8 +65393,8 @@ function setProxyAgentOnRequest(request2, cachedAgents, proxyUrl) {
   if (request2.agent) {
     return;
   }
-  const url2 = new URL(request2.url);
-  const isInsecure = url2.protocol !== "https:";
+  const url3 = new URL(request2.url);
+  const isInsecure = url3.protocol !== "https:";
   if (request2.tlsSettings) {
     logger.warning("TLS settings are not supported in combination with custom Proxy, certificates provided to the client will be ignored.");
   }
@@ -65460,15 +65460,15 @@ async function handleRedirect(next, response, maxRetries, allowCrossOriginRedire
   const { request: request2, status, headers } = response;
   const locationHeader = headers.get("location");
   if (locationHeader && (status === 300 || status === 301 && allowedRedirect.includes(request2.method) || status === 302 && allowedRedirect.includes(request2.method) || status === 303 && request2.method === "POST" || status === 307) && currentRetries < maxRetries) {
-    const url2 = new URL(locationHeader, request2.url);
+    const url3 = new URL(locationHeader, request2.url);
     if (!allowCrossOriginRedirects) {
       const originalUrl = new URL(request2.url);
-      if (url2.origin !== originalUrl.origin) {
-        logger.verbose(`Skipping cross-origin redirect from ${originalUrl.origin} to ${url2.origin}.`);
+      if (url3.origin !== originalUrl.origin) {
+        logger.verbose(`Skipping cross-origin redirect from ${originalUrl.origin} to ${url3.origin}.`);
         return response;
       }
     }
-    request2.url = url2.toString();
+    request2.url = url3.toString();
     if (status === 303) {
       request2.method = "GET";
       request2.headers.delete("Content-Length");
@@ -67870,14 +67870,14 @@ function calculateUrlReplacements(operationSpec, operationArguments, fallbackObj
   }
   return result;
 }
-function isAbsoluteUrl(url2) {
-  return url2.includes("://");
+function isAbsoluteUrl(url3) {
+  return url3.includes("://");
 }
-function appendPath(url2, pathToAppend) {
+function appendPath(url3, pathToAppend) {
   if (!pathToAppend) {
-    return url2;
+    return url3;
   }
-  const parsedUrl = new URL(url2);
+  const parsedUrl = new URL(url3);
   let newPath = parsedUrl.pathname;
   if (!newPath.endsWith("/")) {
     newPath = `${newPath}/`;
@@ -67967,11 +67967,11 @@ function simpleParseQueryParams(queryString) {
   }
   return result;
 }
-function appendQueryParams(url2, queryParams, sequenceParams, noOverwrite = false) {
+function appendQueryParams(url3, queryParams, sequenceParams, noOverwrite = false) {
   if (queryParams.size === 0) {
-    return url2;
+    return url3;
   }
-  const parsedUrl = new URL(url2);
+  const parsedUrl = new URL(url3);
   const combinedParams = simpleParseQueryParams(parsedUrl.search);
   for (const [name, value] of queryParams) {
     const existingValue = combinedParams.get(name);
@@ -68078,9 +68078,9 @@ var ServiceClient = class {
     if (!endpoint2) {
       throw new Error("If operationSpec.baseUrl is not specified, then the ServiceClient must have a endpoint string property that contains the base URL to use.");
     }
-    const url2 = getRequestUrl(endpoint2, operationSpec, operationArguments, this);
+    const url3 = getRequestUrl(endpoint2, operationSpec, operationArguments, this);
     const request2 = createPipelineRequest2({
-      url: url2
+      url: url3
     });
     request2.method = operationSpec.httpMethod;
     const operationInfo = getOperationRequestInfo(request2);
@@ -76004,9 +76004,9 @@ var NativeCRC64 = (() => {
         }
         ensureCache.pos = 0;
       },
-      alloc: function(array, view) {
+      alloc: function(array, view2) {
         assert(ensureCache.buffer);
-        var bytes = view.BYTES_PER_ELEMENT;
+        var bytes = view2.BYTES_PER_ELEMENT;
         var len = array.length * bytes;
         len = len + 7 & -8;
         var ret;
@@ -76021,9 +76021,9 @@ var NativeCRC64 = (() => {
         }
         return ret;
       },
-      copy: function(array, view, offset) {
+      copy: function(array, view2, offset) {
         offset >>>= 0;
-        var bytes = view.BYTES_PER_ELEMENT;
+        var bytes = view2.BYTES_PER_ELEMENT;
         switch (bytes) {
           case 2:
             offset >>>= 1;
@@ -76036,7 +76036,7 @@ var NativeCRC64 = (() => {
             break;
         }
         for (var i = 0; i < array.length; i++) {
-          view[offset + i] = array[i];
+          view2[offset + i] = array[i];
         }
       }
     };
@@ -76315,15 +76315,15 @@ var StructuredMessageEncoding = class {
     if (buffer2.length < offset + 8) {
       throw new Error("Uint8Array length is not expected.");
     }
-    const view = new DataView(buffer2.buffer, buffer2.byteOffset + offset, 8);
-    view.setBigUint64(0, BigInt(input), true);
+    const view2 = new DataView(buffer2.buffer, buffer2.byteOffset + offset, 8);
+    view2.setBigUint64(0, BigInt(input), true);
   }
   fillInt16(buffer2, offset, input) {
     if (buffer2.length < offset + 2) {
       throw new Error("Uint8Array length is not expected.");
     }
-    const view = new DataView(buffer2.buffer, buffer2.byteOffset + offset, 2);
-    view.setUint16(0, input, true);
+    const view2 = new DataView(buffer2.buffer, buffer2.byteOffset + offset, 2);
+    view2.setUint16(0, input, true);
   }
 };
 
@@ -76642,8 +76642,8 @@ var StructuredMessageDecoding = class {
     if (input.length < offset + 8) {
       throw new Error("CRC64 buffer error, something wrong with crc64 calculator");
     }
-    const view = new DataView(input.buffer, input.byteOffset + offset, 8);
-    return Number(view.getBigUint64(0, true));
+    const view2 = new DataView(input.buffer, input.byteOffset + offset, 8);
+    return Number(view2.getBigUint64(0, true));
   }
   toInt16(input) {
     if (input.length !== 2) {
@@ -76901,8 +76901,8 @@ var HeaderConstants = {
 };
 
 // node_modules/@azure/storage-common/dist/esm/utils/utils.common.js
-function setURLParameter(url2, name, value) {
-  const urlParsed = new URL(url2);
+function setURLParameter(url3, name, value) {
+  const urlParsed = new URL(url3);
   const encodedName = encodeURIComponent(name);
   const encodedValue = value ? encodeURIComponent(value) : void 0;
   const searchString = urlParsed.search === "" ? "?" : urlParsed.search;
@@ -76921,21 +76921,21 @@ function setURLParameter(url2, name, value) {
   urlParsed.search = searchPieces.length ? `?${searchPieces.join("&")}` : "";
   return urlParsed.toString();
 }
-function setURLHost(url2, host) {
-  const urlParsed = new URL(url2);
+function setURLHost(url3, host) {
+  const urlParsed = new URL(url3);
   urlParsed.hostname = host;
   return urlParsed.toString();
 }
-function getURLPath(url2) {
+function getURLPath(url3) {
   try {
-    const urlParsed = new URL(url2);
+    const urlParsed = new URL(url3);
     return urlParsed.pathname;
   } catch (e) {
     return void 0;
   }
 }
-function getURLQueries(url2) {
-  let queryString = new URL(url2).search;
+function getURLQueries(url3) {
+  let queryString = new URL(url3).search;
   if (!queryString) {
     return {};
   }
@@ -92356,8 +92356,8 @@ var StorageClient = class extends ExtendedServiceClient {
    *            operation.
    * @param options The parameter options
    */
-  constructor(url2, options) {
-    if (url2 === void 0) {
+  constructor(url3, options) {
+    if (url3 === void 0) {
       throw new Error("'url' cannot be null");
     }
     if (!options) {
@@ -92377,7 +92377,7 @@ var StorageClient = class extends ExtendedServiceClient {
       endpoint: options.endpoint ?? options.baseUri ?? "{url}"
     };
     super(optionsWithDefaults);
-    this.url = url2;
+    this.url = url3;
     this.version = options.version || "2026-10-06";
     this.service = new ServiceImpl(this);
     this.container = new ContainerImpl(this);
@@ -92413,8 +92413,8 @@ var accountNameSuffixes = [
   "-dualstack",
   "-secondary"
 ];
-function escapeURLPath(url2) {
-  const urlParsed = new URL(url2);
+function escapeURLPath(url3) {
+  const urlParsed = new URL(url3);
   let path5 = urlParsed.pathname;
   path5 = path5 || "/";
   path5 = escape(path5);
@@ -92501,15 +92501,15 @@ function extractConnectionStringParts(connectionString) {
 function escape(text) {
   return encodeURIComponent(text).replace(/%2F/g, "/").replace(/'/g, "%27").replace(/\+/g, "%20").replace(/%25/g, "%");
 }
-function appendToURLPath(url2, name) {
-  const urlParsed = new URL(url2);
+function appendToURLPath(url3, name) {
+  const urlParsed = new URL(url3);
   let path5 = urlParsed.pathname;
   path5 = path5 ? path5.endsWith("/") ? `${path5}${name}` : `${path5}/${name}` : name;
   urlParsed.pathname = path5;
   return urlParsed.toString();
 }
-function setURLParameter2(url2, name, value) {
-  const urlParsed = new URL(url2);
+function setURLParameter2(url3, name, value) {
+  const urlParsed = new URL(url3);
   const encodedName = encodeURIComponent(name);
   const encodedValue = value ? encodeURIComponent(value) : void 0;
   const searchString = urlParsed.search === "" ? "?" : urlParsed.search;
@@ -92528,20 +92528,20 @@ function setURLParameter2(url2, name, value) {
   urlParsed.search = searchPieces.length ? `?${searchPieces.join("&")}` : "";
   return urlParsed.toString();
 }
-function getURLParameter(url2, name) {
-  const urlParsed = new URL(url2);
+function getURLParameter(url3, name) {
+  const urlParsed = new URL(url3);
   return urlParsed.searchParams.get(name) ?? void 0;
 }
-function getURLScheme(url2) {
+function getURLScheme(url3) {
   try {
-    const urlParsed = new URL(url2);
+    const urlParsed = new URL(url3);
     return urlParsed.protocol.endsWith(":") ? urlParsed.protocol.slice(0, -1) : urlParsed.protocol;
   } catch (e) {
     return void 0;
   }
 }
-function appendToURLQuery(url2, queryParts) {
-  const urlParsed = new URL(url2);
+function appendToURLQuery(url3, queryParts) {
+  const urlParsed = new URL(url3);
   let query = urlParsed.search;
   if (query) {
     query += "&" + queryParts;
@@ -92586,8 +92586,8 @@ function padStart(currentString, targetLength, padString = " ") {
 function iEqual(str1, str2) {
   return str1.toLocaleLowerCase() === str2.toLocaleLowerCase();
 }
-function getAccountNameFromUrl(url2) {
-  const parsedUrl = new URL(url2);
+function getAccountNameFromUrl(url3) {
+  const parsedUrl = new URL(url3);
   let accountName;
   try {
     if (parsedUrl.hostname.split(".")[1] === "blob") {
@@ -92835,9 +92835,9 @@ var StorageClient2 = class {
    * @param url - url to resource
    * @param pipeline - request policy pipeline.
    */
-  constructor(url2, pipeline) {
-    this.url = escapeURLPath(url2);
-    this.accountName = getAccountNameFromUrl(url2);
+  constructor(url3, pipeline) {
+    this.url = escapeURLPath(url3);
+    this.accountName = getAccountNameFromUrl(url3);
     this.pipeline = pipeline;
     this.storageClientContext = new StorageContextClient(this.url, getCoreClientOptions(pipeline));
     this.isHttps = iEqual(getURLScheme(this.url) || "", "https");
@@ -95155,13 +95155,13 @@ var AvroParser = class _AvroParser {
   }
   static async readFloat(stream4, options = {}) {
     const u8arr = await _AvroParser.readFixedBytes(stream4, 4, options);
-    const view = new DataView(u8arr.buffer, u8arr.byteOffset, u8arr.byteLength);
-    return view.getFloat32(0, true);
+    const view2 = new DataView(u8arr.buffer, u8arr.byteOffset, u8arr.byteLength);
+    return view2.getFloat32(0, true);
   }
   static async readDouble(stream4, options = {}) {
     const u8arr = await _AvroParser.readFixedBytes(stream4, 8, options);
-    const view = new DataView(u8arr.buffer, u8arr.byteOffset, u8arr.byteLength);
-    return view.getFloat64(0, true);
+    const view2 = new DataView(u8arr.buffer, u8arr.byteOffset, u8arr.byteLength);
+    return view2.getFloat64(0, true);
   }
   static async readBytes(stream4, options = {}) {
     const size = await _AvroParser.readLong(stream4, options);
@@ -96744,17 +96744,17 @@ var BlobClient = class _BlobClient extends StorageClient2 {
   constructor(urlOrConnectionString, credentialOrPipelineOrContainerName, blobNameOrOptions, options) {
     options = options || {};
     let pipeline;
-    let url2;
+    let url3;
     if (isPipelineLike(credentialOrPipelineOrContainerName)) {
-      url2 = urlOrConnectionString;
+      url3 = urlOrConnectionString;
       pipeline = credentialOrPipelineOrContainerName;
       options = blobNameOrOptions;
     } else if (isNodeLike2 && credentialOrPipelineOrContainerName instanceof StorageSharedKeyCredential || credentialOrPipelineOrContainerName instanceof AnonymousCredential || isTokenCredential(credentialOrPipelineOrContainerName)) {
-      url2 = urlOrConnectionString;
+      url3 = urlOrConnectionString;
       options = blobNameOrOptions;
       pipeline = newPipeline(credentialOrPipelineOrContainerName, options);
     } else if (!credentialOrPipelineOrContainerName && typeof credentialOrPipelineOrContainerName !== "string") {
-      url2 = urlOrConnectionString;
+      url3 = urlOrConnectionString;
       if (blobNameOrOptions && typeof blobNameOrOptions !== "string") {
         options = blobNameOrOptions;
       }
@@ -96766,7 +96766,7 @@ var BlobClient = class _BlobClient extends StorageClient2 {
       if (extractedCreds.kind === "AccountConnString") {
         if (isNodeLike2) {
           const sharedKeyCredential = new StorageSharedKeyCredential(extractedCreds.accountName, extractedCreds.accountKey);
-          url2 = appendToURLPath(appendToURLPath(extractedCreds.url, encodeURIComponent(containerName)), encodeURIComponent(blobName));
+          url3 = appendToURLPath(appendToURLPath(extractedCreds.url, encodeURIComponent(containerName)), encodeURIComponent(blobName));
           if (!options.proxyOptions) {
             options.proxyOptions = getDefaultProxySettings2(extractedCreds.proxyUri);
           }
@@ -96775,7 +96775,7 @@ var BlobClient = class _BlobClient extends StorageClient2 {
           throw new Error("Account connection string is only supported in Node.js environment");
         }
       } else if (extractedCreds.kind === "SASConnString") {
-        url2 = appendToURLPath(appendToURLPath(extractedCreds.url, encodeURIComponent(containerName)), encodeURIComponent(blobName)) + "?" + extractedCreds.accountSas;
+        url3 = appendToURLPath(appendToURLPath(extractedCreds.url, encodeURIComponent(containerName)), encodeURIComponent(blobName)) + "?" + extractedCreds.accountSas;
         pipeline = newPipeline(new AnonymousCredential(), options);
       } else {
         throw new Error("Connection string must be either an Account connection string or a SAS connection string");
@@ -96783,7 +96783,7 @@ var BlobClient = class _BlobClient extends StorageClient2 {
     } else {
       throw new Error("Expecting non-empty strings for containerName and blobName parameters");
     }
-    super(url2, pipeline);
+    super(url3, pipeline);
     ({ blobName: this._name, containerName: this._containerName } = this.getBlobAndContainerNamesFromUrl());
     this.blobContext = this.storageClientContext.blob;
     this._snapshot = getURLParameter(this.url, URLConstants2.Parameters.SNAPSHOT);
@@ -97787,18 +97787,18 @@ var AppendBlobClient = class _AppendBlobClient extends BlobClient {
   appendBlobContext;
   constructor(urlOrConnectionString, credentialOrPipelineOrContainerName, blobNameOrOptions, options) {
     let pipeline;
-    let url2;
+    let url3;
     options = options || {};
     if (isPipelineLike(credentialOrPipelineOrContainerName)) {
-      url2 = urlOrConnectionString;
+      url3 = urlOrConnectionString;
       pipeline = credentialOrPipelineOrContainerName;
       options = blobNameOrOptions;
     } else if (isNodeLike2 && credentialOrPipelineOrContainerName instanceof StorageSharedKeyCredential || credentialOrPipelineOrContainerName instanceof AnonymousCredential || isTokenCredential(credentialOrPipelineOrContainerName)) {
-      url2 = urlOrConnectionString;
+      url3 = urlOrConnectionString;
       options = blobNameOrOptions;
       pipeline = newPipeline(credentialOrPipelineOrContainerName, options);
     } else if (!credentialOrPipelineOrContainerName && typeof credentialOrPipelineOrContainerName !== "string") {
-      url2 = urlOrConnectionString;
+      url3 = urlOrConnectionString;
       options = blobNameOrOptions;
       pipeline = newPipeline(new AnonymousCredential(), options);
     } else if (credentialOrPipelineOrContainerName && typeof credentialOrPipelineOrContainerName === "string" && blobNameOrOptions && typeof blobNameOrOptions === "string") {
@@ -97808,7 +97808,7 @@ var AppendBlobClient = class _AppendBlobClient extends BlobClient {
       if (extractedCreds.kind === "AccountConnString") {
         if (isNodeLike2) {
           const sharedKeyCredential = new StorageSharedKeyCredential(extractedCreds.accountName, extractedCreds.accountKey);
-          url2 = appendToURLPath(appendToURLPath(extractedCreds.url, encodeURIComponent(containerName)), encodeURIComponent(blobName));
+          url3 = appendToURLPath(appendToURLPath(extractedCreds.url, encodeURIComponent(containerName)), encodeURIComponent(blobName));
           if (!options.proxyOptions) {
             options.proxyOptions = getDefaultProxySettings2(extractedCreds.proxyUri);
           }
@@ -97817,7 +97817,7 @@ var AppendBlobClient = class _AppendBlobClient extends BlobClient {
           throw new Error("Account connection string is only supported in Node.js environment");
         }
       } else if (extractedCreds.kind === "SASConnString") {
-        url2 = appendToURLPath(appendToURLPath(extractedCreds.url, encodeURIComponent(containerName)), encodeURIComponent(blobName)) + "?" + extractedCreds.accountSas;
+        url3 = appendToURLPath(appendToURLPath(extractedCreds.url, encodeURIComponent(containerName)), encodeURIComponent(blobName)) + "?" + extractedCreds.accountSas;
         pipeline = newPipeline(new AnonymousCredential(), options);
       } else {
         throw new Error("Connection string must be either an Account connection string or a SAS connection string");
@@ -97825,7 +97825,7 @@ var AppendBlobClient = class _AppendBlobClient extends BlobClient {
     } else {
       throw new Error("Expecting non-empty strings for containerName and blobName parameters");
     }
-    super(url2, pipeline);
+    super(url3, pipeline);
     this.appendBlobContext = this.storageClientContext.appendBlob;
     this.blobClientConfig = options;
   }
@@ -98067,18 +98067,18 @@ var BlockBlobClient = class _BlockBlobClient extends BlobClient {
   blockBlobContext;
   constructor(urlOrConnectionString, credentialOrPipelineOrContainerName, blobNameOrOptions, options) {
     let pipeline;
-    let url2;
+    let url3;
     options = options || {};
     if (isPipelineLike(credentialOrPipelineOrContainerName)) {
-      url2 = urlOrConnectionString;
+      url3 = urlOrConnectionString;
       pipeline = credentialOrPipelineOrContainerName;
       options = blobNameOrOptions;
     } else if (isNodeLike2 && credentialOrPipelineOrContainerName instanceof StorageSharedKeyCredential || credentialOrPipelineOrContainerName instanceof AnonymousCredential || isTokenCredential(credentialOrPipelineOrContainerName)) {
-      url2 = urlOrConnectionString;
+      url3 = urlOrConnectionString;
       options = blobNameOrOptions;
       pipeline = newPipeline(credentialOrPipelineOrContainerName, options);
     } else if (!credentialOrPipelineOrContainerName && typeof credentialOrPipelineOrContainerName !== "string") {
-      url2 = urlOrConnectionString;
+      url3 = urlOrConnectionString;
       if (blobNameOrOptions && typeof blobNameOrOptions !== "string") {
         options = blobNameOrOptions;
       }
@@ -98090,7 +98090,7 @@ var BlockBlobClient = class _BlockBlobClient extends BlobClient {
       if (extractedCreds.kind === "AccountConnString") {
         if (isNodeLike2) {
           const sharedKeyCredential = new StorageSharedKeyCredential(extractedCreds.accountName, extractedCreds.accountKey);
-          url2 = appendToURLPath(appendToURLPath(extractedCreds.url, encodeURIComponent(containerName)), encodeURIComponent(blobName));
+          url3 = appendToURLPath(appendToURLPath(extractedCreds.url, encodeURIComponent(containerName)), encodeURIComponent(blobName));
           if (!options.proxyOptions) {
             options.proxyOptions = getDefaultProxySettings2(extractedCreds.proxyUri);
           }
@@ -98099,7 +98099,7 @@ var BlockBlobClient = class _BlockBlobClient extends BlobClient {
           throw new Error("Account connection string is only supported in Node.js environment");
         }
       } else if (extractedCreds.kind === "SASConnString") {
-        url2 = appendToURLPath(appendToURLPath(extractedCreds.url, encodeURIComponent(containerName)), encodeURIComponent(blobName)) + "?" + extractedCreds.accountSas;
+        url3 = appendToURLPath(appendToURLPath(extractedCreds.url, encodeURIComponent(containerName)), encodeURIComponent(blobName)) + "?" + extractedCreds.accountSas;
         pipeline = newPipeline(new AnonymousCredential(), options);
       } else {
         throw new Error("Connection string must be either an Account connection string or a SAS connection string");
@@ -98107,7 +98107,7 @@ var BlockBlobClient = class _BlockBlobClient extends BlobClient {
     } else {
       throw new Error("Expecting non-empty strings for containerName and blobName parameters");
     }
-    super(url2, pipeline);
+    super(url3, pipeline);
     this.blockBlobContext = this.storageClientContext.blockBlob;
     this._blobContext = this.storageClientContext.blob;
     this.blobClientConfig = options;
@@ -98683,18 +98683,18 @@ var PageBlobClient = class _PageBlobClient extends BlobClient {
   pageBlobContext;
   constructor(urlOrConnectionString, credentialOrPipelineOrContainerName, blobNameOrOptions, options) {
     let pipeline;
-    let url2;
+    let url3;
     options = options || {};
     if (isPipelineLike(credentialOrPipelineOrContainerName)) {
-      url2 = urlOrConnectionString;
+      url3 = urlOrConnectionString;
       pipeline = credentialOrPipelineOrContainerName;
       options = blobNameOrOptions;
     } else if (isNodeLike2 && credentialOrPipelineOrContainerName instanceof StorageSharedKeyCredential || credentialOrPipelineOrContainerName instanceof AnonymousCredential || isTokenCredential(credentialOrPipelineOrContainerName)) {
-      url2 = urlOrConnectionString;
+      url3 = urlOrConnectionString;
       options = blobNameOrOptions;
       pipeline = newPipeline(credentialOrPipelineOrContainerName, options);
     } else if (!credentialOrPipelineOrContainerName && typeof credentialOrPipelineOrContainerName !== "string") {
-      url2 = urlOrConnectionString;
+      url3 = urlOrConnectionString;
       options = blobNameOrOptions;
       pipeline = newPipeline(new AnonymousCredential(), options);
     } else if (credentialOrPipelineOrContainerName && typeof credentialOrPipelineOrContainerName === "string" && blobNameOrOptions && typeof blobNameOrOptions === "string") {
@@ -98704,7 +98704,7 @@ var PageBlobClient = class _PageBlobClient extends BlobClient {
       if (extractedCreds.kind === "AccountConnString") {
         if (isNodeLike2) {
           const sharedKeyCredential = new StorageSharedKeyCredential(extractedCreds.accountName, extractedCreds.accountKey);
-          url2 = appendToURLPath(appendToURLPath(extractedCreds.url, encodeURIComponent(containerName)), encodeURIComponent(blobName));
+          url3 = appendToURLPath(appendToURLPath(extractedCreds.url, encodeURIComponent(containerName)), encodeURIComponent(blobName));
           if (!options.proxyOptions) {
             options.proxyOptions = getDefaultProxySettings2(extractedCreds.proxyUri);
           }
@@ -98713,7 +98713,7 @@ var PageBlobClient = class _PageBlobClient extends BlobClient {
           throw new Error("Account connection string is only supported in Node.js environment");
         }
       } else if (extractedCreds.kind === "SASConnString") {
-        url2 = appendToURLPath(appendToURLPath(extractedCreds.url, encodeURIComponent(containerName)), encodeURIComponent(blobName)) + "?" + extractedCreds.accountSas;
+        url3 = appendToURLPath(appendToURLPath(extractedCreds.url, encodeURIComponent(containerName)), encodeURIComponent(blobName)) + "?" + extractedCreds.accountSas;
         pipeline = newPipeline(new AnonymousCredential(), options);
       } else {
         throw new Error("Connection string must be either an Account connection string or a SAS connection string");
@@ -98721,7 +98721,7 @@ var PageBlobClient = class _PageBlobClient extends BlobClient {
     } else {
       throw new Error("Expecting non-empty strings for containerName and blobName parameters");
     }
-    super(url2, pipeline);
+    super(url3, pipeline);
     this.pageBlobContext = this.storageClientContext.pageBlob;
     this.blobClientConfig = options;
   }
@@ -99959,8 +99959,8 @@ function getProxyAgentDispatcher(destinationUrl) {
 }
 function getProxyFetch(destinationUrl) {
   const httpDispatcher = getProxyAgentDispatcher(destinationUrl);
-  const proxyFetch = (url2, opts) => __awaiter9(this, void 0, void 0, function* () {
-    return (0, import_undici2.fetch)(url2, Object.assign(Object.assign({}, opts), { dispatcher: httpDispatcher }));
+  const proxyFetch = (url3, opts) => __awaiter9(this, void 0, void 0, function* () {
+    return (0, import_undici2.fetch)(url3, Object.assign(Object.assign({}, opts), { dispatcher: httpDispatcher }));
   });
   return proxyFetch;
 }
@@ -100151,8 +100151,8 @@ function removeUndefinedProperties(obj) {
 }
 function merge(defaults2, route, options) {
   if (typeof route === "string") {
-    let [method, url2] = route.split(" ");
-    options = Object.assign(url2 ? { method, url: url2 } : { url: method }, options);
+    let [method, url3] = route.split(" ");
+    options = Object.assign(url3 ? { method, url: url3 } : { url: method }, options);
   } else {
     options = Object.assign({}, route);
   }
@@ -100170,13 +100170,13 @@ function merge(defaults2, route, options) {
   }
   return mergedOptions;
 }
-function addQueryParameters(url2, parameters) {
-  const separator = /\?/.test(url2) ? "&" : "?";
+function addQueryParameters(url3, parameters) {
+  const separator = /\?/.test(url3) ? "&" : "?";
   const names = Object.keys(parameters);
   if (names.length === 0) {
-    return url2;
+    return url3;
   }
-  return url2 + separator + names.map((name) => {
+  return url3 + separator + names.map((name) => {
     if (name === "q") {
       return "q=" + parameters.q.split("+").map(encodeURIComponent).join("+");
     }
@@ -100187,8 +100187,8 @@ var urlVariableRegex = /\{[^{}}]+\}/g;
 function removeNonChars(variableName) {
   return variableName.replace(/(?:^\W+)|(?:(?<!\W)\W+$)/g, "").split(/,/);
 }
-function extractUrlVariableNames(url2) {
-  const matches = url2.match(urlVariableRegex);
+function extractUrlVariableNames(url3) {
+  const matches = url3.match(urlVariableRegex);
   if (!matches) {
     return [];
   }
@@ -100335,7 +100335,7 @@ function expand(template, context5) {
 }
 function parse2(options) {
   let method = options.method.toUpperCase();
-  let url2 = (options.url || "/").replace(/:([a-z]\w+)/g, "{$1}");
+  let url3 = (options.url || "/").replace(/:([a-z]\w+)/g, "{$1}");
   let headers = Object.assign({}, options.headers);
   let body2;
   let parameters = omit(options, [
@@ -100346,10 +100346,10 @@ function parse2(options) {
     "request",
     "mediaType"
   ]);
-  const urlVariableNames = extractUrlVariableNames(url2);
-  url2 = parseUrl(url2).expand(parameters);
-  if (!/^http/.test(url2)) {
-    url2 = options.baseUrl + url2;
+  const urlVariableNames = extractUrlVariableNames(url3);
+  url3 = parseUrl(url3).expand(parameters);
+  if (!/^http/.test(url3)) {
+    url3 = options.baseUrl + url3;
   }
   const omittedParameters = Object.keys(options).filter((option) => urlVariableNames.includes(option)).concat("baseUrl");
   const remainingParameters = omit(parameters, omittedParameters);
@@ -100363,7 +100363,7 @@ function parse2(options) {
         )
       ).join(",");
     }
-    if (url2.endsWith("/graphql")) {
+    if (url3.endsWith("/graphql")) {
       if (options.mediaType.previews?.length) {
         const previewsFromAcceptHeader = headers.accept.match(/(?<![\w-])[\w-]+(?=-preview)/g) || [];
         headers.accept = previewsFromAcceptHeader.concat(options.mediaType.previews).map((preview) => {
@@ -100374,7 +100374,7 @@ function parse2(options) {
     }
   }
   if (["GET", "HEAD"].includes(method)) {
-    url2 = addQueryParameters(url2, remainingParameters);
+    url3 = addQueryParameters(url3, remainingParameters);
   } else {
     if ("data" in remainingParameters) {
       body2 = remainingParameters.data;
@@ -100391,7 +100391,7 @@ function parse2(options) {
     body2 = "";
   }
   return Object.assign(
-    { method, url: url2, headers },
+    { method, url: url3, headers },
     typeof body2 !== "undefined" ? { body: body2 } : null,
     options.request ? { request: options.request } : null
   );
@@ -101036,13 +101036,13 @@ async function fetchWrapper(requestOptions) {
     throw requestError;
   }
   const status = fetchResponse.status;
-  const url2 = fetchResponse.url;
+  const url3 = fetchResponse.url;
   const responseHeaders = {};
   for (const [key, value] of fetchResponse.headers) {
     responseHeaders[key] = value;
   }
   const octokitResponse = {
-    url: url2,
+    url: url3,
     status,
     headers: responseHeaders,
     data: ""
@@ -103743,11 +103743,11 @@ var endpointMethodsMap = /* @__PURE__ */ new Map();
 for (const [scope, endpoints] of Object.entries(endpoints_default)) {
   for (const [methodName, endpoint2] of Object.entries(endpoints)) {
     const [route, defaults2, decorations] = endpoint2;
-    const [method, url2] = route.split(/ /);
+    const [method, url3] = route.split(/ /);
     const endpointDefaults = Object.assign(
       {
         method,
-        url: url2
+        url: url3
       },
       defaults2
     );
@@ -103915,31 +103915,31 @@ function iterator(octokit, route, parameters) {
   const requestMethod = typeof route === "function" ? route : octokit.request;
   const method = options.method;
   const headers = options.headers;
-  let url2 = options.url;
+  let url3 = options.url;
   return {
     [Symbol.asyncIterator]: () => ({
       async next() {
-        if (!url2) return { done: true };
+        if (!url3) return { done: true };
         try {
-          const response = await requestMethod({ method, url: url2, headers });
+          const response = await requestMethod({ method, url: url3, headers });
           const normalizedResponse = normalizePaginatedListResponse(response);
-          url2 = ((normalizedResponse.headers.link || "").match(
+          url3 = ((normalizedResponse.headers.link || "").match(
             /<([^<>]+)>;\s*rel="next"/
           ) || [])[1];
-          if (!url2 && "total_commits" in normalizedResponse.data) {
+          if (!url3 && "total_commits" in normalizedResponse.data) {
             const parsedUrl = new URL(normalizedResponse.url);
             const params = parsedUrl.searchParams;
             const page = parseInt(params.get("page") || "1", 10);
             const per_page = parseInt(params.get("per_page") || "250", 10);
             if (page * per_page < normalizedResponse.data.total_commits) {
               params.set("page", String(page + 1));
-              url2 = parsedUrl.toString();
+              url3 = parsedUrl.toString();
             }
           }
           return { value: normalizedResponse };
         } catch (error2) {
           if (error2.status !== 409) throw error2;
-          url2 = "";
+          url3 = "";
           return {
             value: {
               status: 200,
@@ -104054,8 +104054,8 @@ var __awaiter10 = function(thisArg, _arguments, P, generator) {
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
 };
-var scrubQueryParameters = (url2) => {
-  const parsed = new URL(url2);
+var scrubQueryParameters = (url3) => {
+  const parsed = new URL(url3);
   parsed.search = "";
   return parsed.toString();
 };
@@ -104073,12 +104073,12 @@ function exists2(path5) {
     }
   });
 }
-function streamExtract(url2, directory, skipDecompress) {
+function streamExtract(url3, directory, skipDecompress) {
   return __awaiter10(this, void 0, void 0, function* () {
     let retryCount = 0;
     while (retryCount < 5) {
       try {
-        return yield streamExtractExternal(url2, directory, { skipDecompress });
+        return yield streamExtractExternal(url3, directory, { skipDecompress });
       } catch (error2) {
         retryCount++;
         debug(`Failed to download artifact after ${retryCount} retries due to ${error2.message}. Retrying in 5 seconds...`);
@@ -104089,16 +104089,16 @@ function streamExtract(url2, directory, skipDecompress) {
   });
 }
 function streamExtractExternal(url_1, directory_1) {
-  return __awaiter10(this, arguments, void 0, function* (url2, directory, opts = {}) {
+  return __awaiter10(this, arguments, void 0, function* (url3, directory, opts = {}) {
     const { timeout = 30 * 1e3, skipDecompress = false } = opts;
     const client2 = new HttpClient(getUserAgentString());
-    const response = yield client2.get(url2);
+    const response = yield client2.get(url3);
     if (response.message.statusCode !== 200) {
       throw new Error(`Unexpected HTTP response from blob storage: ${response.message.statusCode} ${response.message.statusMessage}`);
     }
     const contentType2 = response.message.headers["content-type"] || "";
     const mimeType = contentType2.split(";", 1)[0].trim().toLowerCase();
-    const urlPath = new URL(url2).pathname.toLowerCase();
+    const urlPath = new URL(url3).pathname.toLowerCase();
     const urlEndsWithZip = urlPath.endsWith(".zip");
     const isZip = mimeType === "application/zip" || mimeType === "application/x-zip-compressed" || mimeType === "application/zip-compressed" || urlEndsWithZip;
     const contentDisposition = response.message.headers["content-disposition"] || "";
@@ -104841,18 +104841,15 @@ import { mkdtemp, readdir as readdir2, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path4 from "node:path";
 
-// src/compare.ts
-function worsePercent(row) {
-  if (row.base === void 0 || row.current === void 0) return void 0;
-  if (row.base === 0) return row.current === 0 ? 0 : void 0;
-  const change = (row.current - row.base) / Math.abs(row.base) * 100;
-  return row.lowerIsBetter ? change : -change;
+// src/history.ts
+function suitePath(suite) {
+  if (!/^[A-Za-z0-9._-]+$/.test(suite) || suite.startsWith(".")) {
+    throw new Error(`Invalid suite "${suite}". Use letters, digits, ".", "_" or "-".`);
+  }
+  return suite;
 }
 
 // src/markdown.ts
-function commentMarker(suite) {
-  return `<!-- benchmark-action:${encodeURIComponent(suite)} -->`;
-}
 var statusOrder = {
   regression: 0,
   improvement: 1,
@@ -104867,48 +104864,54 @@ var statusIcon = {
   removed: "\u2796",
   unchanged: "\u26AA"
 };
-function renderMarkdown(report) {
-  const lines = [commentMarker(report.suite)];
-  const title = report.suite === "default" ? "Benchmark results" : `Benchmark results: ${escape2(report.suite)}`;
-  lines.push(`### ${title}`, "");
-  const counts = countByStatus(report.rows);
-  const short = (sha) => `\`${sha.slice(0, 7)}\``;
+function shortSha(sha2) {
+  return `\`${sha2.slice(0, 7)}\``;
+}
+function summarizeReport(report) {
+  if (!report.baseline) return "No baseline yet";
+  const counts = { regression: 0, improvement: 0, unchanged: 0, new: 0, removed: 0 };
+  for (const row of report.rows) counts[row.status]++;
+  const parts = [];
+  const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+  if (counts.regression) parts.push(`\u{1F534} ${plural(counts.regression, "regression")}`);
+  if (counts.improvement) parts.push(`\u{1F7E2} ${plural(counts.improvement, "improvement")}`);
+  if (counts.new) parts.push(`\u{1F195} ${counts.new} new`);
+  if (counts.removed) parts.push(`\u2796 ${counts.removed} removed`);
+  return parts.length === 0 ? "\u2705 No significant changes" : parts.join(" \xB7 ");
+}
+function renderReport(report) {
+  const lines = [];
   if (report.baseline) {
     lines.push(
-      `Comparing ${short(report.current.sha)} against ${short(report.baseline.sha)} on \`${escapeCode(report.baseline.branch)}\`, with a ${report.threshold}% threshold.`,
-      "",
-      summarize(counts)
+      `Compared ${shortSha(report.current.sha)} against ${shortSha(report.baseline.sha)} on \`${escapeCode(report.baseline.branch)}\`, with a ${report.threshold}% threshold.`
     );
   } else {
     lines.push(
-      `No stored results found for the target branch yet, so there is nothing to compare ${short(report.current.sha)} against.`
+      `No stored results for the target branch yet, so there is nothing to compare ${shortSha(report.current.sha)} against.`
     );
   }
   lines.push("");
   const rows = [...report.rows].sort(
     (a, b) => statusOrder[a.status] - statusOrder[b.status] || a.name.localeCompare(b.name)
   );
-  const changed = rows.filter((r) => r.status !== "unchanged");
-  const unchanged = rows.filter((r) => r.status === "unchanged");
   if (!report.baseline) {
     lines.push(...table(rows, false));
-  } else {
-    if (changed.length > 0) lines.push(...table(changed, true));
-    if (unchanged.length > 0) {
-      if (changed.length > 0) lines.push("");
-      lines.push(
-        `<details><summary>${unchanged.length} unchanged</summary>`,
-        "",
-        ...table(unchanged, true),
-        "",
-        "</details>"
-      );
-    }
+    return lines.join("\n");
   }
-  if (report.siteUrl) {
-    lines.push("", `[View history](${report.siteUrl})`);
+  const changed = rows.filter((r) => r.status !== "unchanged");
+  const unchanged = rows.filter((r) => r.status === "unchanged");
+  if (changed.length > 0) lines.push(...table(changed, true));
+  if (unchanged.length > 0) {
+    if (changed.length > 0) lines.push("");
+    lines.push(
+      `<details><summary>${unchanged.length} unchanged</summary>`,
+      "",
+      ...table(unchanged, true),
+      "",
+      "</details>"
+    );
   }
-  return lines.join("\n") + "\n";
+  return lines.join("\n");
 }
 function table(rows, withBaseline) {
   if (!withBaseline) {
@@ -104926,21 +104929,6 @@ function table(rows, withBaseline) {
     )
   ];
 }
-function countByStatus(rows) {
-  const counts = { regression: 0, improvement: 0, unchanged: 0, new: 0, removed: 0 };
-  for (const row of rows) counts[row.status]++;
-  return counts;
-}
-function summarize(counts) {
-  const parts = [];
-  const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
-  if (counts.regression) parts.push(`\u{1F534} ${plural(counts.regression, "regression")}`);
-  if (counts.improvement) parts.push(`\u{1F7E2} ${plural(counts.improvement, "improvement")}`);
-  if (counts.new) parts.push(`\u{1F195} ${counts.new} new`);
-  if (counts.removed) parts.push(`\u2796 ${counts.removed} removed`);
-  if (parts.length === 0) return "No significant changes.";
-  return parts.join(" \xB7 ");
-}
 function formatValue(value, unit) {
   if (value === void 0) return "\u2013";
   const abs = Math.abs(value);
@@ -104951,8 +104939,7 @@ function formatChange(row) {
   if (row.changePercent === void 0) return "\u2013";
   const sign = row.changePercent > 0 ? "+" : "";
   const text = `${sign}${row.changePercent.toFixed(1)}%`;
-  const worse = worsePercent(row);
-  return worse !== void 0 && row.status === "regression" ? `**${text}**` : text;
+  return row.status === "regression" ? `**${text}**` : text;
 }
 function escape2(text) {
   return text.slice(0, 200).replace(/[\r\n]+/g, " ").replace(/[\\`*_{}[\]()#+!|<>~]/g, (c) => `\\${c}`).replace(/@/g, "@\u200B").replace(/&/g, "&amp;");
@@ -104961,33 +104948,253 @@ function escapeCode(text) {
   return text.slice(0, 200).replace(/[`\r\n]/g, "");
 }
 
+// src/comment-state.ts
+var commentMarker = "<!-- benchmark-action:comment -->";
+var statePattern = /<!-- benchmark-action:state:([A-Za-z0-9+/=]+) -->/;
+var maxBodyLength = 6e4;
+function emptyState() {
+  return { version: 1, suites: {} };
+}
+function startHead(state3, sha2, runUrl) {
+  if (state3.head?.sha !== sha2 || runUrl && state3.head.runUrl !== runUrl) {
+    state3.head = { sha: sha2, runUrl: runUrl ?? (state3.head?.sha === sha2 ? state3.head.runUrl : void 0) };
+  }
+}
+function finishSuite(state3, report, runUrl) {
+  const sha2 = report.current.sha;
+  if (state3.head && state3.head.sha !== sha2) return false;
+  state3.head ??= { sha: sha2, runUrl };
+  state3.suites[report.suite] = { status: "done", sha: sha2, runUrl, report };
+  return true;
+}
+function failSuite(state3, suite, sha2, message, runUrl) {
+  if (state3.head && state3.head.sha !== sha2) return false;
+  state3.head ??= { sha: sha2, runUrl };
+  state3.suites[suite] = { status: "failed", sha: sha2, runUrl, message, previous: latestReport(state3.suites[suite]) };
+  return true;
+}
+function finishHead(state3, sha2, conclusion, runUrl) {
+  if (state3.head?.sha !== sha2) return;
+  state3.head.finished = true;
+  if (runUrl) state3.head.runUrl = runUrl;
+  for (const [suite, s] of Object.entries(state3.suites)) {
+    if (s.status === "running" && s.sha === sha2) {
+      failSuite(state3, suite, sha2, `The benchmark run ended (${conclusion}) without reporting results.`, runUrl ?? s.runUrl);
+    }
+  }
+}
+function latestReport(suite) {
+  if (!suite) return void 0;
+  return suite.status === "done" ? suite.report : suite.previous;
+}
+function view(state3, suite) {
+  const head = state3.head;
+  if (head && suite.sha !== head.sha) {
+    const previous = latestReport(suite);
+    return head.finished ? { kind: "missing", previous } : { kind: "running", previous, runUrl: head.runUrl };
+  }
+  switch (suite.status) {
+    case "running":
+      return { kind: "running", previous: suite.previous, runUrl: suite.runUrl };
+    case "done":
+      return { kind: "done", report: suite.report, runUrl: suite.runUrl };
+    case "failed":
+      return { kind: "failed", message: suite.message, previous: suite.previous, runUrl: suite.runUrl };
+  }
+}
+function renderComment(state3, options = {}) {
+  const head = state3.head;
+  const names = Object.keys(state3.suites).sort(
+    (a, b) => a === "default" ? -1 : b === "default" ? 1 : a.localeCompare(b)
+  );
+  const views = names.map((name) => [name, view(state3, state3.suites[name])]);
+  const running = views.some(([, v]) => v.kind === "running") || names.length === 0 && !head?.finished;
+  const lines = [commentMarker, "## Benchmarks", ""];
+  if (head) {
+    const run = head.runUrl ? ` ([run](${head.runUrl}))` : "";
+    lines.push(
+      running ? `\u23F3 Running benchmarks for ${shortSha(head.sha)}${run}\u2026` : `Results for ${shortSha(head.sha)}${run}.`,
+      ""
+    );
+  }
+  if (names.length === 0 && head?.finished) {
+    lines.push("The benchmark run finished without reporting any results.", "");
+  }
+  const single = names.length === 1 && names[0] === "default";
+  for (const [name, v] of views) {
+    const title = single ? "" : `**${escape2(name)}**: `;
+    switch (v.kind) {
+      case "running":
+        lines.push(`### ${title}\u23F3 Running\u2026`, "");
+        break;
+      case "done":
+        lines.push(`### ${title}${summarizeReport(v.report)}`, "", renderReport(v.report), "");
+        break;
+      case "failed":
+        lines.push(
+          `### ${title}\u274C Failed`,
+          "",
+          `${escape2(v.message)}${v.runUrl ? ` See the [run](${v.runUrl}).` : ""}`,
+          ""
+        );
+        break;
+      case "missing":
+        lines.push(`### ${title}\u26AA Not run for this commit`, "");
+        break;
+    }
+    if (v.kind !== "done" && v.previous && !options.compact) {
+      lines.push(
+        `<details><summary>Previous results for ${shortSha(v.previous.current.sha)}</summary>`,
+        "",
+        renderReport(v.previous),
+        "",
+        "</details>",
+        ""
+      );
+    }
+  }
+  const siteUrl = names.map((n) => latestReport(state3.suites[n])?.siteUrl).find((url3) => !!url3);
+  if (siteUrl) lines.push(`[View history](${siteUrl})`, "");
+  const encoded = Buffer.from(JSON.stringify(state3)).toString("base64");
+  lines.push(`<!-- benchmark-action:state:${encoded} -->`);
+  return lines.join("\n") + "\n";
+}
+function renderCommentWithinLimit(state3) {
+  let body2 = renderComment(state3);
+  if (body2.length <= maxBodyLength) return body2;
+  const slim = structuredClone(state3);
+  for (const s of Object.values(slim.suites)) if (s.status !== "done") delete s.previous;
+  body2 = renderComment(slim, { compact: true });
+  if (body2.length <= maxBodyLength) return body2;
+  for (const s of Object.values(slim.suites)) {
+    if (s.status === "done") s.report.rows = s.report.rows.filter((r) => r.status !== "unchanged");
+  }
+  return renderComment(slim, { compact: true });
+}
+function parseState(body2) {
+  const match = body2 && statePattern.exec(body2);
+  if (!match) return emptyState();
+  try {
+    const data = JSON.parse(Buffer.from(match[1], "base64").toString("utf8"));
+    validateState(data);
+    return data;
+  } catch {
+    return emptyState();
+  }
+}
+var sha = /^[0-9a-f]{4,64}$/;
+var url2 = /^https:\/\/[^\s()<>]+$/;
+function validateState(state3) {
+  if (state3?.version !== 1 || typeof state3.suites !== "object" || state3.suites === null) {
+    throw new Error("Malformed comment state.");
+  }
+  if (state3.head) {
+    check(sha.test(state3.head.sha), "head sha");
+    check(state3.head.runUrl === void 0 || url2.test(state3.head.runUrl), "run url");
+  }
+  for (const [name, s] of Object.entries(state3.suites)) {
+    try {
+      validateSuite(name, s);
+    } catch {
+      delete state3.suites[name];
+    }
+  }
+}
+function validateSuite(name, s) {
+  suitePath(name);
+  check(sha.test(s.sha), "suite sha");
+  check(s.runUrl === void 0 || url2.test(s.runUrl), "run url");
+  if (s.status === "done") validateReport(s.report);
+  else if (s.status === "running" || s.status === "failed") {
+    if (s.previous) validateReport(s.previous);
+    if (s.status === "failed") check(typeof s.message === "string", "message");
+  } else throw new Error("Malformed suite status.");
+}
+function validateReport(report) {
+  check(report?.version === 1 && Array.isArray(report.rows) && typeof report.suite === "string", "report");
+  suitePath(report.suite);
+  check(typeof report.threshold === "number", "threshold");
+  check(sha.test(report.current?.sha) && typeof report.current.ref === "string", "current");
+  if (report.baseline) {
+    check(sha.test(report.baseline.sha) && typeof report.baseline.branch === "string", "baseline");
+  }
+  check(report.siteUrl === void 0 || url2.test(report.siteUrl), "site url");
+  const statuses = ["regression", "improvement", "unchanged", "new", "removed"];
+  for (const row of report.rows) {
+    check(typeof row.name === "string" && typeof row.unit === "string", "row");
+    check(statuses.includes(row.status) && typeof row.lowerIsBetter === "boolean", "row status");
+    for (const key of ["base", "current", "changePercent"]) {
+      check(row[key] === void 0 || typeof row[key] === "number", "row value");
+    }
+  }
+}
+function check(condition, what) {
+  if (!condition) throw new Error(`Malformed ${what}.`);
+}
+
 // src/github.ts
 function repo() {
   return context4.repo;
 }
-async function upsertComment(octokit, pullRequest, suite, body2) {
-  const marker2 = commentMarker(suite);
+async function updateBenchmarkComment(octokit, pullRequest, mutate, attempts = 6) {
+  for (let attempt = 1; ; attempt++) {
+    const existing = await findComments(octokit, pullRequest);
+    const target = existing[0];
+    const before = parseState(target?.body);
+    const state3 = structuredClone(before);
+    mutate(state3);
+    const changed = changedParts(before, state3);
+    if (target && changed.length === 0) return;
+    const body2 = renderCommentWithinLimit(state3);
+    let id;
+    if (target) {
+      await octokit.rest.issues.updateComment({ ...repo(), comment_id: target.id, body: body2 });
+      id = target.id;
+    } else {
+      const res = await octokit.rest.issues.createComment({ ...repo(), issue_number: pullRequest, body: body2 });
+      id = res.data.id;
+      info(`Created benchmark comment ${res.data.html_url}`);
+    }
+    await sleep(1e3 + Math.random() * 2e3);
+    const after = await findComments(octokit, pullRequest);
+    const winner = after[0];
+    if (winner && winner.id !== id && after.some((c) => c.id === id)) {
+      await octokit.rest.issues.deleteComment({ ...repo(), comment_id: id });
+    } else if (winner?.id === id && samePartsAs(parseState(winner.body), parseState(body2), changed)) {
+      info("Updated the benchmark comment.");
+      return;
+    }
+    if (attempt >= attempts) {
+      warning("Could not update the benchmark comment: other jobs kept overwriting it.");
+      return;
+    }
+    info(`The benchmark comment changed concurrently (attempt ${attempt}/${attempts}), retrying.`);
+  }
+}
+async function findComments(octokit, pullRequest) {
   const comments = await octokit.paginate(octokit.rest.issues.listComments, {
     ...repo(),
     issue_number: pullRequest,
     per_page: 100
   });
-  const existing = comments.find((c) => c.body?.startsWith(marker2));
-  if (existing) {
-    await octokit.rest.issues.updateComment({ ...repo(), comment_id: existing.id, body: body2 });
-    info(`Updated benchmark comment ${existing.html_url}`);
-  } else {
-    const res = await octokit.rest.issues.createComment({ ...repo(), issue_number: pullRequest, body: body2 });
-    info(`Created benchmark comment ${res.data.html_url}`);
-  }
+  return comments.filter((c) => c.body?.startsWith(commentMarker)).sort((a, b) => a.id - b.id);
 }
-
-// src/history.ts
-function suitePath(suite) {
-  if (!/^[A-Za-z0-9._-]+$/.test(suite) || suite.startsWith(".")) {
-    throw new Error(`Invalid suite "${suite}". Use letters, digits, ".", "_" or "-".`);
+function changedParts(before, after) {
+  const parts = [];
+  if (JSON.stringify(before.head) !== JSON.stringify(after.head)) parts.push("head");
+  const names = /* @__PURE__ */ new Set([...Object.keys(before.suites), ...Object.keys(after.suites)]);
+  for (const name of names) {
+    if (JSON.stringify(before.suites[name]) !== JSON.stringify(after.suites[name])) parts.push(`suite:${name}`);
   }
-  return suite;
+  return parts;
+}
+function samePartsAs(actual, expected, parts) {
+  return parts.every(
+    (part) => part === "head" ? JSON.stringify(actual.head) === JSON.stringify(expected.head) : JSON.stringify(actual.suites[part.slice(6)]) === JSON.stringify(expected.suites[part.slice(6)])
+  );
+}
+function sleep(ms) {
+  return new Promise((resolve2) => setTimeout(resolve2, ms));
 }
 
 // src/comment.ts
@@ -105009,30 +105216,53 @@ async function main() {
     info(`No open pull request has head ${run.head_sha}. Nothing to do.`);
     return;
   }
+  const sha2 = run.head_sha;
+  const runUrl = run.html_url;
+  if (context5.payload.action !== "completed") {
+    await updateBenchmarkComment(octokit, pullRequest, (state3) => startHead(state3, sha2, runUrl));
+    return;
+  }
+  const reports = await downloadReports(token, run.id);
+  await updateBenchmarkComment(octokit, pullRequest, (state3) => {
+    startHead(state3, sha2, runUrl);
+    for (const report of reports) {
+      if (report.current.sha !== sha2) {
+        warning(`Ignoring the ${report.suite} report: it is for ${report.current.sha}, not ${sha2}.`);
+        continue;
+      }
+      report.pullRequest = pullRequest;
+      finishSuite(state3, report, runUrl);
+    }
+    finishHead(state3, sha2, run.conclusion ?? "unknown", runUrl);
+  });
+}
+async function downloadReports(token, workflowRunId) {
+  const { context: context5 } = github_exports;
   const client2 = new DefaultArtifactClient();
   const findBy = {
     token,
-    workflowRunId: run.id,
+    workflowRunId,
     repositoryOwner: context5.repo.owner,
     repositoryName: context5.repo.repo
   };
   const { artifacts } = await client2.listArtifacts({ findBy, latest: true });
-  const reports = artifacts.filter((a) => a.name.startsWith(artifactPrefix));
-  if (reports.length === 0) {
-    info("The triggering run uploaded no benchmark reports.");
-    return;
-  }
-  for (const artifact of reports) {
+  const reports = [];
+  for (const artifact of artifacts.filter((a) => a.name.startsWith(artifactPrefix))) {
     const dir = await mkdtemp(path4.join(process.env.RUNNER_TEMP ?? tmpdir(), "benchmark-report-"));
     await client2.downloadArtifact(artifact.id, { path: dir, findBy });
     for (const file of await readdir2(dir)) {
       if (!file.endsWith(".json")) continue;
-      const report = JSON.parse(await readFile(path4.join(dir, file), "utf8"));
-      validate2(report);
-      report.pullRequest = pullRequest;
-      await upsertComment(octokit, pullRequest, report.suite, renderMarkdown(report));
+      try {
+        const report = JSON.parse(await readFile(path4.join(dir, file), "utf8"));
+        validateReport(report);
+        reports.push(report);
+      } catch (e) {
+        warning(`Ignoring malformed report ${artifact.name}: ${e.message}`);
+      }
     }
   }
+  info(`Found ${reports.length} benchmark report(s).`);
+  return reports;
 }
 async function findPullRequest(octokit, run) {
   const listed = run.pull_requests ?? [];
@@ -105047,26 +105277,5 @@ async function findPullRequest(octokit, run) {
     per_page: 100
   });
   return prs.find((p) => p.head.sha === run.head_sha)?.number;
-}
-function validate2(report) {
-  if (report?.version !== 1 || !Array.isArray(report.rows) || typeof report.suite !== "string") {
-    throw new Error("Malformed benchmark report artifact.");
-  }
-  suitePath(report.suite);
-  if (typeof report.threshold !== "number") throw new Error("Malformed report threshold.");
-  for (const row of report.rows) {
-    if (typeof row.name !== "string" || typeof row.unit !== "string" || typeof row.status !== "string") {
-      throw new Error("Malformed report row.");
-    }
-    for (const key of ["base", "current", "changePercent"]) {
-      if (row[key] !== void 0 && typeof row[key] !== "number") throw new Error("Malformed report value.");
-    }
-  }
-  for (const sha of [report.current?.sha, report.baseline?.sha]) {
-    if (sha !== void 0 && !/^[0-9a-f]{7,64}$/.test(sha)) throw new Error("Malformed commit sha.");
-  }
-  if (report.siteUrl !== void 0 && !/^https:\/\/[^\s()<>]+$/.test(report.siteUrl)) {
-    throw new Error("Malformed site URL.");
-  }
 }
 main().catch((e) => setFailed(e.message));

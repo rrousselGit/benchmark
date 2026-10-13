@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import { commentMarker } from './markdown.js';
+import { commentMarker, parseState, renderCommentWithinLimit, type CommentState } from './comment-state.js';
 import type { BranchHistory, DataIndex } from './types.js';
 
 export type Octokit = ReturnType<typeof github.getOctokit>;
@@ -57,27 +57,95 @@ export async function ancestors(octokit: Octokit, sha: string, limit = 100): Pro
   }
 }
 
-/** Creates the suite's comment on a pull request, or updates it in place. */
-export async function upsertComment(
+/**
+ * Applies `mutate` to the pull request's single benchmark comment, creating
+ * it if needed. Several jobs may write at once and GitHub has no conditional
+ * updates, so each write is read back and retried if another writer's
+ * update replaced it. `mutate` must therefore be idempotent.
+ */
+export async function updateBenchmarkComment(
   octokit: Octokit,
   pullRequest: number,
-  suite: string,
-  body: string,
+  mutate: (state: CommentState) => void,
+  attempts = 6,
 ): Promise<void> {
-  const marker = commentMarker(suite);
+  for (let attempt = 1; ; attempt++) {
+    const existing = await findComments(octokit, pullRequest);
+    const target = existing[0];
+    const before = parseState(target?.body);
+    const state = structuredClone(before);
+    mutate(state);
+    const changed = changedParts(before, state);
+    if (target && changed.length === 0) return;
+
+    const body = renderCommentWithinLimit(state);
+    let id: number;
+    if (target) {
+      await octokit.rest.issues.updateComment({ ...repo(), comment_id: target.id, body });
+      id = target.id;
+    } else {
+      const res = await octokit.rest.issues.createComment({ ...repo(), issue_number: pullRequest, body });
+      id = res.data.id;
+      core.info(`Created benchmark comment ${res.data.html_url}`);
+    }
+
+    await sleep(1000 + Math.random() * 2000);
+    const after = await findComments(octokit, pullRequest);
+    const winner = after[0];
+    if (winner && winner.id !== id && after.some((c) => c.id === id)) {
+      // Another job created its comment at the same time: keep the oldest.
+      await octokit.rest.issues.deleteComment({ ...repo(), comment_id: id });
+    } else if (winner?.id === id && samePartsAs(parseState(winner.body), parseState(body), changed)) {
+      core.info('Updated the benchmark comment.');
+      return;
+    }
+    if (attempt >= attempts) {
+      core.warning('Could not update the benchmark comment: other jobs kept overwriting it.');
+      return;
+    }
+    core.info(`The benchmark comment changed concurrently (attempt ${attempt}/${attempts}), retrying.`);
+  }
+}
+
+/** Benchmark comments on the pull request, oldest first. */
+async function findComments(octokit: Octokit, pullRequest: number) {
   const comments = await octokit.paginate(octokit.rest.issues.listComments, {
     ...repo(),
     issue_number: pullRequest,
     per_page: 100,
   });
-  const existing = comments.find((c) => c.body?.startsWith(marker));
-  if (existing) {
-    await octokit.rest.issues.updateComment({ ...repo(), comment_id: existing.id, body });
-    core.info(`Updated benchmark comment ${existing.html_url}`);
-  } else {
-    const res = await octokit.rest.issues.createComment({ ...repo(), issue_number: pullRequest, body });
-    core.info(`Created benchmark comment ${res.data.html_url}`);
+  return comments.filter((c) => c.body?.startsWith(commentMarker)).sort((a, b) => a.id - b.id);
+}
+
+type Part = 'head' | `suite:${string}`;
+
+function changedParts(before: CommentState, after: CommentState): Part[] {
+  const parts: Part[] = [];
+  if (JSON.stringify(before.head) !== JSON.stringify(after.head)) parts.push('head');
+  const names = new Set([...Object.keys(before.suites), ...Object.keys(after.suites)]);
+  for (const name of names) {
+    if (JSON.stringify(before.suites[name]) !== JSON.stringify(after.suites[name])) parts.push(`suite:${name}`);
   }
+  return parts;
+}
+
+function samePartsAs(actual: CommentState, expected: CommentState, parts: Part[]): boolean {
+  return parts.every((part) =>
+    part === 'head'
+      ? JSON.stringify(actual.head) === JSON.stringify(expected.head)
+      : JSON.stringify(actual.suites[part.slice(6)]) === JSON.stringify(expected.suites[part.slice(6)]),
+  );
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/** Link to the current workflow run. */
+export function currentRunUrl(): string {
+  const { serverUrl, runId } = github.context;
+  const { owner, repo: name } = repo();
+  return `${serverUrl}/${owner}/${name}/actions/runs/${runId}`;
 }
 
 export function defaultSiteUrl(): string | undefined {

@@ -1,9 +1,4 @@
-import { worsePercent } from './compare.js';
 import type { Report, ReportRow } from './types.js';
-
-export function commentMarker(suite: string): string {
-  return `<!-- benchmark-action:${encodeURIComponent(suite)} -->`;
-}
 
 const statusOrder: Record<ReportRow['status'], number> = {
   regression: 0,
@@ -21,26 +16,38 @@ const statusIcon: Record<ReportRow['status'], string> = {
   unchanged: '⚪',
 };
 
-/**
- * Renders a report as GitHub markdown. Benchmark names may come from fork
- * pull requests, so everything user-controlled goes through `escape`.
- */
-export function renderMarkdown(report: Report): string {
-  const lines: string[] = [commentMarker(report.suite)];
-  const title = report.suite === 'default' ? 'Benchmark results' : `Benchmark results: ${escape(report.suite)}`;
-  lines.push(`### ${title}`, '');
+export function shortSha(sha: string): string {
+  return `\`${sha.slice(0, 7)}\``;
+}
 
-  const counts = countByStatus(report.rows);
-  const short = (sha: string) => `\`${sha.slice(0, 7)}\``;
+/** One-line outcome of a report, such as "🔴 1 regression · 🟢 2 improvements". */
+export function summarizeReport(report: Report): string {
+  if (!report.baseline) return 'No baseline yet';
+  const counts = { regression: 0, improvement: 0, unchanged: 0, new: 0, removed: 0 };
+  for (const row of report.rows) counts[row.status]++;
+  const parts: string[] = [];
+  const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
+  if (counts.regression) parts.push(`🔴 ${plural(counts.regression, 'regression')}`);
+  if (counts.improvement) parts.push(`🟢 ${plural(counts.improvement, 'improvement')}`);
+  if (counts.new) parts.push(`🆕 ${counts.new} new`);
+  if (counts.removed) parts.push(`➖ ${counts.removed} removed`);
+  return parts.length === 0 ? '✅ No significant changes' : parts.join(' · ');
+}
+
+/**
+ * Renders a report's details as GitHub markdown: what it was compared to,
+ * then the tables. Benchmark names may come from fork pull requests, so
+ * everything user-controlled goes through `escape`.
+ */
+export function renderReport(report: Report): string {
+  const lines: string[] = [];
   if (report.baseline) {
     lines.push(
-      `Comparing ${short(report.current.sha)} against ${short(report.baseline.sha)} on \`${escapeCode(report.baseline.branch)}\`, with a ${report.threshold}% threshold.`,
-      '',
-      summarize(counts),
+      `Compared ${shortSha(report.current.sha)} against ${shortSha(report.baseline.sha)} on \`${escapeCode(report.baseline.branch)}\`, with a ${report.threshold}% threshold.`,
     );
   } else {
     lines.push(
-      `No stored results found for the target branch yet, so there is nothing to compare ${short(report.current.sha)} against.`,
+      `No stored results for the target branch yet, so there is nothing to compare ${shortSha(report.current.sha)} against.`,
     );
   }
   lines.push('');
@@ -48,29 +55,24 @@ export function renderMarkdown(report: Report): string {
   const rows = [...report.rows].sort(
     (a, b) => statusOrder[a.status] - statusOrder[b.status] || a.name.localeCompare(b.name),
   );
-  const changed = rows.filter((r) => r.status !== 'unchanged');
-  const unchanged = rows.filter((r) => r.status === 'unchanged');
-
   if (!report.baseline) {
     lines.push(...table(rows, false));
-  } else {
-    if (changed.length > 0) lines.push(...table(changed, true));
-    if (unchanged.length > 0) {
-      if (changed.length > 0) lines.push('');
-      lines.push(
-        `<details><summary>${unchanged.length} unchanged</summary>`,
-        '',
-        ...table(unchanged, true),
-        '',
-        '</details>',
-      );
-    }
+    return lines.join('\n');
   }
-
-  if (report.siteUrl) {
-    lines.push('', `[View history](${report.siteUrl})`);
+  const changed = rows.filter((r) => r.status !== 'unchanged');
+  const unchanged = rows.filter((r) => r.status === 'unchanged');
+  if (changed.length > 0) lines.push(...table(changed, true));
+  if (unchanged.length > 0) {
+    if (changed.length > 0) lines.push('');
+    lines.push(
+      `<details><summary>${unchanged.length} unchanged</summary>`,
+      '',
+      ...table(unchanged, true),
+      '',
+      '</details>',
+    );
   }
-  return lines.join('\n') + '\n';
+  return lines.join('\n');
 }
 
 function table(rows: ReportRow[], withBaseline: boolean): string[] {
@@ -91,23 +93,6 @@ function table(rows: ReportRow[], withBaseline: boolean): string[] {
   ];
 }
 
-function countByStatus(rows: ReportRow[]): Record<ReportRow['status'], number> {
-  const counts = { regression: 0, improvement: 0, unchanged: 0, new: 0, removed: 0 };
-  for (const row of rows) counts[row.status]++;
-  return counts;
-}
-
-function summarize(counts: Record<ReportRow['status'], number>): string {
-  const parts: string[] = [];
-  const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
-  if (counts.regression) parts.push(`🔴 ${plural(counts.regression, 'regression')}`);
-  if (counts.improvement) parts.push(`🟢 ${plural(counts.improvement, 'improvement')}`);
-  if (counts.new) parts.push(`🆕 ${counts.new} new`);
-  if (counts.removed) parts.push(`➖ ${counts.removed} removed`);
-  if (parts.length === 0) return 'No significant changes.';
-  return parts.join(' · ');
-}
-
 export function formatValue(value: number | undefined, unit: string): string {
   if (value === undefined) return '–';
   const abs = Math.abs(value);
@@ -122,8 +107,7 @@ function formatChange(row: ReportRow): string {
   if (row.changePercent === undefined) return '–';
   const sign = row.changePercent > 0 ? '+' : '';
   const text = `${sign}${row.changePercent.toFixed(1)}%`;
-  const worse = worsePercent(row);
-  return worse !== undefined && row.status === 'regression' ? `**${text}**` : text;
+  return row.status === 'regression' ? `**${text}**` : text;
 }
 
 /** Neutralizes markdown, HTML and @mentions in untrusted text. */
@@ -136,6 +120,6 @@ export function escape(text: string): string {
     .replace(/&/g, '&amp;');
 }
 
-function escapeCode(text: string): string {
+export function escapeCode(text: string): string {
   return text.slice(0, 200).replace(/[`\r\n]/g, '');
 }

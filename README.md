@@ -4,7 +4,7 @@ A GitHub Action that keeps your benchmark results over time.
 
 - **On every push**, it runs your benchmarks and commits the results for that commit to a data branch (`gh-pages` by default), so a commit is never benchmarked twice.
 - **A static site** on that branch charts every benchmark over time. Host it for free with GitHub Pages.
-- **On every pull request**, including ones from forks, it comments with a table comparing the results against the target branch.
+- **On every pull request**, including ones from forks, it keeps a single comment up to date: it shows a loading state as soon as benchmarks start, then each suite's table comparing the results against the target branch as they come in.
 - **A separate check step** fails the job when a benchmark regresses by more than a threshold.
 
 It reads results from a JSON file, and has a built-in adapter for Dart's [`benchmark_harness`](https://pub.dev/packages/benchmark_harness).
@@ -44,7 +44,7 @@ jobs:
           threshold: 10%
 ```
 
-`.github/workflows/benchmark-comment.yml` posts the comment on pull requests from forks, which only get a read-only token in the first workflow:
+`.github/workflows/benchmark-comment.yml` updates the comment when a benchmark run starts and completes. It is what comments on pull requests from forks, which only get a read-only token in the first workflow, and it flags suites whose job died without reporting:
 
 ```yaml
 name: Benchmark comment
@@ -52,7 +52,7 @@ name: Benchmark comment
 on:
   workflow_run:
     workflows: [Benchmark] # the name of the workflow above
-    types: [completed]
+    types: [requested, completed]
 
 permissions:
   actions: read
@@ -107,7 +107,7 @@ The `dart` format reads lines printed by `benchmark_harness`, such as `Template(
 | Event | What the action does |
 | --- | --- |
 | `push` (and any non pull request event) | Stores the results for the commit on the data branch, then compares them with the nearest earlier commit that has results. |
-| `pull_request` | Compares the results with the nearest benchmarked commit of the target branch, at or before the pull request's base. Nothing is stored. Comments on the pull request when the token allows it, and always uploads the report as an artifact for the `comment` action. |
+| `pull_request` | Compares the results with the nearest benchmarked commit of the target branch, at or before the pull request's base. Nothing is stored. Updates the pull request comment, and uploads the report as an artifact for the `comment` action. |
 
 When none of the recent target branch commits were benchmarked, the most recent stored result on that branch is used. When the branch has no results at all, the comment lists the raw results without a comparison.
 
@@ -121,6 +121,16 @@ data/<suite>/<branch>.json      one entry per benchmarked commit
 
 Concurrent pushes are safe: when the data branch moved in between, the action retries on a fresh copy.
 
+### The pull request comment
+
+Each pull request gets exactly one comment, shared by all suites. Its lifecycle for a new commit:
+
+1. When the benchmark workflow starts, the comment shows `⏳ Running benchmarks for <commit>`. Each suite job also marks its own section as running before it runs the benchmark command. Results from the previous commit stay available in a collapsed section.
+2. As each suite finishes, its section is replaced by its comparison table, or by an error if the benchmark failed.
+3. When the run completes, any suite that never reported (a cancelled or crashed job) is marked as failed.
+
+The comment stores its state in a hidden HTML comment, so every job merges its own section. Jobs write concurrently, so each write is read back and retried if another job's update replaced it.
+
 ## Inputs
 
 ### `rrousselgit/benchmark`
@@ -130,11 +140,11 @@ Concurrent pushes are safe: when the data branch moved in between, the action re
 | `file` | required | Results file. |
 | `format` | `json` | `json` or `dart`. |
 | `run` | | Shell command to run first, typically the benchmark itself. |
-| `suite` | `default` | Name of this set of benchmarks. Use several to track independent suites (packages, platforms) in one repository; each gets its own pull request comment. |
+| `suite` | `default` | Name of this set of benchmarks. Use several to track independent suites (packages, platforms) in one repository; each gets its own section in the pull request comment. |
 | `threshold` | `10%` | Change beyond which a benchmark is flagged in the comment. |
 | `data-branch` | `gh-pages` | Branch storing results and the site. |
 | `store` | `true` | Set to `false` to never commit results. |
-| `comment` | `true` | Set to `false` to skip pull request comments. |
+| `comment` | `true` | Set to `false` to leave the pull request comment alone. |
 | `max-entries` | `0` | Commits kept per branch. `0` keeps everything. |
 | `site-url` | Pages URL | Linked from comments. |
 | `github-token` | `github.token` | Needs `contents: write` to store results and `pull-requests: write` to comment. |
@@ -156,7 +166,7 @@ Fails the step when any benchmark got worse than the threshold against the basel
 | --- | --- | --- |
 | `github-token` | `github.token` | Needs `actions: read` and `pull-requests: write`. |
 
-Only runs on `workflow_run`. It finds the pull request from the triggering run itself, not from the uploaded report, and re-renders the comment from the report's data, so a fork cannot use it to post arbitrary content or target another pull request.
+Only runs on `workflow_run`, with `types: [requested, completed]`. It finds the pull request from the triggering run itself, not from the uploaded report, validates the reports, and renders the comment itself, so a fork cannot use it to post arbitrary content or target another pull request.
 
 ## Noise
 

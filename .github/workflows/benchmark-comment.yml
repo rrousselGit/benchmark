@@ -1,11 +1,12 @@
-# Posts benchmark comments on pull requests from forks, whose own runs
-# only get a read-only token.
+# Keeps the pull request's benchmark comment up to date when the benchmark
+# run starts and completes. Required for pull requests from forks, whose own
+# runs only get a read-only token, and marks suites that never reported.
 name: Benchmark comment
 
 on:
   workflow_run:
     workflows: [Benchmark]
-    types: [completed]
+    types: [requested, completed]
 
 permissions:
   actions: read # download the report artifact

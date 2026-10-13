@@ -6,9 +6,10 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compare, parseThreshold } from './compare.js';
-import { ancestors, defaultSiteUrl, readHistory, upsertComment, type Octokit } from './github.js';
+import { failSuite, finishSuite, startSuite, type CommentState } from './comment-state.js';
+import { ancestors, currentRunUrl, defaultSiteUrl, readHistory, updateBenchmarkComment, type Octokit } from './github.js';
 import { addEntry, findBaseline, historyPath, registerBranch, suitePath } from './history.js';
-import { renderMarkdown } from './markdown.js';
+import { renderReport, summarizeReport } from './markdown.js';
 import { formats, parseResults, type Format } from './parse.js';
 import { updateDataBranch } from './store.js';
 import type { Benchmark, BranchHistory, Entry, Report } from './types.js';
@@ -18,34 +19,91 @@ export const artifactPrefix = 'benchmark-report-';
 async function main(): Promise<void> {
   const inputs = readInputs();
   const octokit = github.getOctokit(inputs.token);
-  const { context } = github;
+  const pr = github.context.payload.pull_request;
+  const comment = pr && inputs.comment ? new PullRequestComment(octokit, pr.number, inputs.suite, pr.head.sha) : undefined;
 
-  if (inputs.command) {
-    const exitCode = await exec.exec('bash', ['-eo', 'pipefail', '-c', inputs.command], { ignoreReturnCode: true });
-    if (exitCode !== 0) throw new Error(`Benchmark command exited with code ${exitCode}.`);
+  await comment?.start();
+  try {
+    if (inputs.command) {
+      const exitCode = await exec.exec('bash', ['-eo', 'pipefail', '-c', inputs.command], { ignoreReturnCode: true });
+      if (exitCode !== 0) throw new Error(`Benchmark command exited with code ${exitCode}.`);
+    }
+    const benchmarks = parseResults(await readFile(inputs.file, 'utf8'), inputs.format);
+    core.info(`Parsed ${benchmarks.length} benchmark(s) from ${inputs.file}.`);
+
+    const report = pr
+      ? await pullRequestReport(octokit, inputs, benchmarks, pr)
+      : await storeAndReport(octokit, inputs, benchmarks);
+
+    const title = inputs.suite === 'default' ? 'Benchmarks' : `Benchmarks: ${inputs.suite}`;
+    const markdown = `### ${title}\n\n${summarizeReport(report)}\n\n${renderReport(report)}\n`;
+    const reportDir = path.join(process.env.RUNNER_TEMP ?? '.', 'benchmark-action');
+    await mkdir(reportDir, { recursive: true });
+    const reportPath = path.join(reportDir, `report-${inputs.suite}.json`);
+    await writeFile(reportPath, JSON.stringify(report, null, 2));
+
+    core.setOutput('report', reportPath);
+    core.setOutput('markdown', markdown);
+    core.setOutput('regressions', report.rows.filter((r) => r.status === 'regression').length);
+    core.exportVariable('BENCHMARK_REPORT', reportPath);
+    await core.summary.addRaw(markdown).write();
+
+    if (pr && inputs.comment) await uploadReport(inputs.suite, reportPath);
+    await comment?.finish(report);
+  } catch (e) {
+    await comment?.fail((e as Error).message);
+    throw e;
   }
-  const benchmarks = parseResults(await readFile(inputs.file, 'utf8'), inputs.format);
-  core.info(`Parsed ${benchmarks.length} benchmark(s) from ${inputs.file}.`);
+}
 
-  const pr = context.payload.pull_request;
-  const report = pr
-    ? await pullRequestReport(octokit, inputs, benchmarks, pr)
-    : await storeAndReport(octokit, inputs, benchmarks);
+/**
+ * This job's part of the pull request's shared benchmark comment. Tokens of
+ * pull requests from forks cannot comment: the first write detects that and
+ * leaves the comment to the workflow using rrousselgit/benchmark/comment.
+ */
+class PullRequestComment {
+  private enabled = true;
+  private readonly runUrl = currentRunUrl();
 
-  const markdown = renderMarkdown(report);
-  const reportDir = path.join(process.env.RUNNER_TEMP ?? '.', 'benchmark-action');
-  await mkdir(reportDir, { recursive: true });
-  const reportPath = path.join(reportDir, `report-${inputs.suite}.json`);
-  await writeFile(reportPath, JSON.stringify(report, null, 2));
+  constructor(
+    private readonly octokit: Octokit,
+    private readonly pullRequest: number,
+    private readonly suite: string,
+    private readonly sha: string,
+  ) {}
 
-  core.setOutput('report', reportPath);
-  core.setOutput('markdown', markdown);
-  core.setOutput('regressions', report.rows.filter((r) => r.status === 'regression').length);
-  core.exportVariable('BENCHMARK_REPORT', reportPath);
-  await core.summary.addRaw(markdown).write();
+  start() {
+    return this.update((state) => startSuite(state, this.suite, this.sha, this.runUrl));
+  }
 
-  if (pr && inputs.comment) {
-    await commentOnPullRequest(octokit, inputs, report, markdown, reportPath);
+  finish(report: Report) {
+    return this.update((state) => {
+      finishSuite(state, report, this.runUrl);
+    });
+  }
+
+  fail(message: string) {
+    return this.update((state) => {
+      failSuite(state, this.suite, this.sha, message, this.runUrl);
+    });
+  }
+
+  private async update(mutate: (state: CommentState) => void): Promise<void> {
+    if (!this.enabled) return;
+    try {
+      await updateBenchmarkComment(this.octokit, this.pullRequest, mutate);
+    } catch (e) {
+      const status = (e as { status?: number }).status;
+      if (status !== 403 && status !== 404) {
+        core.warning(`Could not update the benchmark comment: ${(e as Error).message}`);
+        return;
+      }
+      this.enabled = false;
+      core.info(
+        'This token cannot comment (usually a pull request from a fork). ' +
+          'The comment will be posted by the workflow using rrousselgit/benchmark/comment.',
+      );
+    }
   }
 }
 
@@ -198,37 +256,17 @@ async function currentEntry(octokit: Octokit, branch: string, benchmarks: Benchm
   return { commit, branch, runAt: new Date().toISOString(), benchmarks };
 }
 
-async function commentOnPullRequest(
-  octokit: Octokit,
-  inputs: Inputs,
-  report: Report,
-  markdown: string,
-  reportPath: string,
-): Promise<void> {
-  // Always upload the report: pull requests from forks get a read-only token,
-  // and the companion `comment` action posts it from a trusted workflow.
+// Pull requests from forks get a read-only token, so the companion `comment`
+// action posts their results from a trusted workflow using this artifact.
+async function uploadReport(suite: string, reportPath: string): Promise<void> {
   try {
     await new DefaultArtifactClient().uploadArtifact(
-      `${artifactPrefix}${inputs.suite}`,
+      `${artifactPrefix}${suite}`,
       [reportPath],
       path.dirname(reportPath),
     );
   } catch (e) {
     core.warning(`Could not upload the report artifact: ${(e as Error).message}`);
-  }
-
-  try {
-    await upsertComment(octokit, report.pullRequest!, inputs.suite, markdown);
-  } catch (e) {
-    const status = (e as { status?: number }).status;
-    if (status === 403 || status === 404) {
-      core.info(
-        'This token cannot comment (usually a pull request from a fork). ' +
-          'The comment will be posted by the workflow using rrousselgit/benchmark/comment.',
-      );
-    } else {
-      throw e;
-    }
   }
 }
 
