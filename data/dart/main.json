@@ -1,0 +1,64 @@
+{
+ "suite": "dart",
+ "branch": "main",
+ "entries": [
+  {
+   "commit": {
+    "sha": "42dbbef84c6cee8a0f465727785dca37cb06ee92",
+    "message": "Add a Dart benchmark example and run it in CI\n\nThe example package defines benchmark_harness benchmarks and tests;\nCI now formats, analyzes and tests it, and the benchmark workflow\ntracks it as its own suite next to the Node example. The run command\nnow uses pipefail so a failing benchmark piped through tee fails.\n\nCo-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_01XevFbruFj3utvS2mwxxcaG",
+    "author": "claude",
+    "timestamp": "2026-10-13T09:56:16Z",
+    "url": "https://github.com/rrousselGit/benchmark/commit/42dbbef84c6cee8a0f465727785dca37cb06ee92"
+   },
+   "branch": "main",
+   "runAt": "2026-10-13T09:57:17.325Z",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 473.11,
+     "unit": "us"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 0.5359155,
+     "unit": "us"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 724.7015,
+     "unit": "us"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1234.2473050095118,
+     "unit": "us"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 477.76174576675413,
+     "unit": "us"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1139.444,
+     "unit": "us"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 432.45215311004785,
+     "unit": "us"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 297.3580413297394,
+     "unit": "us"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 1317.538,
+     "unit": "us"
+    }
+   ]
+  }
+ ]
+}

@@ -5,6 +5,11 @@
    "branches": {
     "main": "main.json"
    }
+  },
+  "dart": {
+   "branches": {
+    "main": "main.json"
+   }
   }
  }
 }
