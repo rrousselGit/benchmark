@@ -1,0 +1,5806 @@
+{
+ "suite": "demo",
+ "branch": "main",
+ "entries": [
+  {
+   "commit": {
+    "sha": "45e5c60f76e4c0dff585ee66c57e6b76acec80a4",
+    "message": "Start the graph demo history",
+    "author": "claude",
+    "timestamp": "2026-07-06T11:09:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/45e5c60f76e4c0dff585ee66c57e6b76acec80a4"
+   },
+   "branch": "main",
+   "runAt": "2026-07-06T11:09:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 410303,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 999,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1350703,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1795396,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 703602,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1727259,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 650885,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 435181,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "490fb415514130bb091b14bcc4706792e7a66e59",
+    "message": "Refactor word counting",
+    "author": "claude",
+    "timestamp": "2026-07-07T18:50:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/490fb415514130bb091b14bcc4706792e7a66e59"
+   },
+   "branch": "main",
+   "runAt": "2026-07-07T18:50:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 410303,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 989,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1331540,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1795396,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 703602,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1727259,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 650885,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 435181,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "bfe2016701fbf977224d488086636298324d7ec5",
+    "message": "Rework input generation",
+    "author": "claude",
+    "timestamp": "2026-07-09T10:56:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/bfe2016701fbf977224d488086636298324d7ec5"
+   },
+   "branch": "main",
+   "runAt": "2026-07-09T10:56:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 410303,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 989,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1331540,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1795396,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 703602,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1727259,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 650885,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 435181,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "40ea8b0df24a5cfaea9230fe30113924f0482552",
+    "message": "Tidy JSON encoding",
+    "author": "claude",
+    "timestamp": "2026-07-09T20:54:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/40ea8b0df24a5cfaea9230fe30113924f0482552"
+   },
+   "branch": "main",
+   "runAt": "2026-07-09T20:54:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 412638,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 989,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1331540,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1795396,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 703602,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1727259,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 644808,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 435181,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "632f0e95a9f482893042ade78d3ce17b7aa26402",
+    "message": "Inline benchmark setup",
+    "author": "claude",
+    "timestamp": "2026-07-10T04:59:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/632f0e95a9f482893042ade78d3ce17b7aa26402"
+   },
+   "branch": "main",
+   "runAt": "2026-07-10T04:59:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 412638,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 989,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1334196,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1795396,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 703602,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1716861,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 644808,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 435181,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "41f4ec93622038526eb6ec9737a5abef6a1f05d2",
+    "message": "Simplify string building",
+    "author": "claude",
+    "timestamp": "2026-07-10T15:14:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/41f4ec93622038526eb6ec9737a5abef6a1f05d2"
+   },
+   "branch": "main",
+   "runAt": "2026-07-10T15:14:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407115,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 989,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1334331,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1795396,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 706952,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1720947,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 642461,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 431823,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "941411bf6b93927ea1360ec7659938034a2651cb",
+    "message": "Adjust word counting",
+    "author": "claude",
+    "timestamp": "2026-07-12T00:17:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/941411bf6b93927ea1360ec7659938034a2651cb"
+   },
+   "branch": "main",
+   "runAt": "2026-07-12T00:17:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407115,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 989,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1334331,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1787578,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 706952,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1720947,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 649985,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 428357,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "f3b882681d1477dca9cd048184feb03376c12c42",
+    "message": "Adjust the sort helpers",
+    "author": "claude",
+    "timestamp": "2026-07-12T20:57:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/f3b882681d1477dca9cd048184feb03376c12c42"
+   },
+   "branch": "main",
+   "runAt": "2026-07-12T20:57:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407115,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 989,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1317563,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1787578,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 707824,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1720947,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 649985,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 428357,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "7113fedac86b3d19b72f494e62126c255264bff6",
+    "message": "Tweak the sort helpers",
+    "author": "claude",
+    "timestamp": "2026-07-14T04:00:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/7113fedac86b3d19b72f494e62126c255264bff6"
+   },
+   "branch": "main",
+   "runAt": "2026-07-14T04:00:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407115,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 989,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1303283,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1787578,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 707824,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1703952,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 649985,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 428357,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "3d182c1b2ebb1a876e18f2ca7a73073871300666",
+    "message": "Inline the LRU cache",
+    "author": "claude",
+    "timestamp": "2026-07-14T18:18:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/3d182c1b2ebb1a876e18f2ca7a73073871300666"
+   },
+   "branch": "main",
+   "runAt": "2026-07-14T18:18:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407115,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 989,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1303283,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1762632,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 707824,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1710808,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 649985,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 428357,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "b0eecf22fe5484215d51b1697bdee896c651fa3e",
+    "message": "Adjust list joining",
+    "author": "claude",
+    "timestamp": "2026-07-16T10:25:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/b0eecf22fe5484215d51b1697bdee896c651fa3e"
+   },
+   "branch": "main",
+   "runAt": "2026-07-16T10:25:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407115,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1291770,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1762632,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 707824,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1710808,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 649985,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 428357,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "b9fb6c9a23fdcbd22653c44e1dd5b4a13db7263c",
+    "message": "Adjust input generation",
+    "author": "claude",
+    "timestamp": "2026-07-17T03:31:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/b9fb6c9a23fdcbd22653c44e1dd5b4a13db7263c"
+   },
+   "branch": "main",
+   "runAt": "2026-07-17T03:31:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407115,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1278541,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1762632,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 707824,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1701874,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 649985,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 428357,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "43a78acfb4e95c7f452220840c5414df2c4a32d8",
+    "message": "Simplify string building",
+    "author": "claude",
+    "timestamp": "2026-07-17T21:54:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/43a78acfb4e95c7f452220840c5414df2c4a32d8"
+   },
+   "branch": "main",
+   "runAt": "2026-07-17T21:54:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407115,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1260574,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1459199,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 707824,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1701874,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 651400,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 428357,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "e258c31195f6d3c8de1303d4c82f90eb2f52602c",
+    "message": "Refactor input generation",
+    "author": "claude",
+    "timestamp": "2026-07-18T08:30:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/e258c31195f6d3c8de1303d4c82f90eb2f52602c"
+   },
+   "branch": "main",
+   "runAt": "2026-07-18T08:30:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407115,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1260252,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1459199,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 707824,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1701874,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 651400,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 428357,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "057337d336052d92386d5fa0067b9bccbe5d746f",
+    "message": "Tidy benchmark setup",
+    "author": "claude",
+    "timestamp": "2026-07-19T04:01:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/057337d336052d92386d5fa0067b9bccbe5d746f"
+   },
+   "branch": "main",
+   "runAt": "2026-07-19T04:01:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407115,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1260252,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1459199,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 707824,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1701874,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 651400,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 428357,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "aa4065990ea74833b7b60b7a9c57e3544660f5a0",
+    "message": "Adjust the merge step",
+    "author": "claude",
+    "timestamp": "2026-07-20T06:30:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/aa4065990ea74833b7b60b7a9c57e3544660f5a0"
+   },
+   "branch": "main",
+   "runAt": "2026-07-20T06:30:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407115,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1260252,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1462502,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 707824,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1701874,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 651400,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 428357,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "f6fb2273a3f612e85677dcfbe8fd69926db930e5",
+    "message": "Tweak the LRU cache",
+    "author": "claude",
+    "timestamp": "2026-07-21T11:49:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/f6fb2273a3f612e85677dcfbe8fd69926db930e5"
+   },
+   "branch": "main",
+   "runAt": "2026-07-21T11:49:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407115,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1260252,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1470189,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 708698,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1701874,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 653911,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 428357,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "4f79c1918abe83bae74af36e26ff8b4a0396bae9",
+    "message": "Adjust list joining",
+    "author": "claude",
+    "timestamp": "2026-07-22T08:54:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/4f79c1918abe83bae74af36e26ff8b4a0396bae9"
+   },
+   "branch": "main",
+   "runAt": "2026-07-22T08:54:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407115,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1251591,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1470189,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 701313,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1701874,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 653911,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 428357,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "167519cd40664aaf088e67a19502a2f49710e120",
+    "message": "Rework the merge step",
+    "author": "claude",
+    "timestamp": "2026-07-24T00:25:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/167519cd40664aaf088e67a19502a2f49710e120"
+   },
+   "branch": "main",
+   "runAt": "2026-07-24T00:25:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407115,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1247379,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1470189,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 701313,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1701874,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 653911,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 428357,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "aef5ad56d7b67bd1d94a239646bd85eaefa2c503",
+    "message": "Simplify word counting",
+    "author": "claude",
+    "timestamp": "2026-07-25T01:03:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/aef5ad56d7b67bd1d94a239646bd85eaefa2c503"
+   },
+   "branch": "main",
+   "runAt": "2026-07-25T01:03:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 406466,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1247379,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1470189,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 701313,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1701874,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 652059,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 428357,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "48d313c745d3731e592194a3db6ca7ec0075b17c",
+    "message": "Optimize fibonacci helpers",
+    "author": "claude",
+    "timestamp": "2026-07-26T15:29:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/48d313c745d3731e592194a3db6ca7ec0075b17c"
+   },
+   "branch": "main",
+   "runAt": "2026-07-26T15:29:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 406466,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1247379,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1470189,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 701313,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1701874,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 642832,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 428357,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2570447,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "aa4958d3ee0ccdd6ec339ab86bee6733d00f8ce1",
+    "message": "Cache results in benchmark setup",
+    "author": "claude",
+    "timestamp": "2026-07-27T07:28:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/aa4958d3ee0ccdd6ec339ab86bee6733d00f8ce1"
+   },
+   "branch": "main",
+   "runAt": "2026-07-27T07:28:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 406466,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1247379,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1453530,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 701313,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1714470,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 635635,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 429208,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2570447,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "b9cb8f3278995edca0f4fb8f97eb766b72d3de7e",
+    "message": "Simplify string building",
+    "author": "claude",
+    "timestamp": "2026-07-27T16:10:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/b9cb8f3278995edca0f4fb8f97eb766b72d3de7e"
+   },
+   "branch": "main",
+   "runAt": "2026-07-27T16:10:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 406466,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1247379,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1453530,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 701313,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1710748,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 626285,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 429208,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2570447,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "6d55c752382616f81ca1e7b977d7b764a417f71a",
+    "message": "Rework input generation",
+    "author": "claude",
+    "timestamp": "2026-07-28T18:31:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/6d55c752382616f81ca1e7b977d7b764a417f71a"
+   },
+   "branch": "main",
+   "runAt": "2026-07-28T18:31:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 403358,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1247379,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1453530,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 701313,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1710748,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 626285,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 429208,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2570447,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "cb5d2e1c5579a832559f616cd44099f69dc0121c",
+    "message": "Cache results in word counting",
+    "author": "claude",
+    "timestamp": "2026-07-30T08:08:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/cb5d2e1c5579a832559f616cd44099f69dc0121c"
+   },
+   "branch": "main",
+   "runAt": "2026-07-30T08:08:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407464,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1243943,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1453530,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 701313,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1710748,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 626285,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 429208,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2570447,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "a78e82b5cafa94a47c5d8c876a66e784791809fd",
+    "message": "Cache results in word counting",
+    "author": "claude",
+    "timestamp": "2026-07-30T19:25:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/a78e82b5cafa94a47c5d8c876a66e784791809fd"
+   },
+   "branch": "main",
+   "runAt": "2026-07-30T19:25:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407464,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1243943,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1460059,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 701313,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1813392,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 651336,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 433200,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2570447,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "03e80c21516145a872c50a0489bad88413204d40",
+    "message": "Clean up input generation",
+    "author": "claude",
+    "timestamp": "2026-07-31T05:11:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/03e80c21516145a872c50a0489bad88413204d40"
+   },
+   "branch": "main",
+   "runAt": "2026-07-31T05:11:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407464,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1243943,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1460059,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 701313,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1813392,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 651336,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 431859,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2570447,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "c460b656f45aa72c5cfbaaec178d34fb2bdd96f8",
+    "message": "Inline fibonacci helpers",
+    "author": "claude",
+    "timestamp": "2026-08-01T15:29:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/c460b656f45aa72c5cfbaaec178d34fb2bdd96f8"
+   },
+   "branch": "main",
+   "runAt": "2026-08-01T15:29:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407464,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1252460,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1469690,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 697137,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1813392,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 644181,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 431859,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2570447,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "65d8374d7d533411c98f7682804bdd4f18bb4ee9",
+    "message": "Rework the LRU cache",
+    "author": "claude",
+    "timestamp": "2026-08-01T22:58:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/65d8374d7d533411c98f7682804bdd4f18bb4ee9"
+   },
+   "branch": "main",
+   "runAt": "2026-08-01T22:58:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407464,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1252460,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1469690,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 697137,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1797032,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 644181,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 431859,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2570447,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "ce08e0d3d3f044eb04721a9f8669c98f82c76b2c",
+    "message": "Refactor JSON encoding",
+    "author": "claude",
+    "timestamp": "2026-08-02T12:29:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/ce08e0d3d3f044eb04721a9f8669c98f82c76b2c"
+   },
+   "branch": "main",
+   "runAt": "2026-08-02T12:29:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407464,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1252460,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1469690,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 697137,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1797032,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 644181,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 431859,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2590936,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "d3789af0ff06846a462ec203ff4380fff8b41158",
+    "message": "Tweak benchmark setup",
+    "author": "claude",
+    "timestamp": "2026-08-03T12:37:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/d3789af0ff06846a462ec203ff4380fff8b41158"
+   },
+   "branch": "main",
+   "runAt": "2026-08-03T12:37:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407464,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1252460,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468910,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 697137,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1797032,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 651379,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 431859,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2590936,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "a7a740c43fe3c56b17ee240d640eb16e1e5f8f2c",
+    "message": "Cache results in word counting",
+    "author": "claude",
+    "timestamp": "2026-08-04T20:35:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/a7a740c43fe3c56b17ee240d640eb16e1e5f8f2c"
+   },
+   "branch": "main",
+   "runAt": "2026-08-04T20:35:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407464,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1252460,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468910,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 696820,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1797032,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 651379,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 431859,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2590936,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "654201b52ff68e448036024fa70bea9518868119",
+    "message": "Inline string building",
+    "author": "claude",
+    "timestamp": "2026-08-05T13:03:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/654201b52ff68e448036024fa70bea9518868119"
+   },
+   "branch": "main",
+   "runAt": "2026-08-05T13:03:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 407464,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 990,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1252460,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468910,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 696820,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1797032,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 652475,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 431859,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2606587,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "66df3015612cb6298e87542dad27c41d1d8c87ef",
+    "message": "Optimize benchmark setup",
+    "author": "claude",
+    "timestamp": "2026-08-06T12:59:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/66df3015612cb6298e87542dad27c41d1d8c87ef"
+   },
+   "branch": "main",
+   "runAt": "2026-08-06T12:59:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 403488,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1252460,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468910,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 696820,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1805540,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 651681,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 431859,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2604814,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "fdd965e6d3e43325a31aa0abace77106542e1926",
+    "message": "Inline fibonacci helpers",
+    "author": "claude",
+    "timestamp": "2026-08-07T12:44:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/fdd965e6d3e43325a31aa0abace77106542e1926"
+   },
+   "branch": "main",
+   "runAt": "2026-08-07T12:44:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 403488,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1252460,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468910,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 690211,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1805540,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 651681,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 431859,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2604814,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "9a138ed2f783d2c192b6d1f57a116363d5a5d86e",
+    "message": "Optimize word counting",
+    "author": "claude",
+    "timestamp": "2026-08-08T18:58:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/9a138ed2f783d2c192b6d1f57a116363d5a5d86e"
+   },
+   "branch": "main",
+   "runAt": "2026-08-08T18:58:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 403488,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 994,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1258723,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468910,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 690211,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1805540,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 651681,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 431859,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2635956,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "2c789cf952380792fa48bb96a08054c05bf3464c",
+    "message": "Tweak JSON encoding",
+    "author": "claude",
+    "timestamp": "2026-08-09T12:07:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/2c789cf952380792fa48bb96a08054c05bf3464c"
+   },
+   "branch": "main",
+   "runAt": "2026-08-09T12:07:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 403488,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 985,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1258723,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468910,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 695366,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1805540,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 651681,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 430077,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2635956,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "fe6ee9e0ec28929d07d954df53aa33f1fc0ce5d1",
+    "message": "Adjust the LRU cache",
+    "author": "claude",
+    "timestamp": "2026-08-09T18:38:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/fe6ee9e0ec28929d07d954df53aa33f1fc0ce5d1"
+   },
+   "branch": "main",
+   "runAt": "2026-08-09T18:38:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 399624,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 985,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1258723,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468910,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 694429,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1805540,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 651681,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 430077,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2601438,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "b1300e67a85db27e57677e3fe1888f2446113a0e",
+    "message": "Refactor the LRU cache",
+    "author": "claude",
+    "timestamp": "2026-08-10T16:56:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/b1300e67a85db27e57677e3fe1888f2446113a0e"
+   },
+   "branch": "main",
+   "runAt": "2026-08-10T16:56:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 394034,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 985,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1258723,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468910,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 687473,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1819417,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 651681,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 430077,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2566767,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "6b8f1f051673027bd60c10c1696c5453505b771f",
+    "message": "Rework input generation",
+    "author": "claude",
+    "timestamp": "2026-08-12T01:30:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/6b8f1f051673027bd60c10c1696c5453505b771f"
+   },
+   "branch": "main",
+   "runAt": "2026-08-12T01:30:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 394034,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 985,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1258723,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468910,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 687473,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1819417,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 651681,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 430077,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2576849,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "2347f004951f9a6910985de506b3204872e1474a",
+    "message": "Tidy input generation",
+    "author": "claude",
+    "timestamp": "2026-08-13T03:38:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/2347f004951f9a6910985de506b3204872e1474a"
+   },
+   "branch": "main",
+   "runAt": "2026-08-13T03:38:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 394034,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 983,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1258723,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468910,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 680225,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1819417,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 657622,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 430077,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2576849,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "bf8915af770daee84e60b5794046c0e43ab6f41a",
+    "message": "Tidy benchmark setup",
+    "author": "claude",
+    "timestamp": "2026-08-13T13:07:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/bf8915af770daee84e60b5794046c0e43ab6f41a"
+   },
+   "branch": "main",
+   "runAt": "2026-08-13T13:07:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 394034,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 983,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1258723,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468910,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 680225,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1819417,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 657622,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 430077,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 3040681,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "81d1432b7f5c3d6c3c2994e0c2a6545559229c5e",
+    "message": "Inline word counting",
+    "author": "claude",
+    "timestamp": "2026-08-14T20:32:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/81d1432b7f5c3d6c3c2994e0c2a6545559229c5e"
+   },
+   "branch": "main",
+   "runAt": "2026-08-14T20:32:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 394034,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 983,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1258723,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468910,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 680225,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1819417,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 657622,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 430077,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 3040681,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "e438c92204ecff15b2fe325aedaa65a512e61c2d",
+    "message": "Inline the sort helpers",
+    "author": "claude",
+    "timestamp": "2026-08-16T09:12:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/e438c92204ecff15b2fe325aedaa65a512e61c2d"
+   },
+   "branch": "main",
+   "runAt": "2026-08-16T09:12:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 394034,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 983,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1251456,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468910,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 676553,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1819417,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 657622,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 434596,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 3040681,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "1df2199b47255c7f11641a94643a4a8723726cfc",
+    "message": "Tweak the merge step",
+    "author": "claude",
+    "timestamp": "2026-08-17T03:16:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/1df2199b47255c7f11641a94643a4a8723726cfc"
+   },
+   "branch": "main",
+   "runAt": "2026-08-17T03:16:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 394034,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 983,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1251456,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468910,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 676553,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1819417,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 657622,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 434596,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 3040681,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "ccfb0a2c47867a80b2b17ee29f6eb85ec2d90513",
+    "message": "Rework input generation",
+    "author": "claude",
+    "timestamp": "2026-08-17T19:23:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/ccfb0a2c47867a80b2b17ee29f6eb85ec2d90513"
+   },
+   "branch": "main",
+   "runAt": "2026-08-17T19:23:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 394034,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 984,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1251456,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468910,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 676553,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1801727,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 657622,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 431021,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 3040681,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "78c9d7a54810ccb9235ca1dfdf5ac2e91b3e0386",
+    "message": "Refactor input generation",
+    "author": "claude",
+    "timestamp": "2026-08-18T04:29:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/78c9d7a54810ccb9235ca1dfdf5ac2e91b3e0386"
+   },
+   "branch": "main",
+   "runAt": "2026-08-18T04:29:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 394034,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 984,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1251456,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468910,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 676553,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1801727,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 657622,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 431510,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 3040681,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "eb7c24665b710b862858b7eef8698c95822a2bd9",
+    "message": "Simplify fibonacci helpers",
+    "author": "claude",
+    "timestamp": "2026-08-18T20:03:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/eb7c24665b710b862858b7eef8698c95822a2bd9"
+   },
+   "branch": "main",
+   "runAt": "2026-08-18T20:03:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 398019,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 982,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1249427,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468910,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 683672,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1801727,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 657622,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 431510,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 3040681,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "09f50fab20994f7ce1d6df0d43eeef04409a2faa",
+    "message": "Tweak input generation",
+    "author": "claude",
+    "timestamp": "2026-08-19T03:07:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/09f50fab20994f7ce1d6df0d43eeef04409a2faa"
+   },
+   "branch": "main",
+   "runAt": "2026-08-19T03:07:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 398019,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 982,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1249427,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468910,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 683672,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1801727,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 652108,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 426861,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 3040681,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "ac9b98879dee79bca8a7ac4faf531c35907d2c41",
+    "message": "Clean up fibonacci helpers",
+    "author": "claude",
+    "timestamp": "2026-08-20T09:16:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/ac9b98879dee79bca8a7ac4faf531c35907d2c41"
+   },
+   "branch": "main",
+   "runAt": "2026-08-20T09:16:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 398019,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 982,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1249427,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1486092,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 683672,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1818753,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 652108,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 426861,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 3040681,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "8b94feff4823b1a9fc8a2b767d78dfb8ed5f535a",
+    "message": "Simplify word counting",
+    "author": "claude",
+    "timestamp": "2026-08-21T14:46:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/8b94feff4823b1a9fc8a2b767d78dfb8ed5f535a"
+   },
+   "branch": "main",
+   "runAt": "2026-08-21T14:46:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 397673,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 982,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1249427,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1486092,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 683672,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1818753,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 652108,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 427653,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 3040681,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "6340324c70dc3c928e536833f7b6e4f3f5630210",
+    "message": "Cache results in the merge step",
+    "author": "claude",
+    "timestamp": "2026-08-23T04:15:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/6340324c70dc3c928e536833f7b6e4f3f5630210"
+   },
+   "branch": "main",
+   "runAt": "2026-08-23T04:15:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 392267,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 982,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1245626,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1486092,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 683672,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1818753,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 652108,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 427653,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 3040681,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "9f1d422d272136a1af707a00a1894340f294eba8",
+    "message": "Optimize word counting",
+    "author": "claude",
+    "timestamp": "2026-08-24T05:20:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/9f1d422d272136a1af707a00a1894340f294eba8"
+   },
+   "branch": "main",
+   "runAt": "2026-08-24T05:20:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 392267,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 982,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1245626,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1486092,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 675519,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1818753,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 652108,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 427653,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 3040681,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "dcb5d1f7b8d28ba07b5ac8441ca99c20066cc643",
+    "message": "Clean up the merge step",
+    "author": "claude",
+    "timestamp": "2026-08-25T09:07:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/dcb5d1f7b8d28ba07b5ac8441ca99c20066cc643"
+   },
+   "branch": "main",
+   "runAt": "2026-08-25T09:07:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 392267,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 982,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1245626,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1486092,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 675519,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1818753,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 646710,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 427653,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 3040681,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "05d2b7044ad227894815a154073e06df2163c952",
+    "message": "Refactor JSON encoding",
+    "author": "claude",
+    "timestamp": "2026-08-26T01:40:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/05d2b7044ad227894815a154073e06df2163c952"
+   },
+   "branch": "main",
+   "runAt": "2026-08-26T01:40:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 392267,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 969,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1245626,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1486092,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 675519,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1818070,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 638519,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 427653,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 3040681,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "6f0c0b40df956549abd9d6cb7347ecc3c49acb20",
+    "message": "Optimize string building",
+    "author": "claude",
+    "timestamp": "2026-08-27T17:03:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/6f0c0b40df956549abd9d6cb7347ecc3c49acb20"
+   },
+   "branch": "main",
+   "runAt": "2026-08-27T17:03:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 392267,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 969,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1245626,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1477591,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 675519,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1818070,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 631006,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 427653,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 3040681,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "f4fe6a9d5ebe92ebd9d6178cdb1d96d770011976",
+    "message": "Tidy list joining",
+    "author": "claude",
+    "timestamp": "2026-08-28T00:51:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/f4fe6a9d5ebe92ebd9d6178cdb1d96d770011976"
+   },
+   "branch": "main",
+   "runAt": "2026-08-28T00:51:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 392267,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 965,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1245626,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1477591,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 675519,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1818070,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 631006,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 427653,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2499543,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "60141f390434b00d4b3d7a089baa0c376fbca346",
+    "message": "Clean up string building",
+    "author": "claude",
+    "timestamp": "2026-08-28T12:35:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/60141f390434b00d4b3d7a089baa0c376fbca346"
+   },
+   "branch": "main",
+   "runAt": "2026-08-28T12:35:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 392267,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 965,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1245626,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1477591,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 681349,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1794874,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 631006,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 427653,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2499543,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "2fcb40ad6604a90949e6a2fffcae8d9cb10fd255",
+    "message": "Optimize fibonacci helpers",
+    "author": "claude",
+    "timestamp": "2026-08-29T18:33:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/2fcb40ad6604a90949e6a2fffcae8d9cb10fd255"
+   },
+   "branch": "main",
+   "runAt": "2026-08-29T18:33:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 392267,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 965,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1234114,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1477591,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 676717,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1794874,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 631006,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 427653,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2486197,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "80d1bb7f4e47d2ad8ed23066a721bc64cb5a4152",
+    "message": "Tidy string building",
+    "author": "claude",
+    "timestamp": "2026-08-30T15:07:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/80d1bb7f4e47d2ad8ed23066a721bc64cb5a4152"
+   },
+   "branch": "main",
+   "runAt": "2026-08-30T15:07:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 392267,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 965,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1239236,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1477591,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 676717,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1794874,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 631006,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 427653,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2486197,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "d7f7f3f7d22cce741f0817a0f3282368d6247a34",
+    "message": "Tweak input generation",
+    "author": "claude",
+    "timestamp": "2026-08-31T18:47:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/d7f7f3f7d22cce741f0817a0f3282368d6247a34"
+   },
+   "branch": "main",
+   "runAt": "2026-08-31T18:47:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 392267,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 965,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1239236,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1477591,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 676717,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1785479,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 631006,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 427653,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2486197,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "fb8666fcd6c5d091a76a23d9ece327919bd17c3c",
+    "message": "Tweak benchmark setup",
+    "author": "claude",
+    "timestamp": "2026-09-01T13:38:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/fb8666fcd6c5d091a76a23d9ece327919bd17c3c"
+   },
+   "branch": "main",
+   "runAt": "2026-09-01T13:38:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 392267,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 966,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1239236,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1477591,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 676717,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1785479,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 634471,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 427653,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2486197,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "653beffad4ee9fa31cf5f80f434c6b8aa91d25e5",
+    "message": "Tidy the merge step",
+    "author": "claude",
+    "timestamp": "2026-09-02T09:50:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/653beffad4ee9fa31cf5f80f434c6b8aa91d25e5"
+   },
+   "branch": "main",
+   "runAt": "2026-09-02T09:50:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 391844,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 966,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 1239236,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1477591,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 676717,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1785479,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 634321,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 427653,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2454387,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "67141db8b514de469919d8390d3cf296e7515f63",
+    "message": "Refactor the sort helpers",
+    "author": "claude",
+    "timestamp": "2026-09-03T14:36:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/67141db8b514de469919d8390d3cf296e7515f63"
+   },
+   "branch": "main",
+   "runAt": "2026-09-03T14:36:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 391844,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 966,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 869305,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1485181,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 676717,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1769324,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 634321,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 427653,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2454387,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "ec069d53172b9e6cd253eae141bf7a62528bb7e4",
+    "message": "Clean up JSON encoding",
+    "author": "claude",
+    "timestamp": "2026-09-04T14:06:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/ec069d53172b9e6cd253eae141bf7a62528bb7e4"
+   },
+   "branch": "main",
+   "runAt": "2026-09-04T14:06:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 391844,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 966,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 869305,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1485181,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 676717,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1769324,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 634321,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 427653,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2454387,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "65be28ac1a6418ba614f7b573ffd98a880ba5508",
+    "message": "Rework fibonacci helpers",
+    "author": "claude",
+    "timestamp": "2026-09-05T18:34:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/65be28ac1a6418ba614f7b573ffd98a880ba5508"
+   },
+   "branch": "main",
+   "runAt": "2026-09-05T18:34:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 391844,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 966,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 869305,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1485181,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 676717,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1769324,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 634321,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 427653,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2454387,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "dfe15f76dd95be1fc27597e34bb4c4753abd108f",
+    "message": "Simplify JSON encoding",
+    "author": "claude",
+    "timestamp": "2026-09-06T05:48:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/dfe15f76dd95be1fc27597e34bb4c4753abd108f"
+   },
+   "branch": "main",
+   "runAt": "2026-09-06T05:48:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 391844,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 966,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 869305,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1485181,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 676717,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1778195,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 634321,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 427653,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2431114,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "23e09b7c1347435c2598efaaed8efb87a85784a7",
+    "message": "Rework JSON encoding",
+    "author": "claude",
+    "timestamp": "2026-09-07T18:00:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/23e09b7c1347435c2598efaaed8efb87a85784a7"
+   },
+   "branch": "main",
+   "runAt": "2026-09-07T18:00:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 391844,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 966,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 869305,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1475272,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 678406,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1778195,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 625874,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 427653,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2431114,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "c6f0a54c0e933086cdce137c4046e8dec08f4d19",
+    "message": "Adjust the sort helpers",
+    "author": "claude",
+    "timestamp": "2026-09-09T06:39:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/c6f0a54c0e933086cdce137c4046e8dec08f4d19"
+   },
+   "branch": "main",
+   "runAt": "2026-09-09T06:39:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 391844,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 954,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 861367,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1481712,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 678406,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1760403,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 625874,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 429985,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2431114,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "f947985b9547182bdc978808d1860c8a3281c63b",
+    "message": "Rework word counting",
+    "author": "claude",
+    "timestamp": "2026-09-10T19:37:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/f947985b9547182bdc978808d1860c8a3281c63b"
+   },
+   "branch": "main",
+   "runAt": "2026-09-10T19:37:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 391844,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 954,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 861367,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1481712,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 678406,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1760403,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 625874,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 429985,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2431114,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "0caa9df552505f65559d444ace71a55c32eb873a",
+    "message": "Inline JSON encoding",
+    "author": "claude",
+    "timestamp": "2026-09-11T09:35:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/0caa9df552505f65559d444ace71a55c32eb873a"
+   },
+   "branch": "main",
+   "runAt": "2026-09-11T09:35:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 391844,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 941,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 861367,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1481712,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 678406,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1760403,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 625874,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 429985,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2431114,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "6e1886802ff9e2b42810311577b3552e0d1cdb0f",
+    "message": "Optimize benchmark setup",
+    "author": "claude",
+    "timestamp": "2026-09-12T22:31:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/6e1886802ff9e2b42810311577b3552e0d1cdb0f"
+   },
+   "branch": "main",
+   "runAt": "2026-09-12T22:31:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 391844,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 927,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 861367,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1481712,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 678406,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1760403,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 625874,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 425357,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2431114,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "f72e8fd6369130374db9cfac086862679a54cf50",
+    "message": "Inline the merge step",
+    "author": "claude",
+    "timestamp": "2026-09-14T01:36:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/f72e8fd6369130374db9cfac086862679a54cf50"
+   },
+   "branch": "main",
+   "runAt": "2026-09-14T01:36:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 391844,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 927,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 861367,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1481712,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 678406,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1760403,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 625874,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 427824,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2448565,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "4b544302e326893c78d36b01ac6a5ba8e9cfd9b3",
+    "message": "Simplify the LRU cache",
+    "author": "claude",
+    "timestamp": "2026-09-15T09:23:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/4b544302e326893c78d36b01ac6a5ba8e9cfd9b3"
+   },
+   "branch": "main",
+   "runAt": "2026-09-15T09:23:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 391844,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 927,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 854724,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1481712,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 677024,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1760403,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 625874,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 427824,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2448565,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "ad39f09437c2f78955b88b79d6574c83f5ce156a",
+    "message": "Refactor the LRU cache",
+    "author": "claude",
+    "timestamp": "2026-09-16T01:31:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/ad39f09437c2f78955b88b79d6574c83f5ce156a"
+   },
+   "branch": "main",
+   "runAt": "2026-09-16T01:31:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 391844,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 927,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 854724,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1481712,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 681974,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1759824,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 625874,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 431017,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2448565,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "9181b127979b43a40174f616b96577dcedfbb7b0",
+    "message": "Optimize input generation",
+    "author": "claude",
+    "timestamp": "2026-09-17T13:22:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/9181b127979b43a40174f616b96577dcedfbb7b0"
+   },
+   "branch": "main",
+   "runAt": "2026-09-17T13:22:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 391844,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 921,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 854724,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1481712,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 681974,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1759824,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 623148,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 431017,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2448565,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "3124c521da820224eda9d5f97a5873f583ebb634",
+    "message": "Rework the LRU cache",
+    "author": "claude",
+    "timestamp": "2026-09-19T02:04:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/3124c521da820224eda9d5f97a5873f583ebb634"
+   },
+   "branch": "main",
+   "runAt": "2026-09-19T02:04:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 391844,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 921,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 850607,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1481712,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 682131,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1759824,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 630485,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 431017,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2452566,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "2c2784abd0b8506a2ca31b8e0c9106a82b192908",
+    "message": "Refactor word counting",
+    "author": "claude",
+    "timestamp": "2026-09-19T16:05:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/2c2784abd0b8506a2ca31b8e0c9106a82b192908"
+   },
+   "branch": "main",
+   "runAt": "2026-09-19T16:05:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 391844,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 921,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 850607,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1481712,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 682131,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1759824,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 630485,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 431017,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2464213,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "f895573f49542927792ecb700a80bca30ec3d6c3",
+    "message": "Optimize benchmark setup",
+    "author": "claude",
+    "timestamp": "2026-09-21T07:52:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/f895573f49542927792ecb700a80bca30ec3d6c3"
+   },
+   "branch": "main",
+   "runAt": "2026-09-21T07:52:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 391844,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 921,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 850607,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1481712,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 695774,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1759824,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 623425,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 471358,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2464213,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "b4c98c622a94a8e7851db0e51fa12c9cd2472fce",
+    "message": "Tweak the sort helpers",
+    "author": "claude",
+    "timestamp": "2026-09-22T02:44:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/b4c98c622a94a8e7851db0e51fa12c9cd2472fce"
+   },
+   "branch": "main",
+   "runAt": "2026-09-22T02:44:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 390223,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 921,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 850607,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468551,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 687669,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1759824,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 629570,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 471358,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2464213,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "73d025f5a22662579f16d58742965dfc9c59ce16",
+    "message": "Clean up string building",
+    "author": "claude",
+    "timestamp": "2026-09-23T00:57:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/73d025f5a22662579f16d58742965dfc9c59ce16"
+   },
+   "branch": "main",
+   "runAt": "2026-09-23T00:57:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 390223,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 921,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 850607,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1468551,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 687669,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1759824,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 626938,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 471358,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2464213,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "e2dadd38690bd14f494a80ed3b1934ccf1779710",
+    "message": "Adjust fibonacci helpers",
+    "author": "claude",
+    "timestamp": "2026-09-23T22:45:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/e2dadd38690bd14f494a80ed3b1934ccf1779710"
+   },
+   "branch": "main",
+   "runAt": "2026-09-23T22:45:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 390223,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 921,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 850607,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1459648,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 687669,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1759824,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 623926,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 471358,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2464213,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "0865173731e443e5296fd2aa5bdc1a2a999e3c35",
+    "message": "Inline the LRU cache",
+    "author": "claude",
+    "timestamp": "2026-09-24T21:19:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/0865173731e443e5296fd2aa5bdc1a2a999e3c35"
+   },
+   "branch": "main",
+   "runAt": "2026-09-24T21:19:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 390223,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 921,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 855452,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1459648,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 687669,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1759824,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 623926,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 473367,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2464213,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "1572a0d3fdab05a5dc8e795ca99183bed6aa2547",
+    "message": "Rework the merge step",
+    "author": "claude",
+    "timestamp": "2026-09-25T07:17:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/1572a0d3fdab05a5dc8e795ca99183bed6aa2547"
+   },
+   "branch": "main",
+   "runAt": "2026-09-25T07:17:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 390223,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 921,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 855452,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1474992,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 687669,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1737382,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 624278,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 473367,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2464213,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "e7cf26b4846ef089f18894d3b86136314c95e037",
+    "message": "Tidy the LRU cache",
+    "author": "claude",
+    "timestamp": "2026-09-26T22:43:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/e7cf26b4846ef089f18894d3b86136314c95e037"
+   },
+   "branch": "main",
+   "runAt": "2026-09-26T22:43:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 390223,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 921,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 855452,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1491639,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 694139,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1737382,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 624278,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 473367,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2464213,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "414db68884901423754da17e8669dd54f317d7f8",
+    "message": "Tidy string building",
+    "author": "claude",
+    "timestamp": "2026-09-28T14:52:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/414db68884901423754da17e8669dd54f317d7f8"
+   },
+   "branch": "main",
+   "runAt": "2026-09-28T14:52:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 390223,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 921,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 855452,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1491639,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 699183,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1737382,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 624278,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 473598,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2464213,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "42f056fd4a2409b21eae4637b42822899421d0c4",
+    "message": "Cache results in the LRU cache",
+    "author": "claude",
+    "timestamp": "2026-09-28T22:47:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/42f056fd4a2409b21eae4637b42822899421d0c4"
+   },
+   "branch": "main",
+   "runAt": "2026-09-28T22:47:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 390141,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 908,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 865417,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1491639,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 699183,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1737382,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 624278,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 473598,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2464213,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "2324aa460b558dae02e4132086bc414816873551",
+    "message": "Optimize the LRU cache",
+    "author": "claude",
+    "timestamp": "2026-09-29T05:36:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/2324aa460b558dae02e4132086bc414816873551"
+   },
+   "branch": "main",
+   "runAt": "2026-09-29T05:36:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 390141,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 908,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 857098,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1491639,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 695989,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1737382,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 623675,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 473598,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2464213,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "caea39b7bc0c033c5dee7f8529f02a6a8ced1e1d",
+    "message": "Adjust word counting",
+    "author": "claude",
+    "timestamp": "2026-09-29T21:06:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/caea39b7bc0c033c5dee7f8529f02a6a8ced1e1d"
+   },
+   "branch": "main",
+   "runAt": "2026-09-29T21:06:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 370634,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 908,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 859770,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1507901,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 695989,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1737382,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 623675,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 473598,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2464213,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "076810f66d821ec141df7674afae5bb600e4e833",
+    "message": "Tidy string building",
+    "author": "claude",
+    "timestamp": "2026-09-30T06:26:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/076810f66d821ec141df7674afae5bb600e4e833"
+   },
+   "branch": "main",
+   "runAt": "2026-09-30T06:26:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 370634,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 908,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 859770,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1507901,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 695989,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1737382,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 623675,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 473598,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2464213,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "1027d4a3550e743011c9a061111f4859bb9de715",
+    "message": "Simplify string building",
+    "author": "claude",
+    "timestamp": "2026-10-01T19:16:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/1027d4a3550e743011c9a061111f4859bb9de715"
+   },
+   "branch": "main",
+   "runAt": "2026-10-01T19:16:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 370634,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 908,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 859770,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1507901,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 695989,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1737382,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 626538,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 473598,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2464213,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "a117adee069f3efa4e640a72a2380b432839474f",
+    "message": "Tweak list joining",
+    "author": "claude",
+    "timestamp": "2026-10-02T04:31:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/a117adee069f3efa4e640a72a2380b432839474f"
+   },
+   "branch": "main",
+   "runAt": "2026-10-02T04:31:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 370634,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 908,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 859770,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1507901,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 687888,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1737382,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 626538,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 473598,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2473484,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "0cd3ce4dece17dae62495e98c43bc67b7fc09e52",
+    "message": "Simplify string building",
+    "author": "claude",
+    "timestamp": "2026-10-02T13:20:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/0cd3ce4dece17dae62495e98c43bc67b7fc09e52"
+   },
+   "branch": "main",
+   "runAt": "2026-10-02T13:20:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 370634,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 902,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 859770,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1488069,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 687888,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1737382,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 626538,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 473598,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2473484,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "ebf2fc682f98d57432d4fc3027298ae7cf4cb297",
+    "message": "Refactor word counting",
+    "author": "claude",
+    "timestamp": "2026-10-03T23:55:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/ebf2fc682f98d57432d4fc3027298ae7cf4cb297"
+   },
+   "branch": "main",
+   "runAt": "2026-10-03T23:55:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 370634,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 906,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 859770,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1488069,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 692286,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1736539,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 626538,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 469613,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2473484,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "385413f55490971d855e1a50c65140956580a8b8",
+    "message": "Adjust string building",
+    "author": "claude",
+    "timestamp": "2026-10-05T10:15:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/385413f55490971d855e1a50c65140956580a8b8"
+   },
+   "branch": "main",
+   "runAt": "2026-10-05T10:15:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 370634,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 915,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 859770,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1488069,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 692286,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1736539,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 617667,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 469613,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2473484,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "dd8f4a4cd7fa346a3f94d8c4301a95c72179b322",
+    "message": "Clean up the merge step",
+    "author": "claude",
+    "timestamp": "2026-10-07T00:27:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/dd8f4a4cd7fa346a3f94d8c4301a95c72179b322"
+   },
+   "branch": "main",
+   "runAt": "2026-10-07T00:27:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 370634,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 915,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 859770,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1488069,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 687422,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1736539,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 617667,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 473193,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2473484,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "3fa28465969a9d9bd8558ab4b6d24b64f5aed023",
+    "message": "Cache results in string building",
+    "author": "claude",
+    "timestamp": "2026-10-08T15:01:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/3fa28465969a9d9bd8558ab4b6d24b64f5aed023"
+   },
+   "branch": "main",
+   "runAt": "2026-10-08T15:01:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 370634,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 923,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 859770,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1491156,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 693447,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1715466,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 617667,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 473193,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2473484,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "923d26651c4a789c379508b3edc6315615ce3dc2",
+    "message": "Tidy list joining",
+    "author": "claude",
+    "timestamp": "2026-10-09T12:45:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/923d26651c4a789c379508b3edc6315615ce3dc2"
+   },
+   "branch": "main",
+   "runAt": "2026-10-09T12:45:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 370634,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 923,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 863029,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1491156,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 693447,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1700073,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 617667,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 473193,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2448471,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "2218d3c4a20276473a0d0e785a873a58b01b7200",
+    "message": "Cache results in the LRU cache",
+    "author": "claude",
+    "timestamp": "2026-10-10T07:38:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/2218d3c4a20276473a0d0e785a873a58b01b7200"
+   },
+   "branch": "main",
+   "runAt": "2026-10-10T07:38:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 371726,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 923,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 863029,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1491156,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 693447,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1700073,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 613421,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 473193,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2448471,
+     "unit": "instructions"
+    }
+   ]
+  },
+  {
+   "commit": {
+    "sha": "04f461885a3205c753d4ea7f4afd73a02fb2568c",
+    "message": "Inline the merge step",
+    "author": "claude",
+    "timestamp": "2026-10-11T15:45:00+00:00",
+    "url": "https://github.com/rrousselGit/benchmark/commit/04f461885a3205c753d4ea7f4afd73a02fb2568c"
+   },
+   "branch": "main",
+   "runAt": "2026-10-11T15:45:00+00:00",
+   "machine": "instruction counts \u00b7 linux-x64",
+   "benchmarks": [
+    {
+     "name": "Fibonacci recursive (20)",
+     "value": 371726,
+     "unit": "instructions"
+    },
+    {
+     "name": "Fibonacci iterative (90)",
+     "value": 923,
+     "unit": "instructions"
+    },
+    {
+     "name": "Insertion sort (500)",
+     "value": 872990,
+     "unit": "instructions"
+    },
+    {
+     "name": "Merge sort (500)",
+     "value": 1491156,
+     "unit": "instructions"
+    },
+    {
+     "name": "List.sort (500)",
+     "value": 693447,
+     "unit": "instructions"
+    },
+    {
+     "name": "Word frequencies",
+     "value": 1700073,
+     "unit": "instructions"
+    },
+    {
+     "name": "Join numbers (1000)",
+     "value": 614152,
+     "unit": "instructions"
+    },
+    {
+     "name": "JSON round trip",
+     "value": 473193,
+     "unit": "instructions"
+    },
+    {
+     "name": "LRU cache churn",
+     "value": 2448471,
+     "unit": "instructions"
+    }
+   ]
+  }
+ ]
+}
